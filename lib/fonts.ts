@@ -5,13 +5,13 @@ import {
 
 export const fontDisplay = FontDisplay({
   subsets: ["latin"],
-  display: "swap",
+  // display: "swap",
   weight: ["300", "400", "700"],
   variable: "--font-display",
 });
 
 export const fontSans = FontSans({
   subsets: ["latin"],
-  display: "swap",
+  // display: "swap",
   variable: "--font-sans",
 });
