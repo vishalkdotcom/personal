@@ -1,8 +1,8 @@
-type Props = React.HTMLAttributes<HTMLDivElement>;
+type Props = React.HTMLAttributes<HTMLElement>;
 
 export default function ProfessionIntro(props: Props) {
   return (
-    <div {...props}>
+    <section {...props}>
       <h4 className="font-display text-xl font-bold uppercase leading-none tracking-widest sm:text-3xl sm:leading-none lg:text-5xl lg:leading-none">
         Frontend Engineer
       </h4>
@@ -10,6 +10,6 @@ export default function ProfessionIntro(props: Props) {
         <span className="text-muted-foreground">from</span>
         <span>Punjab, India</span>
       </p>
-    </div>
+    </section>
   );
 }

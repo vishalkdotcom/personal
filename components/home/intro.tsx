@@ -1,8 +1,8 @@
-type Props = React.HTMLAttributes<HTMLDivElement>;
+type Props = React.HTMLAttributes<HTMLElement>;
 
 export default function Intro(props: Props) {
   return (
-    <div {...props}>
+    <section {...props}>
       <h1 className="-ml-1 font-display text-4xl font-normal tracking-wide sm:-ml-2 sm:text-6xl lg:text-8xl">
         Vishal Kumar
       </h1>
@@ -16,6 +16,6 @@ export default function Intro(props: Props) {
           since 2012.
         </span>
       </p>
-    </div>
+    </section>
   );
 }

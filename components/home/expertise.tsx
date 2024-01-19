@@ -7,17 +7,17 @@ import {
   SiTypescript,
 } from "@icons-pack/react-simple-icons";
 
-type Props = React.HTMLAttributes<HTMLDivElement>;
+type Props = React.HTMLAttributes<HTMLElement>;
 
 export default function Expertise(props: Props) {
   return (
-    <div {...props}>
+    <section {...props}>
       <div className="grid max-w-xl grid-cols-2 gap-3 xs:grid-cols-3 sm:gap-4 lg:max-w-2xl lg:gap-6">
         {skills.map(({ icon, text }, index) => (
           <Skill key={index} icon={icon} text={text} />
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -42,7 +42,9 @@ function Skill({ icon: Icon, text }: SkillProps) {
       <span className="inline-block">
         <Icon className="size-4 sm:size-6 lg:size-7" color="default" />
       </span>
-      <span className="text-base tracking-wide sm:text-lg lg:text-xl">{text}</span>
+      <span className="text-base tracking-wide sm:text-lg lg:text-xl">
+        {text}
+      </span>
     </div>
   );
 }

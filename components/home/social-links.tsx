@@ -8,17 +8,17 @@ import {
   StackOverflowLogo,
 } from "@phosphor-icons/react/dist/ssr";
 
-type Props = React.HTMLAttributes<HTMLDivElement>;
+type Props = React.HTMLAttributes<HTMLElement>;
 
 export default function SocialLinks(props: Props) {
   return (
-    <div {...props}>
+    <section {...props}>
       <div className="flex flex-row gap-x-6 xs:gap-8">
         {links.map(({ href, icon }, index) => (
           <SocialIcon key={index} href={href} icon={icon} />
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 

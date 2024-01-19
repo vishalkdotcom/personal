@@ -5,13 +5,13 @@ import SocialLinks from "@/components/home/social-links";
 
 export default function Page() {
   return (
-    <div className="space-y-16 py-20 sm:space-y-20">
+    <article className="space-y-16 py-20 sm:space-y-20">
       <div>
         <Intro />
         <SocialLinks className="mt-6 sm:mt-8" />
       </div>
       <Expertise />
       <ProfessionIntro />
-    </div>
+    </article>
   );
 }
