@@ -39,8 +39,9 @@ type SocialIconProps = SocialLink;
 
 function SocialIcon({ href, icon: Icon }: SocialIconProps) {
   return (
-    <Link href={href}>
-      <Icon className="size-6 text-muted-foreground hover:text-foreground sm:size-8" />
+    <Link href={href} className="text-muted-foreground hover:text-foreground">
+      <Icon className="size-6 sm:hidden" weight="regular" />
+      <Icon className="hidden size-8 sm:block" weight="light" />
     </Link>
   );
 }
