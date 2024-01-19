@@ -12,7 +12,7 @@ type Props = React.HTMLAttributes<HTMLDivElement>;
 export default function Expertise(props: Props) {
   return (
     <div {...props}>
-      <div className="grid max-w-xl grid-cols-2 gap-3 xs:grid-cols-3 sm:gap-4">
+      <div className="grid max-w-xl grid-cols-2 gap-3 xs:grid-cols-3 sm:gap-4 lg:max-w-2xl lg:gap-6">
         {skills.map(({ icon, text }, index) => (
           <Skill key={index} icon={icon} text={text} />
         ))}
@@ -38,11 +38,11 @@ type SkillProps = SkillItem;
 
 function Skill({ icon: Icon, text }: SkillProps) {
   return (
-    <div className="flex items-center gap-x-2 sm:gap-x-3">
+    <div className="flex items-center gap-x-2 sm:gap-x-3 lg:gap-x-4">
       <span className="inline-block">
-        <Icon className="size-4 sm:size-6" color="default" />
+        <Icon className="size-4 sm:size-6 lg:size-7" color="default" />
       </span>
-      <span className="text-base sm:text-lg">{text}</span>
+      <span className="text-base tracking-wide sm:text-lg lg:text-xl">{text}</span>
     </div>
   );
 }

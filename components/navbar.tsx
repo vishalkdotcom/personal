@@ -7,8 +7,8 @@ export default function Navbar() {
       <div className="container flex items-center justify-between">
         <Logo />
         <div className="flex items-baseline justify-end gap-x-6 sm:gap-x-8">
-          <NavItem href="/about">About</NavItem>
           <NavItem href="/work">Work</NavItem>
+          <NavItem href="/contact">Contact</NavItem>
         </div>
       </div>
     </div>
