@@ -11,13 +11,29 @@ module.exports = {
   ],
   prefix: "",
   theme: {
-    // container: {
-    //   center: true,
-    //   padding: "3rem",
-    //   screens: {
-    //     "2xl": "1400px",
-    //   },
-    // },
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: "1rem",
+        xs: "2rem",
+        sm: "3rem",
+        md: "4rem",
+        lg: "8rem",
+        xl: "16rem",
+        "2xl": "24rem",
+      },
+      // screens: {
+      //   "2xl": "1400px",
+      // },
+    },
+    screens: {
+      xs: "480px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
     extend: {
       fontFamily: {
         display: ["var(--font-display)", ...fontFamily.sans],
