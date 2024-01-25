@@ -25,7 +25,7 @@ export default function RootLayout({
         <div className="sticky top-0">
           <Navbar />
         </div>
-        <main className="container">{children}</main>
+        <main className="container py-20">{children}</main>
         <TailwindIndicator />
       </body>
     </html>
