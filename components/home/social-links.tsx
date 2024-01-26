@@ -10,7 +10,7 @@ import {
 
 type Props = React.HTMLAttributes<HTMLElement>;
 
-export default function SocialLinks(props: Props) {
+export function SocialLinks(props: Props) {
   return (
     <section {...props}>
       <div className="flex flex-row gap-x-6 xs:gap-8">

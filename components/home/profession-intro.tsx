@@ -1,6 +1,6 @@
 type Props = React.HTMLAttributes<HTMLElement>;
 
-export default function ProfessionIntro(props: Props) {
+export function ProfessionIntro(props: Props) {
   return (
     <section {...props}>
       <h4 className="font-display text-xl font-bold uppercase leading-none tracking-widest sm:text-3xl sm:leading-none lg:text-5xl lg:leading-none">

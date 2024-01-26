@@ -1,12 +1,14 @@
 export type ProjectInfo = {
   title: string;
   description: string;
+  link?: string;
   images: string[];
 };
 
 type RawProjectInfo = {
   title: string;
   description: string;
+  link?: string;
   images: {
     prefix: string;
     count: number;
@@ -18,6 +20,7 @@ const rawProjectData: RawProjectInfo[] = [
     title: "Auto-Bot",
     description:
       "Auto-Bot is an AI-powered vehicle maintenance assistant designed to simplify car care. It uses advanced algorithms and expert insights to diagnose issues, provide repair guidance, and enhance overall automotive experience.",
+    link: "https://auto-bot.ai/",
     images: {
       prefix: "autobot",
       count: 16,
@@ -27,6 +30,7 @@ const rawProjectData: RawProjectInfo[] = [
     title: "JLGS — Construction and Landscaping Services",
     description:
       "Sleek and responsive landing page for JLGS, designed to showcase the their diverse services in Construction, Landscaping, Site Maintenance, and Project Management. The project aim was to enhance JLGS's online presence with clear sections for easy navigation.",
+    link: "https://jlgs.ca/",
     images: {
       prefix: "jlgs",
       count: 4,

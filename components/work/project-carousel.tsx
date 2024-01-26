@@ -13,14 +13,14 @@ type Props = React.HTMLAttributes<HTMLElement> & {
   images: string[];
 };
 
-export default function ProjectCarousel({ images, ...props }: Props) {
+export function ProjectCarousel({ images, ...props }: Props) {
   return (
     <div {...props}>
       <Carousel opts={{ align: "start" }} className="-mx-2 xs:mx-0">
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={index} className="sm:basis-1/2 lg:basis-1/3">
-              <Card>
+              <Card className="overflow-hidden">
                 <CardContent className="flex select-none items-center justify-center p-0">
                   <div className="relative h-64 w-full xs:h-56 sm:h-40 md:h-48 lg:h-40">
                     <Image

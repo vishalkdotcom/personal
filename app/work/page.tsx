@@ -1,8 +1,8 @@
 import { concepts, projects } from "@/data/projects";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PageHeading from "@/components/page-heading";
-import { Projects } from "@/components/work/projects";
+import { PageHeading } from "@/components/page-heading";
+import { ProjectList } from "@/components/work/project-list";
 
 export default function WorkPage() {
   return (
@@ -19,10 +19,10 @@ export default function WorkPage() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="projects" className="mt-12 sm:mt-16">
-          <Projects projects={projects} />
+          <ProjectList projects={projects} />
         </TabsContent>
         <TabsContent value="concepts" className="mt-12 sm:mt-16">
-          <Projects projects={concepts} />
+          <ProjectList projects={concepts} />
         </TabsContent>
       </Tabs>
     </div>

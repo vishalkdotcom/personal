@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import Logo from "@/components/logo";
-import NavItem from "@/components/nav-item";
+import { Logo } from "@/components/logo";
+import { NavItem } from "@/components/nav-item";
 
-export default function Navbar() {
+export function Navbar() {
   return (
     <div className="flex h-12 items-center border-b bg-white sm:h-14">
       <div className="container flex items-center justify-between">

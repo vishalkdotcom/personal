@@ -1,8 +1,8 @@
-import PageHeading from "@/components/page-heading";
+import { PageHeading } from "@/components/page-heading";
 
 type Props = React.HTMLAttributes<HTMLElement>;
 
-export default function Intro(props: Props) {
+export function Intro(props: Props) {
   return (
     <section {...props}>
       <PageHeading text="Vishal Kumar" />

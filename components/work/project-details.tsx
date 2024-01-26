@@ -1,10 +1,10 @@
 import type { ProjectInfo } from "@/data/projects";
 
-import ProjectCarousel from "@/components/work/project-carousel";
+import { ProjectCarousel } from "@/components/work/project-carousel";
 
 type Props = ProjectInfo;
 
-export default function ProjectDetails({ title, images, description }: Props) {
+export function ProjectDetails({ title, images, description }: Props) {
   return (
     <article>
       <h2 className="-ml-px font-display text-xl font-normal uppercase leading-none tracking-widest sm:text-3xl sm:leading-none lg:text-4xl lg:leading-none">

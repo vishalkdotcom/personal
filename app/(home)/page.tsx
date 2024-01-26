@@ -1,9 +1,9 @@
-import Expertise from "@/components/home/expertise";
-import Intro from "@/components/home/intro";
-import ProfessionIntro from "@/components/home/profession-intro";
-import SocialLinks from "@/components/home/social-links";
+import { Expertise } from "@/components/home/expertise";
+import { Intro } from "@/components/home/intro";
+import { ProfessionIntro } from "@/components/home/profession-intro";
+import { SocialLinks } from "@/components/home/social-links";
 
-export default function Page() {
+export default function HomePage() {
   return (
     <article className="space-y-16 sm:space-y-20">
       <div>

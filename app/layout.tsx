@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 
 import { fontDisplay, fontSans } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
+import { Navbar } from "@/components/navbar";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
 
 import "@/app/globals.css";
-
-import { cn } from "@/lib/utils";
-import Navbar from "@/components/navbar";
-import { TailwindIndicator } from "@/components/tailwind-indicator";
 
 export default function RootLayout({
   children,
@@ -17,12 +16,12 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body
         className={cn(
-          "font-sans antialiased",
+          "overflow-y-scroll font-sans antialiased",
           fontDisplay.variable,
           fontSans.variable
         )}
       >
-        <div className="sticky top-0">
+        <div className="sticky top-0 z-10">
           <Navbar />
         </div>
         <main className="container py-20">{children}</main>

@@ -9,7 +9,7 @@ import {
 
 type Props = React.HTMLAttributes<HTMLElement>;
 
-export default function Expertise(props: Props) {
+export function Expertise(props: Props) {
   return (
     <section {...props}>
       <div className="grid max-w-xl grid-cols-2 gap-3 xs:grid-cols-3 sm:gap-4 lg:max-w-2xl lg:gap-6">
