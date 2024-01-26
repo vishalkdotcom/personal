@@ -15,6 +15,24 @@ type RawProjectInfo = {
 
 const rawProjectData: RawProjectInfo[] = [
   {
+    title: "Auto-Bot",
+    description:
+      "Auto-Bot is an AI-powered vehicle maintenance assistant designed to simplify car care. It uses advanced algorithms and expert insights to diagnose issues, provide repair guidance, and enhance overall automotive experience.",
+    images: {
+      prefix: "autobot",
+      count: 16,
+    },
+  },
+  {
+    title: "JLGS — Construction and Landscaping Services",
+    description:
+      "Sleek and responsive landing page for JLGS, designed to showcase the their diverse services in Construction, Landscaping, Site Maintenance, and Project Management. The project aim was to enhance JLGS's online presence with clear sections for easy navigation.",
+    images: {
+      prefix: "jlgs",
+      count: 4,
+    },
+  },
+  {
     title: "Advance Assist",
     description:
       "A cutting-edge AI-powered vehicle diagnostic tool, currently in prototype testing. The project seeks to enhance customer support and drive ecommerce conversions through features like natural language input, predicted diagnoses, and a mechanic locator.",
@@ -24,18 +42,9 @@ const rawProjectData: RawProjectInfo[] = [
     },
   },
   {
-    title: "Store Performance",
+    title: "Store Dashboard",
     description:
-      "An AI-driven web application providing insightful store-level performance data. Utilizing a statistical model, the project aimed to predict yearly sales for individual stores, enabling stakeholders to analyze performance, identify outliers, and derive actionable insights.",
-    images: {
-      prefix: "aai-store-dashboard",
-      count: 3,
-    },
-  },
-  {
-    title: "Project Phoenix",
-    description:
-      "A predictive analytics initiative focused on forecasting sales for Advance Auto Parts banners and business channels. The project aimed to provide stakeholders with a clear comparison of actual vs predicted net sales, fostering data-driven decision-making.",
+      "An web application providing insightful store-level performance data and sales forecast. The project aimed to predict yearly sales for individual stores and provide clear comparison of actual vs predicted net sales, enabling stakeholders to analyze performance, identify outliers, and derive actionable insights.",
     images: {
       prefix: "aai-store-dashboard",
       count: 3,
@@ -59,36 +68,9 @@ const rawProjectData: RawProjectInfo[] = [
       count: 5,
     },
   },
-  {
-    title: "Auto-Bot",
-    description:
-      "Auto-Bot is an AI-powered vehicle maintenance assistant designed to simplify car care. It uses advanced algorithms and expert insights to diagnose issues, provide repair guidance, and enhance overall automotive experience.",
-    images: {
-      prefix: "autobot",
-      count: 16,
-    },
-  },
-  {
-    title: "JLGS — Construction and Landscaping Services",
-    description:
-      "Sleek and responsive landing page for JLGS, designed to showcase the their diverse services in Construction, Landscaping, Site Maintenance, and Project Management. The project aim was to enhance JLGS's online presence with clear sections for easy navigation.",
-    images: {
-      prefix: "jlgs",
-      count: 4,
-    },
-  },
 ];
 
 const rawConceptData: RawProjectInfo[] = [
-  {
-    title: "Auto Assist",
-    description:
-      "A vehicle maintenance assistant designed to simplify vehicle issues diagnosis.",
-    images: {
-      prefix: "concept-auto-assist",
-      count: 5,
-    },
-  },
   {
     title: "DLS",
     description:
@@ -96,6 +78,15 @@ const rawConceptData: RawProjectInfo[] = [
     images: {
       prefix: "concept-dls",
       count: 4,
+    },
+  },
+  {
+    title: "Auto Assist",
+    description:
+      "A vehicle maintenance assistant designed to simplify vehicle issues diagnosis.",
+    images: {
+      prefix: "concept-auto-assist",
+      count: 5,
     },
   },
   {
