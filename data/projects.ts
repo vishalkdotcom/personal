@@ -23,7 +23,7 @@ const rawProjectData: RawProjectInfo[] = [
     link: "https://auto-bot.ai/",
     images: {
       prefix: "autobot",
-      count: 16,
+      count: 8,
     },
   },
   {
@@ -33,7 +33,7 @@ const rawProjectData: RawProjectInfo[] = [
     link: "https://jlgs.ca/",
     images: {
       prefix: "jlgs",
-      count: 4,
+      count: 2,
     },
   },
   {

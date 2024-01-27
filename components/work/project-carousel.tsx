@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -11,9 +12,10 @@ import {
 
 type Props = React.HTMLAttributes<HTMLElement> & {
   images: string[];
+  onImageClick?: (index: number) => void;
 };
 
-export function ProjectCarousel({ images, ...props }: Props) {
+export function ProjectCarousel({ images, onImageClick, ...props }: Props) {
   return (
     <div {...props}>
       <Carousel opts={{ align: "start" }} className="-mx-2 xs:mx-0">
@@ -22,7 +24,11 @@ export function ProjectCarousel({ images, ...props }: Props) {
             <CarouselItem key={index} className="sm:basis-1/2 lg:basis-1/3">
               <Card className="overflow-hidden">
                 <CardContent className="flex select-none items-center justify-center p-0">
-                  <div className="relative h-64 w-full xs:h-56 sm:h-40 md:h-48 lg:h-40">
+                  <Button
+                    variant="ghost"
+                    className="relative h-64 w-full xs:h-56 sm:h-40 md:h-48 lg:h-40"
+                    onClick={() => onImageClick?.(index)}
+                  >
                     <Image
                       alt="Project screenshot"
                       className="h-auto w-full object-cover object-top shadow"
@@ -30,7 +36,7 @@ export function ProjectCarousel({ images, ...props }: Props) {
                       sizes="100vw"
                       fill
                     />
-                  </div>
+                  </Button>
                 </CardContent>
               </Card>
             </CarouselItem>
