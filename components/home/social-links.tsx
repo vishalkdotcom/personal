@@ -28,18 +28,25 @@ type SocialLink = {
 };
 
 const links: SocialLink[] = [
-  { href: "/", icon: GithubLogo },
-  { href: "/", icon: LinkedinLogo },
-  { href: "/", icon: StackOverflowLogo },
-  { href: "/", icon: DribbbleLogo },
-  { href: "/", icon: EnvelopeIcon },
+  { href: "https://github.com/vishalkdotcom/", icon: GithubLogo },
+  { href: "https://www.linkedin.com/in/vishalkdotcom/", icon: LinkedinLogo },
+  {
+    href: "https://stackoverflow.com/users/1027522/vishal",
+    icon: StackOverflowLogo,
+  },
+  { href: "https://dribbble.com/vishalkdotcom", icon: DribbbleLogo },
+  { href: "mailto:hello@vishalk.com", icon: EnvelopeIcon },
 ];
 
 type SocialIconProps = SocialLink;
 
 function SocialIcon({ href, icon: Icon }: SocialIconProps) {
   return (
-    <Link href={href} className="text-muted-foreground hover:text-foreground">
+    <Link
+      href={href}
+      className="text-muted-foreground hover:text-foreground"
+      target={href.startsWith("mailto") ? undefined : "_blank"}
+    >
       <Icon className="size-6 sm:hidden" weight="regular" />
       <Icon className="hidden size-8 sm:block" weight="light" />
     </Link>

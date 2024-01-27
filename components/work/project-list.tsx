@@ -50,8 +50,13 @@ export function ProjectList({ projects, ...props }: Props) {
   return (
     <section {...props}>
       <div className="flex flex-col gap-y-12 sm:gap-y-16">
-        {projects.map(({ title, description, images }, projectIndex) => (
-          <ProjectDetails key={title} title={title} description={description}>
+        {projects.map(({ title, description, link, images }, projectIndex) => (
+          <ProjectDetails
+            key={title}
+            title={title}
+            description={description}
+            link={link}
+          >
             <ProjectCarousel
               className="mt-4 sm:mt-6"
               images={images}

@@ -115,9 +115,8 @@ export const projects = createProjects(rawProjectData);
 export const concepts = createProjects(rawConceptData);
 
 function createProjects(data: RawProjectInfo[]): ProjectInfo[] {
-  return data.map(({ title, description, images: { prefix, count } }) => ({
-    title,
-    description,
+  return data.map(({ images: { prefix, count }, ...project }) => ({
+    ...project,
     images: createImagePath(prefix, count),
   }));
 }
