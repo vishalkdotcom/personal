@@ -33,8 +33,65 @@ export default function RootLayout({
   );
 }
 
-export const metadata: Metadata = {
-  title: "Vishal Kumar — Frontend Engineer",
+const siteConfig = {
+  name: "Vishal Kumar — Frontend Engineer | React.js Enthusiast",
   description:
-    "A personal portfolio website of Vishal Kumar. He's a frontend developer, ui designer from India.",
+    "Explore the portfolio and achievements of Vishal Kumar, a skilled web developer with expertise in React.js. Discover innovative projects and a decade of experience in crafting responsive web solutions.",
+  url: "https://vishalk.com",
+};
+
+export const metadata: Metadata = {
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  keywords: [
+    "Web Developer",
+    "React.js",
+    "Next.js",
+    "TypeScript",
+    "JavaScript",
+    "Tailwind CSS",
+    "Frontend Engineer",
+    "AI Integration",
+    "Project Portfolio",
+    "Responsive Web Solutions",
+    "Technical Expertise",
+    "User Experience Design",
+    "Innovative Web Development",
+    "Coding Enthusiast",
+  ],
+  authors: [
+    {
+      name: "Vishal Kumar",
+      url: "https://vishalk.com",
+    },
+  ],
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#ffffff" },
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: siteConfig.url,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: `${siteConfig.url}/og.png`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  creator: siteConfig.name,
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: `${siteConfig.url}/site.webmanifest`,
 };
