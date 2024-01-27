@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 
 import { fontDisplay, fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ export default function RootLayout({
         </div>
         <main className="container py-20">{children}</main>
         <TailwindIndicator />
+        <Analytics />
       </body>
     </html>
   );
