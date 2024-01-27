@@ -19,7 +19,7 @@ const rawProjectData: RawProjectInfo[] = [
   {
     title: "Auto-Bot",
     description:
-      "Auto-Bot is an AI-powered vehicle maintenance assistant designed to simplify car care. It uses advanced algorithms and expert insights to diagnose issues, provide repair guidance, and enhance overall automotive experience.",
+      "Auto-Bot is an AI-powered vehicle maintenance assistant designed to simplify vehicle care. It uses advanced algorithms and expert insights to diagnose issues, provide repair guidance, and enhance overall automotive experience.",
     link: "https://auto-bot.ai/",
     images: {
       prefix: "autobot",
@@ -48,7 +48,7 @@ const rawProjectData: RawProjectInfo[] = [
   {
     title: "Store Dashboard",
     description:
-      "An web application providing insightful store-level performance data and sales forecast. The project aimed to predict yearly sales for individual stores and provide clear comparison of actual vs predicted net sales, enabling stakeholders to analyze performance, identify outliers, and derive actionable insights.",
+      "A web application providing insightful store-level performance data and sales forecast. The project aimed to predict yearly sales for individual stores and provide clear comparison of actual vs predicted net sales, enabling stakeholders to analyze performance, identify outliers, and derive actionable insights.",
     images: {
       prefix: "aai-store-dashboard",
       count: 3,
@@ -94,7 +94,7 @@ const rawConceptData: RawProjectInfo[] = [
     },
   },
   {
-    title: "FYTV - Find YouTube Videos",
+    title: "FYTV — Find YouTube Videos",
     description: "Lookup YouTube videos using caption search.",
     images: {
       prefix: "concept-fytv",

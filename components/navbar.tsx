@@ -13,7 +13,7 @@ export function Navbar() {
         <div className="flex items-baseline justify-end gap-x-6 sm:gap-x-8">
           <NavItem href="/">About</NavItem>
           <NavItem href="/work">Work</NavItem>
-          <NavItem href="/contact">Contact</NavItem>
+          <NavItem href="mailto:hello@vishalk.com">Contact</NavItem>
         </div>
       </div>
     </div>
