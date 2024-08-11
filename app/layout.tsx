@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 
 import { fontDisplay, fontSans } from "@/lib/fonts";
@@ -15,6 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
+      <GoogleAnalytics gaId="G-06C301CH3G" />
       <body
         className={cn(
           "overflow-y-scroll font-sans antialiased",
