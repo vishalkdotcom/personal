@@ -2,15 +2,21 @@ import Link from "next/link";
 
 type Props = {
   href: string;
+  active: boolean;
   children?: React.ReactNode;
 };
 
-export function NavItem({ href, children }: Props) {
+export function NavItem({ href, active, children }: Props) {
   return (
-    <Link href={href}>
-      <span className="text-sm text-muted-foreground hover:text-foreground sm:text-base">
-        {children}
-      </span>
+    <Link
+      href={href}
+      className={`text-sm sm:text-base transition-colors duration-200 ${
+        active
+          ? "text-foreground font-medium"
+          : "text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {children}
     </Link>
   );
 }

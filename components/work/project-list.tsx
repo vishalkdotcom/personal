@@ -28,14 +28,13 @@ export function ProjectList({ projects, ...props }: Props) {
 
   const modalOpen = openImageOptions != null;
 
-  const currentImage = openImageOptions
-    ? projects[openImageOptions.projectIndex].images[
-        openImageOptions.imageIndex
-      ]
+  const currentProject = openImageOptions
+    ? projects[openImageOptions.projectIndex]
     : null;
-  const currentProjectTitle = openImageOptions
-    ? projects[openImageOptions.projectIndex].title
-    : "";
+
+  const currentImage = currentProject
+    ? currentProject.images[openImageOptions!.imageIndex]
+    : null;
 
   function setModalOpen(open: boolean) {
     if (!open) {
@@ -49,7 +48,7 @@ export function ProjectList({ projects, ...props }: Props) {
 
   return (
     <section {...props}>
-      <div className="flex flex-col gap-y-12 sm:gap-y-16">
+      <div className="flex flex-col gap-y-16 sm:gap-y-20">
         {projects.map(({ title, description, link, images }, projectIndex) => (
           <ProjectDetails
             key={title}
@@ -58,28 +57,33 @@ export function ProjectList({ projects, ...props }: Props) {
             link={link}
           >
             <ProjectCarousel
-              className="mt-4 sm:mt-6"
+              className="mt-6 sm:mt-8"
               images={images}
-              onImageClick={handleImageClick.bind(null, projectIndex)}
+              onImageClick={(imageIndex) =>
+                handleImageClick(projectIndex, imageIndex)
+              }
+              title={title}
             />
           </ProjectDetails>
         ))}
       </div>
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="inset-0 mx-auto max-w-full translate-x-0 translate-y-0 grid-rows-[auto,1fr] gap-y-16 rounded-none sm:rounded-none">
+        <DialogContent className="max-w-4xl">
           <DialogHeader className="text-left">
-            <DialogTitle>{currentProjectTitle}</DialogTitle>
+            <DialogTitle>{currentProject?.title}</DialogTitle>
           </DialogHeader>
 
           {currentImage && (
-            <div className="relative overflow-y-auto border-t">
+            <div className="relative overflow-hidden rounded-lg">
               <Image
-                alt="Project screenshot"
-                className="!h-auto border"
+                alt={`${currentProject?.title} screenshot`}
+                className="w-full h-auto"
                 src={currentImage}
-                sizes="100vw"
-                fill
+                width={1200}
+                height={675}
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 1200px"
               />
             </div>
           )}

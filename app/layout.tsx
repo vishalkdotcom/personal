@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { fontDisplay, fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/navbar";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 
 import "@/app/globals.css";
@@ -15,7 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full scroll-smooth">
+      <head>
+        <link rel="canonical" href="https://vishalk.com" />
+      </head>
       <GoogleAnalytics gaId="G-06C301CH3G" />
       <body
         className={cn(
@@ -28,6 +32,7 @@ export default function RootLayout({
           <Navbar />
         </div>
         <main className="container py-20">{children}</main>
+        <ScrollToTop />
         <TailwindIndicator />
         <Analytics />
       </body>
@@ -63,6 +68,7 @@ export const metadata: Metadata = {
     "User Experience Design",
     "Innovative Web Development",
     "Coding Enthusiast",
+    "Punjab India Developer",
   ],
   authors: [
     {
@@ -70,10 +76,7 @@ export const metadata: Metadata = {
       url: "https://vishalk.com",
     },
   ],
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#ffffff" },
-  ],
+  creator: "Vishal Kumar",
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -84,21 +87,33 @@ export const metadata: Metadata = {
     images: [
       {
         url: `${siteConfig.url}/og.png`,
-        width: 800,
-        height: 400,
-      },
-      {
-        url: `${siteConfig.url}/og-alt.png`,
         width: 1200,
         height: 630,
+        alt: siteConfig.name,
       },
     ],
   },
-  creator: siteConfig.name,
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [`${siteConfig.url}/og.png`],
+    creator: "@vishalkdotcom",
+  },
+  alternates: {
+    canonical: siteConfig.url,
+  },
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
   },
   manifest: `${siteConfig.url}/site.webmanifest`,
+};
+
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#ffffff" },
+  ],
 };

@@ -1,4 +1,6 @@
+import { useCallback, useEffect, useRef, type HTMLAttributes } from "react";
 import Image from "next/image";
+import useEmblaCarousel from "embla-carousel-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,33 +12,57 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-type Props = React.HTMLAttributes<HTMLElement> & {
+type Props = HTMLAttributes<HTMLElement> & {
   images: string[];
   onImageClick?: (index: number) => void;
+  title: string;
 };
 
-export function ProjectCarousel({ images, onImageClick, ...props }: Props) {
+export function ProjectCarousel({
+  images,
+  onImageClick,
+  title,
+  ...props
+}: Props) {
+  const [emblaRef, emblaApi] = useEmblaCarousel();
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!emblaApi) return;
+      if (e.key === "ArrowLeft") {
+        emblaApi.scrollPrev();
+      } else if (e.key === "ArrowRight") {
+        emblaApi.scrollNext();
+      }
+    },
+    [emblaApi]
+  );
+
   return (
-    <div {...props}>
-      <Carousel opts={{ align: "start" }} className="-mx-2 xs:mx-0">
+    <div {...props} onKeyDown={handleKeyDown} tabIndex={0}>
+      <Carousel
+        opts={{ align: "start" }}
+        className="-mx-2 xs:mx-0"
+        ref={emblaRef}
+      >
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={index} className="sm:basis-1/2 lg:basis-1/3">
               <Card className="overflow-hidden">
-                <CardContent className="flex select-none items-center justify-center p-0">
-                  <Button
-                    variant="ghost"
-                    className="relative h-64 w-full xs:h-56 sm:h-40 md:h-48 lg:h-40"
+                <CardContent className="p-0">
+                  <button
+                    className="w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     onClick={() => onImageClick?.(index)}
+                    aria-label={`View larger image ${index + 1} of project ${title}`}
                   >
                     <Image
-                      alt="Project screenshot"
+                      alt={`${title} screenshot ${index + 1}`}
                       className="h-auto w-full object-cover object-top shadow"
                       src={image}
-                      sizes="100vw"
-                      fill
+                      width={400}
+                      height={300}
                     />
-                  </Button>
+                  </button>
                 </CardContent>
               </Card>
             </CarouselItem>
