@@ -1,28 +1,49 @@
 "use client";
 
 import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeading } from "@/components/page-heading";
 
+const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(1, "Message is required"),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 export function ContactSection() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStatus, setFormStatus] = useState<"idle" | "success" | "error">(
     "idle"
   );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      message: "",
+    },
+  });
+
+  const onSubmit = async (data: FormValues) => {
     setFormStatus("idle");
 
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
-
     try {
-      // Option 1: Send to a serverless function (e.g., Vercel Serverless Functions)
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -31,15 +52,13 @@ export function ContactSection() {
 
       if (response.ok) {
         setFormStatus("success");
-        e.currentTarget.reset();
+        form.reset();
       } else {
         setFormStatus("error");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
       setFormStatus("error");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -57,36 +76,69 @@ export function ContactSection() {
           </p>
         </aside>
         <article>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Input placeholder="Your Name" required aria-label="Your Name" />
-            <Input
-              type="email"
-              placeholder="Your Email"
-              required
-              aria-label="Your Email"
-            />
-            <Textarea
-              placeholder="Your Message"
-              rows={5}
-              required
-              aria-label="Your Message"
-            />
-            <Button
-              type="submit"
-              className="w-full sm:w-auto"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Sending..." : "Send Message"}
-            </Button>
-            {formStatus === "success" && (
-              <p className="text-green-600">Message sent successfully!</p>
-            )}
-            {formStatus === "error" && (
-              <p className="text-red-600">
-                Error sending message. Please try again.
-              </p>
-            )}
-          </form>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="Your Email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Message</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Your Message"
+                        rows={5}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="w-full sm:w-auto"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? "Sending..." : "Send Message"}
+              </Button>
+              {formStatus === "success" && (
+                <p className="text-green-600">Message sent successfully!</p>
+              )}
+              {formStatus === "error" && (
+                <p className="text-red-600">
+                  An error occurred. Please try again or contact me directly at
+                  <a href="mailto:hello@vishalk.com">hello@vishalk.com</a>
+                </p>
+              )}
+            </form>
+          </Form>
         </article>
       </div>
     </section>
