@@ -37,10 +37,18 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleNavClick = (href: string) => {
+    if (href === "/") {
+      setActiveSection("");
+    } else {
+      setActiveSection(href.slice(2));
+    }
+  };
+
   return (
     <header className="sticky top-0 z-10 backdrop-blur-sm bg-white/80">
       <div className="container flex h-16 items-center justify-between sm:h-20">
-        <Link href="/" aria-label="Home">
+        <Link href="/" aria-label="Home" onClick={() => handleNavClick("/")}>
           <Logo />
         </Link>
         <nav className="flex items-baseline justify-end gap-x-6 sm:gap-x-8">
@@ -53,6 +61,7 @@ export function Navbar() {
                   ? activeSection === ""
                   : activeSection === item.href.slice(2)
               }
+              onClick={() => handleNavClick(item.href)}
             >
               {item.label}
             </NavItem>

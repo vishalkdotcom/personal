@@ -4,9 +4,10 @@ type Props = {
   href: string;
   active: boolean;
   children?: React.ReactNode;
+  onClick?: () => void;
 };
 
-export function NavItem({ href, active, children }: Props) {
+export function NavItem({ href, active, children, onClick }: Props) {
   return (
     <Link
       href={href}
@@ -15,6 +16,7 @@ export function NavItem({ href, active, children }: Props) {
           ? "text-foreground font-medium"
           : "text-muted-foreground hover:text-foreground"
       }`}
+      onClick={onClick}
     >
       {children}
     </Link>

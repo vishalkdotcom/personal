@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, type HTMLAttributes } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type HTMLAttributes,
+} from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 
@@ -13,18 +19,30 @@ import {
 } from "@/components/ui/carousel";
 
 type Props = HTMLAttributes<HTMLElement> & {
+  currentIndex: number;
   images: string[];
   onImageClick?: (index: number) => void;
   title: string;
 };
 
 export function ProjectCarousel({
+  currentIndex,
   images,
   onImageClick,
   title,
   ...props
 }: Props) {
-  const [emblaRef, emblaApi] = useEmblaCarousel();
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  // const [selectedIndex, setSelectedIndex] = useState(currentIndex);
+
+  // useEffect(() => {
+  //   if (emblaApi) {
+  //     emblaApi.on("select", () => {
+  //       setSelectedIndex(emblaApi.selectedScrollSnap());
+  //     });
+  //     emblaApi.scrollTo(currentIndex);
+  //   }
+  // }, [emblaApi, currentIndex]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -41,13 +59,16 @@ export function ProjectCarousel({
   return (
     <div {...props} onKeyDown={handleKeyDown} tabIndex={0}>
       <Carousel
-        opts={{ align: "start" }}
-        className="-mx-2 xs:mx-0"
+        opts={{ align: "start", loop: true }}
+        className="relative group"
         ref={emblaRef}
       >
         <CarouselContent>
           {images.map((image, index) => (
-            <CarouselItem key={index} className="sm:basis-1/2 lg:basis-1/3">
+            <CarouselItem
+              key={index}
+              className="sm:basis-1/2 lg:basis-1/3 pl-4"
+            >
               <Card className="overflow-hidden">
                 <CardContent className="p-0">
                   <button
@@ -55,21 +76,40 @@ export function ProjectCarousel({
                     onClick={() => onImageClick?.(index)}
                     aria-label={`View larger image ${index + 1} of project ${title}`}
                   >
-                    <Image
-                      alt={`${title} screenshot ${index + 1}`}
-                      className="h-auto w-full object-cover object-top shadow"
-                      src={image}
-                      width={400}
-                      height={300}
-                    />
+                    <div className="relative h-48 sm:h-64">
+                      <Image
+                        alt={`${title} screenshot ${index + 1}`}
+                        className="object-cover"
+                        src={image}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    </div>
                   </button>
                 </CardContent>
               </Card>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-2 mt-0.5 opacity-60 hover:opacity-100 xs:opacity-100 sm:-left-10 md:-left-12" />
-        <CarouselNext className="right-2 mt-0.5 opacity-60 hover:opacity-100 xs:opacity-100 sm:-right-10 md:-right-12" />
+        <CarouselPrevious className="left-4 sm:-left-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <CarouselNext className="right-4 sm:-right-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="hidden absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full ${
+                index === currentIndex ? "bg-foreground" : "bg-muted"
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                emblaApi?.scrollTo(index);
+              }}
+              onMouseDown={(e) => e.preventDefault()}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
       </Carousel>
     </div>
   );

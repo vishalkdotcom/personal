@@ -9,12 +9,38 @@ import { PageHeading } from "@/components/page-heading";
 
 export function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formStatus, setFormStatus] = useState<"idle" | "success" | "error">(
+    "idle"
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Add form submission logic here
-    setIsSubmitting(false);
+    setFormStatus("idle");
+
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData);
+
+    try {
+      // Option 1: Send to a serverless function (e.g., Vercel Serverless Functions)
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setFormStatus("success");
+        e.currentTarget.reset();
+      } else {
+        setFormStatus("error");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setFormStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -52,6 +78,14 @@ export function ContactSection() {
             >
               {isSubmitting ? "Sending..." : "Send Message"}
             </Button>
+            {formStatus === "success" && (
+              <p className="text-green-600">Message sent successfully!</p>
+            )}
+            {formStatus === "error" && (
+              <p className="text-red-600">
+                Error sending message. Please try again.
+              </p>
+            )}
           </form>
         </article>
       </div>
