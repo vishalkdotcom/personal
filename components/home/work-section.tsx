@@ -6,12 +6,12 @@ import { ProjectList } from "@/components/work/project-list";
 
 export function WorkSection() {
   return (
-    <div className="space-y-8 sm:space-y-12 lg:space-y-16">
+    <div className="space-y-6 sm:space-y-8 lg:space-y-12">
       <PageHeading text="Work" />
 
       <Tabs defaultValue="projects" className="w-full">
-        <div className="sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-4">
-          <TabsList className="w-full mb-6 sm:mb-8">
+        <div className="sticky top-16 bg-white/80 backdrop-blur-sm z-10 py-2 sm:py-4">
+          <TabsList className="w-full">
             <TabsTrigger value="projects" className="w-full">
               Projects
             </TabsTrigger>
@@ -20,10 +20,10 @@ export function WorkSection() {
             </TabsTrigger>
           </TabsList>
         </div>
-        <TabsContent value="projects">
+        <TabsContent value="projects" className="pt-4 sm:pt-6">
           <ProjectList projects={projects} />
         </TabsContent>
-        <TabsContent value="concepts">
+        <TabsContent value="concepts" className="pt-4 sm:pt-6">
           <ProjectList projects={concepts} />
         </TabsContent>
       </Tabs>
