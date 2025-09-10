@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Next.js 14 portfolio website for vishalk.com. It's a single-page application built with TypeScript, React 18, and Tailwind CSS.
+This is a SvelteKit portfolio website for vishalk.com. It's a single-page application built with TypeScript, Svelte 5, and Tailwind CSS.
 
 ## Development Commands
 
@@ -18,53 +18,61 @@ bun dev
 # Build for production
 bun build
 
-# Start production server
-bun start
+# Preview production build locally
+bun preview
 
 # Linting
 bun lint
-bun lint:fix
 
 # Format code
-bun format:write  # Write formatting changes
-bun format:check  # Check formatting without changes
+bun format  # Write formatting changes
 
-# Preview production build locally
-bun preview
+# Type checking
+bun check  # Run Svelte type checking
+bun check:watch  # Watch mode for type checking
 ```
 
 ## Architecture
 
 ### Project Structure
-- **`app/`**: Next.js 14 App Router pages and API routes
-  - `page.tsx`: Main homepage component
-  - `layout.tsx`: Root layout with metadata and providers
-  - `api/contact/route.ts`: Contact form API endpoint
-- **`components/`**: React components organized by feature
-  - `home/`: Homepage sections (intro, expertise, work, contact)
+- **`src/routes/`**: SvelteKit file-based routing with special files:
+  - `+page.svelte`: Page components
+  - `+layout.svelte`: Layout components  
+  - `+page.server.ts`: Server-side logic and actions
+  - `+page.ts`/`+layout.ts`: Load functions
+- **`src/lib/components/`**: Svelte components organized by feature
+  - `home/`: Homepage sections (Intro, Expertise, WorkSection, ContactSection)
   - `work/`: Work/project showcase components
-  - `ui/`: Shadcn/ui components (button, dialog, form, etc.)
-- **`data/`**: Static data (projects.ts contains portfolio projects)
-- **`lib/`**: Utility functions and shared logic
-- **`hooks/`**: Custom React hooks
-- **`public/images/projects/`**: Project screenshot images
+  - `ui/`: Custom UI components (Button, Input, Textarea, etc.)
+- **`src/lib/data/`**: Static data (projects.ts contains portfolio projects)
+- **`src/lib/`**: Utility functions and shared logic
+- **`static/images/projects/`**: Project screenshot images
+- **`scripts/`**: Build-time scripts (image optimization)
 
 ### Key Technologies & Patterns
+- **Build System**: Vite with SvelteKit optimizations
 - **Styling**: Tailwind CSS with custom animations and responsive design
-- **Forms**: React Hook Form with Zod validation
-- **UI Components**: Shadcn/ui component library
-- **Icons**: Phosphor Icons and React Simple Icons
+- **Forms**: Native SvelteKit forms with Zod validation and server actions
+- **UI Components**: Custom Svelte UI components
+- **Icons**: Phosphor Icons and Simple Icons
 - **Email**: Nodemailer with Zoho SMTP (requires ZOHO_EMAIL and ZOHO_PASSWORD env vars)
-- **Analytics**: Vercel Analytics and Google Analytics (via @next/third-parties)
-- **Path Aliases**: Uses `@/*` for imports relative to project root
+- **Path Aliases**: Uses `$lib/*` for SvelteKit library imports
+- **Deployment**: Cloudflare Pages with @sveltejs/adapter-cloudflare
+- **Image Optimization**: Concurrent Sharp-based processing with smart caching
 
 ### Component Architecture
-- Homepage is split into sections (Intro, Expertise, Work, Contact)
-- Uses FadeInSection wrapper for scroll animations
+- Homepage sections implemented as Svelte components
+- Uses FadeInSection Svelte component for scroll animations
 - Work section uses tabs with carousel for project showcases
-- Contact form integrates with API route for email sending
+- Contact form uses SvelteKit actions for server-side processing
+
+### SvelteKit Configuration
+- **svelte.config.js**: Configured with Cloudflare adapter and path aliases
+- **vite.config.js**: Vite configuration optimized for SvelteKit
+- **Image Processing**: Pre-build script generates optimized WebP and AVIF formats
 
 ## TypeScript Configuration
 - Strict mode enabled
-- Path alias `@/*` configured for clean imports
-- Next.js plugin configured for optimal type checking
+- SvelteKit TypeScript integration with proper type checking
+- Path alias `$lib/*` configured for SvelteKit library imports
+- Svelte-specific type checking with `svelte-check`
