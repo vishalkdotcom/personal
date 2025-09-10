@@ -5,9 +5,11 @@
 -->
 
 <script lang="ts">
-	export let title: string;
-	export let description: string;
-	export let link: string | undefined = undefined;
+	let { title, description, link = undefined }: { 
+		title: string; 
+		description: string; 
+		link?: string | undefined 
+	} = $props();
 </script>
 
 <article>

@@ -4,16 +4,15 @@
 -->
 
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-
-	export let value: string;
-	export let tabs: Array<{ value: string; label: string }>;
-
-	const dispatch = createEventDispatcher<{ change: { value: string } }>();
+	let { value, tabs, onchange }: { 
+		value: string; 
+		tabs: Array<{ value: string; label: string }>; 
+		onchange?: (detail: { value: string }) => void 
+	} = $props();
 
 	function handleTabClick(tabValue: string) {
 		value = tabValue;
-		dispatch('change', { value: tabValue });
+		onchange?.({ value: tabValue });
 	}
 </script>
 

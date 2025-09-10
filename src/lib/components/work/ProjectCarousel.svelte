@@ -8,10 +8,12 @@
 	import { onMount } from 'svelte';
 	import OptimizedImage from '$lib/components/ui/OptimizedImage.svelte';
 
-	export let currentIndex: number = 0;
-	export let images: string[];
-	export let onImageClick: ((index: number) => void) | undefined = undefined;
-	export let title: string;
+	let { currentIndex = 0, images, onImageClick = undefined, title }: { 
+		currentIndex?: number; 
+		images: string[]; 
+		onImageClick?: ((index: number) => void) | undefined; 
+		title: string 
+	} = $props();
 
 	let carouselContainer: HTMLDivElement;
 	let currentSlide = currentIndex;

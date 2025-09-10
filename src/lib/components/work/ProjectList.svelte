@@ -11,7 +11,7 @@
 	import ProjectCarousel from './ProjectCarousel.svelte';
 	import OptimizedImage from '$lib/components/ui/OptimizedImage.svelte';
 
-	export let projects: ProjectInfo[];
+	let { projects }: { projects: ProjectInfo[] } = $props();
 
 	type OpenProjectImageOption = {
 		imageIndex: number;
