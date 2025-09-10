@@ -10,20 +10,30 @@
 		error?: boolean;
 		message?: string;
 		issues?: Record<string, string[]>;
-	};
+	} | null;
 
 	interface Props {
 		form?: ContactActionData;
+		actionPath?: string;
 	}
 
-	let { form }: Props = $props();
+	let { form, actionPath = "?/contact" }: Props = $props();
 	let submitting = $state(false);
 
 	function handleSubmit() {
 		submitting = true;
-		return async ({ update }) => {
+		return async ({ update, result }) => {
 			await update();
 			submitting = false;
+			
+			// Reset form if submission was successful
+			if (result.type === 'success' && result.data?.success) {
+				// Reset the form by setting values to empty
+				const formElement = document.querySelector('form[method="POST"]') as HTMLFormElement;
+				if (formElement) {
+					formElement.reset();
+				}
+			}
 		};
 	}
 </script>
@@ -44,7 +54,7 @@
 			</p>
 		</aside>
 		<article>
-			<form method="POST" action="?/contact" use:enhance={handleSubmit} class="space-y-6">
+			<form method="POST" action={actionPath} use:enhance={handleSubmit} class="space-y-6">
 				<div class="space-y-2">
 					<label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Name</label>
 					<Input

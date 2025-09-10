@@ -36,17 +36,38 @@ export function createTransporter(config: EmailConfig) {
 	});
 }
 
+function sanitizeText(text: string): string {
+	// Basic sanitization to prevent injection attacks
+	return text.replace(/[<>\"'&]/g, (match) => {
+		switch (match) {
+			case '<': return '&lt;';
+			case '>': return '&gt;';
+			case '"': return '&quot;';
+			case "'": return '&#x27;';
+			case '&': return '&amp;';
+			default: return match;
+		}
+	});
+}
+
 export function createContactEmailOptions(contactData: ContactData, fromEmail: string, toEmail: string) {
+	// Sanitize contact data before using in email
+	const sanitizedData = {
+		name: sanitizeText(contactData.name.trim()),
+		email: contactData.email.trim(), // Email is already validated by Zod
+		message: sanitizeText(contactData.message.trim())
+	};
+
 	return {
 		from: fromEmail,
 		to: toEmail,
-		subject: `New Contact Form Submission from ${contactData.name}`,
-		text: `Name: ${contactData.name}
-Email: ${contactData.email}
-Message: ${contactData.message}
+		subject: `New Contact Form Submission from ${sanitizedData.name}`,
+		text: `Name: ${sanitizedData.name}
+Email: ${sanitizedData.email}
+Message: ${sanitizedData.message}
 
 Sent from: vishalk.com contact form`,
-		replyTo: contactData.email
+		replyTo: sanitizedData.email
 	};
 }
 
@@ -75,7 +96,12 @@ export async function sendContactEmail(contactData: ContactData): Promise<{ succ
 			message: 'Message sent successfully!'
 		};
 	} catch (error: any) {
-		console.error('Email sending error:', error);
+		// Log error without exposing sensitive information
+		console.error('Email sending error:', {
+			code: error.code,
+			message: error.message,
+			timestamp: new Date().toISOString()
+		});
 		
 		// Handle specific nodemailer errors
 		if (error.code === 'EAUTH') {
