@@ -11,15 +11,15 @@
 		{ value: 'concepts', label: 'Concepts' }
 	];
 
-	function handleTabChange(event: CustomEvent<{ value: string }>) {
-		activeTab = event.detail.value;
+	function handleTabChange(event: { value: string }) {
+		activeTab = event.value;
 	}
 </script>
 
 <div class="space-y-6 sm:space-y-8 lg:space-y-12">
 	<PageHeading text="Work" />
 
-	<Tabs value={activeTab} {tabs} on:change={handleTabChange}>
+	<Tabs value={activeTab} {tabs} onchange={handleTabChange}>
 		{#if activeTab === 'projects'}
 			<ProjectList {projects} />
 		{:else if activeTab === 'concepts'}

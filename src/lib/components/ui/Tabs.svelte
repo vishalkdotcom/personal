@@ -4,16 +4,13 @@
 -->
 
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-
 	export let value: string;
 	export let tabs: Array<{ value: string; label: string }>;
-
-	const dispatch = createEventDispatcher<{ change: { value: string } }>();
+	export let onchange: ((event: { value: string }) => void) | undefined = undefined;
 
 	function handleTabClick(tabValue: string) {
 		value = tabValue;
-		dispatch('change', { value: tabValue });
+		onchange?.({ value: tabValue });
 	}
 </script>
 
