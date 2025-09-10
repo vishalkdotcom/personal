@@ -1,15 +1,29 @@
 <script lang="ts">
-	// Placeholder for WorkSection - will be implemented in Phase 3
+	import { projects, concepts } from '$lib/data/projects';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import PageHeading from '$lib/components/PageHeading.svelte';
+	import ProjectList from '$lib/components/work/ProjectList.svelte';
+
+	let activeTab = 'projects';
+
+	const tabs = [
+		{ value: 'projects', label: 'Projects' },
+		{ value: 'concepts', label: 'Concepts' }
+	];
+
+	function handleTabChange(event: CustomEvent<{ value: string }>) {
+		activeTab = event.detail.value;
+	}
 </script>
 
-<section>
-	<h2 class="text-3xl font-bold mb-6">Work & Projects</h2>
-	<div class="p-6 bg-muted rounded-lg">
-		<p class="text-muted-foreground">
-			🔄 Work section migration in progress - Phase 3 of SvelteKit migration
-		</p>
-		<p class="text-sm mt-2 text-muted-foreground">
-			This section will showcase the project portfolio with tabs and carousel functionality.
-		</p>
-	</div>
-</section>
+<div class="space-y-6 sm:space-y-8 lg:space-y-12">
+	<PageHeading text="Work" />
+
+	<Tabs value={activeTab} {tabs} on:change={handleTabChange}>
+		{#if activeTab === 'projects'}
+			<ProjectList {projects} />
+		{:else if activeTab === 'concepts'}
+			<ProjectList projects={concepts} />
+		{/if}
+	</Tabs>
+</div>
