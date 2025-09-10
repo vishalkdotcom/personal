@@ -53,7 +53,7 @@
 	<FadeInSection>
 		<section
 			id="work"
-			class="pt-16 sm:pt-24 lg:pt-32 border-t border-gray-100"
+			class="pt-16 sm:pt-24 lg:pt-32 border-t border-border"
 		>
 			<WorkSection />
 		</section>
@@ -62,7 +62,7 @@
 	<FadeInSection>
 		<section
 			id="contact"
-			class="pt-16 sm:pt-24 lg:pt-32 border-t border-gray-100"
+			class="pt-16 sm:pt-24 lg:pt-32 border-t border-border"
 		>
 			<ContactSection />
 		</section>

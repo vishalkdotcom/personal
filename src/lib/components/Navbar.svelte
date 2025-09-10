@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
 	import Logo from './Logo.svelte';
 	import NavItem from './NavItem.svelte';
 
@@ -44,7 +43,7 @@
 	});
 </script>
 
-<header class="sticky top-0 z-10 backdrop-blur-sm bg-white/80">
+<header class="sticky top-0 z-10 backdrop-blur-sm bg-background/80">
 	<div class="container flex h-16 items-center justify-between sm:h-20">
 		<a href="/" aria-label="Home" on:click={() => handleNavClick("/")}>
 			<Logo />
