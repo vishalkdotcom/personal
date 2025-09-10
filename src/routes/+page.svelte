@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
 	import FadeInSection from '$lib/components/FadeInSection.svelte';
 	import Intro from '$lib/components/home/Intro.svelte';
 	import SocialLinks from '$lib/components/home/SocialLinks.svelte';
@@ -8,7 +8,12 @@
 	import WorkSection from '$lib/components/home/WorkSection.svelte';
 	import ContactSection from '$lib/components/home/ContactSection.svelte';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+		form: ActionData;
+	}
+
+	let { data, form }: Props = $props();
 </script>
 
 <svelte:head>
@@ -64,7 +69,7 @@
 			id="contact"
 			class="pt-16 sm:pt-24 lg:pt-32 border-t border-border"
 		>
-			<ContactSection />
+			<ContactSection {form} />
 		</section>
 	</FadeInSection>
 </article>
