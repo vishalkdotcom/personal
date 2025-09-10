@@ -9,6 +9,8 @@
 		value?: string;
 		rows?: number;
 		class?: string;
+		disabled?: boolean;
+		readonly?: boolean;
 	}
 
 	let {
@@ -19,6 +21,8 @@
 		value = '',
 		rows = 3,
 		class: className,
+		disabled = false,
+		readonly = false,
 		...restProps
 	}: Props = $props();
 
@@ -35,6 +39,8 @@
 	{name}
 	{id}
 	{rows}
+	{disabled}
+	{readonly}
 	bind:value
 	{...restProps}
 ></textarea>

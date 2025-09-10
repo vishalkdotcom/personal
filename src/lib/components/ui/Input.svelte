@@ -9,7 +9,8 @@
 		id?: string;
 		value?: string;
 		class?: string;
-		bind?: any;
+		disabled?: boolean;
+		readonly?: boolean;
 	}
 
 	let {
@@ -20,6 +21,8 @@
 		id,
 		value = '',
 		class: className,
+		disabled = false,
+		readonly = false,
 		...restProps
 	}: Props = $props();
 
@@ -36,6 +39,8 @@
 	{required}
 	{name}
 	{id}
+	{disabled}
+	{readonly}
 	bind:value
 	{...restProps}
 />

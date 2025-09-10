@@ -1,13 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import { z } from 'zod';
-import nodemailer from 'nodemailer';
 import type { Actions } from './$types';
-
-const contactSchema = z.object({
-	name: z.string().min(1, 'Name is required'),
-	email: z.string().email('Invalid email address'),
-	message: z.string().min(1, 'Message is required')
-});
+import { contactSchema, sendContactEmail, EmailError } from '$lib/email';
 
 export const actions: Actions = {
 	contact: async ({ request }) => {
@@ -20,35 +14,8 @@ export const actions: Actions = {
 
 		try {
 			const validatedData = contactSchema.parse(data);
-
-			const transporter = nodemailer.createTransporter({
-				host: 'smtp.zoho.com',
-				port: 465,
-				secure: true,
-				auth: {
-					user: process.env.ZOHO_EMAIL,
-					pass: process.env.ZOHO_PASSWORD
-				}
-			});
-
-			const mailOptions = {
-				from: process.env.ZOHO_EMAIL,
-				to: process.env.ZOHO_EMAIL,
-				subject: `New Contact Form Submission from ${validatedData.name}`,
-				text: `
-					Name: ${validatedData.name}
-					Email: ${validatedData.email}
-					Message: ${validatedData.message}
-				`,
-				replyTo: validatedData.email
-			};
-
-			await transporter.sendMail(mailOptions);
-
-			return {
-				success: true,
-				message: 'Message sent successfully!'
-			};
+			const result = await sendContactEmail(validatedData);
+			return result;
 		} catch (error) {
 			console.error('Error processing form:', error);
 
@@ -57,6 +24,29 @@ export const actions: Actions = {
 					error: true,
 					message: 'Invalid form data',
 					issues: error.flatten().fieldErrors
+				});
+			}
+
+			if (error instanceof EmailError) {
+				let message = 'Failed to send email. Please try again or contact me directly.';
+				
+				switch (error.code) {
+					case 'CONFIG_ERROR':
+						message = 'Email service is temporarily unavailable. Please contact me directly.';
+						break;
+					case 'EAUTH':
+						message = 'Email service authentication failed. Please contact me directly.';
+						break;
+					case 'ENOTFOUND':
+					case 'ECONNECTION':
+					case 'ETIMEDOUT':
+						message = 'Email service is currently unavailable. Please try again later or contact me directly.';
+						break;
+				}
+
+				return fail(500, {
+					error: true,
+					message
 				});
 			}
 
