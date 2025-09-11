@@ -8,12 +8,11 @@ const config = {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({
-      // Cloudflare Pages configuration
-      pages: "build",
-      assets: "build",
-      fallback: undefined,
-      precompress: false,
-      strict: true
+      // Cloudflare Workers configuration for static assets
+      routes: {
+        include: ['/*'],
+        exclude: ['<all>']
+      }
     })
   }
 };
