@@ -1,0 +1,7 @@
+{
+  "name": "vk-portfolio",
+  "compatibility_date": "2025-09-11",
+  "assets": {
+    "directory": "./build"
+  }
+}
