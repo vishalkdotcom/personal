@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Resend } from "resend";
 
 export const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -7,14 +8,6 @@ export const contactSchema = z.object({
 });
 
 export type ContactData = z.infer<typeof contactSchema>;
-
-export interface EmailConfig {
-  host: string;
-  port: number;
-  secure: boolean;
-  user: string;
-  password: string;
-}
 
 export class EmailError extends Error {
   constructor(
@@ -64,64 +57,49 @@ export function createContactEmailOptions(
     from: fromEmail,
     to: toEmail,
     subject: `New Contact Form Submission from ${sanitizedData.name}`,
+    html: `
+      <h3>New Contact Form Submission</h3>
+      <p><strong>Name:</strong> ${sanitizedData.name}</p>
+      <p><strong>Email:</strong> ${sanitizedData.email}</p>
+      <p><strong>Message:</strong></p>
+      <p>${sanitizedData.message.replace(/\n/g, '<br>')}</p>
+      <hr>
+      <p><em>Sent from: vishalk.com contact form</em></p>
+    `,
     text: `Name: ${sanitizedData.name}
 Email: ${sanitizedData.email}
 Message: ${sanitizedData.message}
 
 Sent from: vishalk.com contact form`,
-    reply: sanitizedData.email,
-    replyTo: sanitizedData.email,
+    reply_to: sanitizedData.email,
   };
 }
 
 export async function sendContactEmail(
   contactData: ContactData,
 ): Promise<{ success: true; message: string }> {
-  const config: EmailConfig = {
-    host: "smtp.zoho.com",
-    port: 465,
-    secure: true,
-    user: process.env.ZOHO_EMAIL!,
-    password: process.env.ZOHO_PASSWORD!,
-  };
-
   // Validate environment variables
-  if (!config.user || !config.password) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.FROM_EMAIL || "hello@vishalk.com";
+  const toEmail = process.env.TO_EMAIL || "hello@vishalk.com";
+
+  if (!resendApiKey) {
     throw new EmailError("CONFIG_ERROR", "Email configuration is missing");
   }
 
   try {
+    const resend = new Resend(resendApiKey);
+    
     const mailOptions = createContactEmailOptions(
       contactData,
-      config.user,
-      config.user,
+      fromEmail,
+      toEmail,
     );
 
-    if (process.env.NODE_ENV === "development") {
-      const nodemailer = await import("nodemailer");
-      const transporter = nodemailer.createTransport({
-        host: config.host,
-        port: config.port,
-        secure: config.secure,
-        auth: {
-          user: config.user,
-          pass: config.password,
-        },
-      });
-      await transporter.sendMail(mailOptions);
-    } else {
-      const { WorkerMailer } = await import("worker-mailer");
-      const mailer = await WorkerMailer.connect({
-        credentials: {
-          username: config.user,
-          password: config.password,
-        },
-        authType: "plain",
-        host: config.host,
-        port: config.port,
-        secure: config.secure,
-      });
-      await mailer.send(mailOptions);
+    const result = await resend.emails.send(mailOptions);
+
+    if (result.error) {
+      throw new EmailError("RESEND_ERROR", result.error.message, result.error);
     }
 
     return {
@@ -137,15 +115,15 @@ export async function sendContactEmail(
       timestamp: new Date().toISOString(),
     });
 
-    // Handle specific nodemailer errors
-    if (error.code === "EAUTH") {
-      throw new EmailError("EAUTH", "Email authentication failed");
-    } else if (error.code === "ENOTFOUND") {
-      throw new EmailError("ENOTFOUND", "Email server not found");
-    } else if (error.code === "ECONNECTION") {
-      throw new EmailError("ECONNECTION", "Failed to connect to email server");
-    } else if (error.code === "ETIMEDOUT") {
-      throw new EmailError("ETIMEDOUT", "Email server connection timeout");
+    // Handle specific Resend errors
+    if (error.code === "CONFIG_ERROR") {
+      throw error; // Re-throw config errors as-is
+    } else if (error.message?.includes("API key")) {
+      throw new EmailError("RESEND_AUTH", "Email authentication failed");
+    } else if (error.message?.includes("rate limit")) {
+      throw new EmailError("RATE_LIMIT", "Too many emails sent. Please try again later.");
+    } else if (error.message?.includes("domain")) {
+      throw new EmailError("DOMAIN_ERROR", "Email domain configuration error");
     } else {
       throw new EmailError("UNKNOWN", "Failed to send email", error);
     }
