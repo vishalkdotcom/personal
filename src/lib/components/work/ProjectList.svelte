@@ -130,7 +130,7 @@
 	<!-- Modal Dialog -->
 	<dialog
 		bind:this={modalDialog}
-		class="max-w-4xl max-h-[90vh] w-full bg-background border rounded-lg shadow-xl backdrop:bg-black backdrop:bg-opacity-50 p-0 overflow-hidden"
+		class="max-w-4xl max-h-[90vh] w-full bg-background border rounded-lg shadow-xl backdrop:bg-black/30 backdrop:backdrop-blur-sm p-0 overflow-hidden m-auto"
 		on:click={handleModalClick}
 	>
 		{#if currentProject && openImageOptions}

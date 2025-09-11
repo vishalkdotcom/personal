@@ -3,9 +3,10 @@
 		href: string;
 		active: boolean;
 		onClick?: () => void;
+		children: import('svelte').Snippet;
 	}
 
-	let { href, active, onClick }: Props = $props();
+	let { href, active, onClick, children }: Props = $props();
 </script>
 
 <a
@@ -15,7 +16,7 @@
 			? "text-foreground font-medium"
 			: "text-muted-foreground hover:text-foreground"
 	}`}
-	on:click={onClick}
+	onclick={onClick}
 >
-	<slot />
+	{@render children()}
 </a>

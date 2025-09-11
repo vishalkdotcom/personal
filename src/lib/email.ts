@@ -25,7 +25,7 @@ export class EmailError extends Error {
 }
 
 export function createTransporter(config: EmailConfig) {
-	return nodemailer.createTransporter({
+	return nodemailer.createTransport({
 		host: config.host,
 		port: config.port,
 		secure: config.secure,
@@ -88,9 +88,9 @@ export async function sendContactEmail(contactData: ContactData): Promise<{ succ
 	try {
 		const transporter = createTransporter(config);
 		const mailOptions = createContactEmailOptions(contactData, config.user, config.user);
-		
+
 		await transporter.sendMail(mailOptions);
-		
+
 		return {
 			success: true,
 			message: 'Message sent successfully!'
@@ -102,7 +102,7 @@ export async function sendContactEmail(contactData: ContactData): Promise<{ succ
 			message: error.message,
 			timestamp: new Date().toISOString()
 		});
-		
+
 		// Handle specific nodemailer errors
 		if (error.code === 'EAUTH') {
 			throw new EmailError('EAUTH', 'Email authentication failed');

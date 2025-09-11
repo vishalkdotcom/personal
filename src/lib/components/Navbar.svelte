@@ -45,7 +45,7 @@
 
 <header class="sticky top-0 z-10 backdrop-blur-sm bg-background/80">
 	<div class="container flex h-16 items-center justify-between sm:h-20">
-		<a href="/" aria-label="Home" on:click={() => handleNavClick("/")}>
+		<a href="/" aria-label="Home" onclick={() => handleNavClick("/")}>
 			<Logo />
 		</a>
 		<nav class="flex items-baseline justify-end gap-x-6 sm:gap-x-8">

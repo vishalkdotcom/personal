@@ -8,8 +8,14 @@
 	import { onMount } from 'svelte';
 	import OptimizedImage from '$lib/components/ui/OptimizedImage.svelte';
 
+	type Picture = {
+		src: string;
+		sources?: { srcset: string; type: string }[];
+		img: { src: string; w: number; h: number };
+	};
+
 	export let currentIndex: number = 0;
-	export let images: string[];
+	export let images: (string | Picture)[];
 	export let onImageClick: ((index: number) => void) | undefined = undefined;
 	export let title: string;
 
@@ -60,8 +66,7 @@
 </script>
 
 <div
-	class="relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-	tabindex="0"
+	class="relative group"
 	on:keydown={handleKeyDown}
 	{...$$restProps}
 >
@@ -76,7 +81,7 @@
 				<div class="carousel-item flex-none w-full sm:w-1/2 lg:w-1/3 snap-start">
 					<div class="bg-card border rounded-lg overflow-hidden shadow-sm">
 						<button
-							class="w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 block"
+							class="w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 block cursor-pointer hover:opacity-90 transition-opacity"
 							on:click={() => handleImageClick(index)}
 							aria-label="View larger image {index + 1} of project {title}"
 						>

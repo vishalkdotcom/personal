@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	interface Props {
+		children: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 	let isVisible = $state(false);
 	let domRef: HTMLDivElement;
 
@@ -25,5 +30,5 @@
 	bind:this={domRef}
 	class={`section-fade-in ${isVisible ? "visible" : ""}`}
 >
-	<slot />
+	{@render children()}
 </div>

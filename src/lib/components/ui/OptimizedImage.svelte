@@ -1,54 +1,51 @@
 <script lang="ts">
-	interface Props {
+	type Picture = {
 		src: string;
+		sources?: { srcset: string; type: string }[];
+		img: { src: string; w: number; h: number };
+	};
+
+	interface Props {
+		src: string | Picture; // Can be enhanced image module or string path
 		alt: string;
-		width?: number;
-		height?: number;
+		width?: number | string;
+		height?: number | string;
 		class?: string;
 		loading?: 'lazy' | 'eager';
+		sizes?: string;
 	}
 
-	let { src, alt, width, height, class: className = '', loading = 'lazy' }: Props = $props();
+	let { 
+		src, 
+		alt, 
+		width, 
+		height, 
+		class: className = '', 
+		loading = 'lazy',
+		sizes = '(max-width: 640px) 400px, (max-width: 1024px) 800px, (max-width: 1440px) 1200px, 1600px'
+	}: Props = $props();
 
-	// Extract filename without extension for optimized versions
-	const filename = src.split('/').pop()?.split('.')[0] || '';
-	const optimizedBase = `/images/optimized/${filename}`;
-
-	// Generate srcset for different sizes and formats
-	const sizes = [400, 800, 1200, 1600];
-	
-	function generateSrcSet(format: string): string {
-		return sizes
-			.map(size => `${optimizedBase}-${size}.${format} ${size}w`)
-			.join(', ');
-	}
+	// Check if this is an enhanced image module (object) or a string path
+	const isEnhancedImage = typeof src === 'object' && src !== null;
 </script>
 
-<picture class={className}>
-	<!-- Modern formats for better compression -->
-	<source 
-		srcset={generateSrcSet('avif')} 
-		type="image/avif" 
-		sizes="(max-width: 640px) 400px, (max-width: 1024px) 800px, (max-width: 1440px) 1200px, 1600px"
+{#if isEnhancedImage}
+	<!-- Use enhanced:img for optimized image modules -->
+	<enhanced:img 
+		{src} 
+		{alt} 
+		{loading}
+		sizes={sizes}
+		class={`w-full h-auto ${className}`}
 	/>
-	<source 
-		srcset={generateSrcSet('webp')} 
-		type="image/webp" 
-		sizes="(max-width: 640px) 400px, (max-width: 1024px) 800px, (max-width: 1440px) 1200px, 1600px"
-	/>
-	<source 
-		srcset={generateSrcSet('jpeg')} 
-		type="image/jpeg" 
-		sizes="(max-width: 640px) 400px, (max-width: 1024px) 800px, (max-width: 1440px) 1200px, 1600px"
-	/>
-	
-	<!-- Fallback image -->
+{:else}
+	<!-- Use regular img for string paths -->
 	<img 
 		{src} 
 		{alt} 
 		{width} 
 		{height} 
 		{loading}
-		class="w-full h-auto"
+		class={`w-full h-auto ${className}`}
 	/>
-</picture>
+{/if}

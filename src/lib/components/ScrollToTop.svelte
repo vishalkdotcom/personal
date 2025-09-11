@@ -19,7 +19,7 @@
 
 {#if isVisible}
 	<button
-		on:click={scrollToTop}
+		onclick={scrollToTop}
 		class="fixed bottom-4 right-4 rounded-full p-2 bg-foreground text-background hover:bg-foreground/90 transition-colors"
 		aria-label="Scroll to top"
 	>

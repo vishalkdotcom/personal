@@ -1,10 +1,20 @@
 // Migrated from Next.js data/projects.ts
 
+type Picture = {
+	src: string;
+	sources?: { srcset: string; type: string }[];
+	img: { src: string; w: number; h: number };
+};
+
+type EnhancedImageModule = {
+	default: Picture;
+};
+
 export type ProjectInfo = {
 	title: string;
 	description: string;
 	link?: string;
-	images: string[];
+	images: Picture[];
 };
 
 type RawProjectInfo = {
@@ -16,6 +26,17 @@ type RawProjectInfo = {
 		count: number;
 	};
 };
+
+// Import all project images with enhanced optimization
+const imageModules = import.meta.glob(
+	'/src/images/projects/*.{avif,gif,heif,jpeg,jpg,png,tiff,webp,svg}',
+	{
+		eager: true,
+		query: {
+			enhanced: true
+		}
+	}
+);
 
 const rawProjectData: RawProjectInfo[] = [
 	{
@@ -123,8 +144,10 @@ function createProjects(data: RawProjectInfo[]): ProjectInfo[] {
 	}));
 }
 
-function createImagePath(prefix: string, count: number): string[] {
-	return Array.from({ length: count }).map(
-		(_, index) => `/images/projects/${prefix}-${index + 1}.png`
-	);
+function createImagePath(prefix: string, count: number): Picture[] {
+	return Array.from({ length: count }).map((_, index) => {
+		const imagePath = `/src/images/projects/${prefix}-${index + 1}.png`;
+		const module = imageModules[imagePath] as EnhancedImageModule | undefined;
+		return module?.default;
+	}).filter((img): img is Picture => img !== undefined);
 }
