@@ -8,6 +8,7 @@
         "clsx": "^2.1.1",
         "nodemailer": "^7.0.6",
         "tailwind-merge": "^3.3.1",
+        "worker-mailer": "^1.1.5",
         "zod": "^4.1.7",
       },
       "devDependencies": {
@@ -931,6 +932,8 @@
     "which": ["which@2.0.2", "", { "dependencies": { "isexe": "^2.0.0" }, "bin": { "node-which": "./bin/node-which" } }, "sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA=="],
 
     "word-wrap": ["word-wrap@1.2.5", "", {}, "sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA=="],
+
+    "worker-mailer": ["worker-mailer@1.1.5", "", {}, "sha512-Yq+LiQ25CHjdQakO3IE/srzYFS94XVQH9e0z30y/NoPyw6vLiLacYDPOBDD9CLpEMhy6vTgLQbsJzFBt9/7E2w=="],
 
     "workerd": ["workerd@1.20250906.0", "", { "optionalDependencies": { "@cloudflare/workerd-darwin-64": "1.20250906.0", "@cloudflare/workerd-darwin-arm64": "1.20250906.0", "@cloudflare/workerd-linux-64": "1.20250906.0", "@cloudflare/workerd-linux-arm64": "1.20250906.0", "@cloudflare/workerd-windows-64": "1.20250906.0" }, "bin": { "workerd": "bin/workerd" } }, "sha512-ryVyEaqXPPsr/AxccRmYZZmDAkfQVjhfRqrNTlEeN8aftBk6Ca1u7/VqmfOayjCXrA+O547TauebU+J3IpvFXw=="],
 

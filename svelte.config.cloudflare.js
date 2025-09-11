@@ -8,14 +8,20 @@ const config = {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({
-      // Cloudflare Pages configuration
-      pages: "build",
-      assets: "build",
-      fallback: undefined,
-      precompress: false,
-      strict: true
-    })
-  }
+      // See below for an explanation of these options
+      config: undefined,
+      platformProxy: {
+        configPath: undefined,
+        environment: undefined,
+        persist: undefined,
+      },
+      fallback: "plaintext",
+      routes: {
+        include: ["/*"],
+        exclude: ["<all>"],
+      },
+    }),
+  },
 };
 
 export default config;
