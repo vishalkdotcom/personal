@@ -6,3 +6,14 @@ main = ".svelte-kit/cloudflare/_worker.js"
 [assets]
 binding = "ASSETS"
 directory = ".svelte-kit/cloudflare"
+
+[observability.logs]
+enabled = true
+
+[[routes]]
+pattern = "vishalk.com"
+custom_domain = true
+
+[[routes]]
+pattern = "www.vishalk.com"
+custom_domain = true
