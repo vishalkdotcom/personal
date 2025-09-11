@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:cloudflare": "SVELTE_CONFIG=svelte.config.cloudflare.js vite build",
-    "build:vercel": "SVELTE_CONFIG=svelte.config.vercel.js vite build",
+    "build:cloudflare": "cp svelte.config.cloudflare.js svelte.config.js && vite build",
+    "build:vercel": "cp svelte.config.vercel.js svelte.config.js && vite build",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

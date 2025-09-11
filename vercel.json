@@ -1,5 +1,6 @@
 {
-  "buildCommand": "bun run build:vercel",
+  "buildCommand": "cp svelte.config.vercel.js svelte.config.js && bun run build",
   "framework": "sveltekit",
-  "installCommand": "bun install"
+  "installCommand": "bun install",
+  "outputDirectory": ".svelte-kit/output/client"
 }
