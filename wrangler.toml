@@ -1,0 +1,6 @@
+name = "personal"
+compatibility_date = "2025-09-11"
+compatibility_flags = ["nodejs_compat_v2"]
+
+[assets]
+directory = "./build"
