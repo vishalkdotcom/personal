@@ -46,7 +46,7 @@
     "@sveltejs/enhanced-img": "^0.8.1",
     "clsx": "^2.1.1",
     "nodemailer": "^7.0.6",
-    "resend": "^6.0.3",
+    "resend": "https://pkg.pr.new/resend/resend-node/resend@620",
     "tailwind-merge": "^3.3.1",
     "worker-mailer": "^1.1.5",
     "zod": "^4.1.7"
