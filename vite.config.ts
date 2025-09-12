@@ -6,4 +6,9 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [enhancedImages(), tailwindcss(), sveltekit(), devtoolsJson()],
+  build: {
+    rollupOptions: {
+      external: ["@react-email/render"],
+    },
+  },
 });
