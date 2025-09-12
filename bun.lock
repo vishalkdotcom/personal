@@ -6,8 +6,8 @@
       "dependencies": {
         "@sveltejs/enhanced-img": "^0.8.1",
         "clsx": "^2.1.1",
+        "resend": "https://pkg.pr.new/resend/resend-node/resend@620",
         "nodemailer": "^7.0.6",
-        "resend": "^6.0.3",
         "tailwind-merge": "^3.3.1",
         "worker-mailer": "^1.1.5",
         "zod": "^4.1.7",
@@ -826,7 +826,7 @@
 
     "regexparam": ["regexparam@3.0.0", "", {}, "sha512-RSYAtP31mvYLkAHrOlh25pCNQ5hWnT106VukGaaFfuJrZFkGRX5GhUAdPqpSDXxOhA2c4akmRuplv1mRqnBn6Q=="],
 
-    "resend": ["resend@6.0.3", "", { "peerDependencies": { "@react-email/render": "^1.1.0" }, "optionalPeers": ["@react-email/render"] }, "sha512-Yb7o2n52v91LjkUjq5vIZQbJrGiaPoMo2VPAyS0QTKA73tmvHMUQ7P1M56J1ux/Cw9Lf68PeaKidTl6GuS8DTA=="],
+    "resend": ["resend@https://pkg.pr.new/resend/resend-node/resend@620", { "peerDependencies": { "@react-email/render": "^1.1.0" }, "optionalPeers": ["@react-email/render"] }],
 
     "resolve-from": ["resolve-from@5.0.0", "", {}, "sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw=="],
 

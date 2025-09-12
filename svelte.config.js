@@ -22,13 +22,6 @@ const config = {
       },
     }),
   },
-  vite: {
-    build: {
-      rollupOptions: {
-        external: ["@react-email/render"],
-      },
-    },
-  },
 };
 
 export default config;
