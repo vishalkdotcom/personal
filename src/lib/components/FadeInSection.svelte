@@ -10,18 +10,29 @@
 	let domRef: HTMLDivElement;
 
 	onMount(() => {
-		const observer = new IntersectionObserver((entries) => {
-			entries.forEach((entry) => isVisible = entry.isIntersecting);
-		});
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						isVisible = true;
+						// Disconnect observer after first intersection for performance
+						observer.unobserve(entry.target);
+					}
+				});
+			},
+			{
+				// Only trigger once when element becomes visible
+				threshold: 0.1,
+				rootMargin: '50px 0px -50px 0px'
+			}
+		);
 
 		if (domRef) {
 			observer.observe(domRef);
 		}
 
 		return () => {
-			if (domRef) {
-				observer.unobserve(domRef);
-			}
+			observer.disconnect();
 		};
 	});
 </script>
