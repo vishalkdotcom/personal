@@ -12,7 +12,7 @@
 		height?: number | string;
 		class?: string;
 		loading?: 'lazy' | 'eager';
-		sizes?: string;
+		sizes?: string; // Optional with sensible default
 	}
 
 	let { 
@@ -22,7 +22,7 @@
 		height, 
 		class: className = '', 
 		loading = 'lazy',
-		sizes = '(max-width: 640px) 400px, (max-width: 1024px) 800px, (max-width: 1440px) 1200px, 1600px'
+		sizes = '100vw' // Default to full viewport width
 	}: Props = $props();
 
 	// Check if this is an enhanced image module (object) or a string path
@@ -46,6 +46,7 @@
 		{width} 
 		{height} 
 		{loading}
+		{sizes}
 		class={`w-full h-auto ${className}`}
 	/>
 {/if}

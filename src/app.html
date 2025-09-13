@@ -3,8 +3,21 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- DNS prefetch for external resources -->
+		<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+		<link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+		<link rel="dns-prefetch" href="https://api.resend.com" />
+		
+		<!-- Preconnect for critical external resources -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="preconnect" href="https://api.resend.com" crossorigin />
+		
+		<!-- Preload critical static resources -->
+		<link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
+		<link rel="preload" href="/og.png" as="image" type="image/png" />
+		
+		<!-- Font loading with swap display for better reliability -->
 		<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sulphur+Point:wght@400;700&display=swap" rel="stylesheet" />
 		%sveltekit.head%
 	</head>
