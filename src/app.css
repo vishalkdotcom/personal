@@ -100,16 +100,12 @@ html {
   transform: translate3d(0, 20px, 0); /* Use translate3d for hardware acceleration */
   transition: opacity 0.5s ease-out, transform 0.5s ease-out;
   /* CSS containment for performance isolation */
-  contain: layout style;
-  /* Will-change hint for animated properties (used sparingly) */
-  will-change: opacity, transform;
+  contain: layout style paint;
 }
 
 .section-fade-in.visible {
   opacity: 1;
   transform: translate3d(0, 0, 0); /* Use translate3d for hardware acceleration */
-  /* Remove will-change after animation completes */
-  will-change: auto;
 }
 
 @keyframes accordion-down {
