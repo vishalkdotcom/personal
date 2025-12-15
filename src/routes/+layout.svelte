@@ -4,10 +4,10 @@
   import ScrollToTop from "$lib/components/ScrollToTop.svelte";
   import TailwindIndicator from "$lib/components/TailwindIndicator.svelte";
   import GoogleAnalytics from "$lib/components/GoogleAnalytics.svelte";
-  import { PUBLIC_GOOGLE_ANALYTICS_ID } from "$env/static/public";
+  import { env } from "$env/dynamic/public";
 </script>
 
-<GoogleAnalytics gaId={PUBLIC_GOOGLE_ANALYTICS_ID} />
+<GoogleAnalytics gaId={env.PUBLIC_GOOGLE_ANALYTICS_ID} />
 
 <svelte:head>
   <link rel="canonical" href="https://vishalk.com" />
