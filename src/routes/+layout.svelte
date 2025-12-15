@@ -3,7 +3,11 @@
   import Navbar from "$lib/components/Navbar.svelte";
   import ScrollToTop from "$lib/components/ScrollToTop.svelte";
   import TailwindIndicator from "$lib/components/TailwindIndicator.svelte";
+  import GoogleAnalytics from "$lib/components/GoogleAnalytics.svelte";
+  import { PUBLIC_GOOGLE_ANALYTICS_ID } from "$env/static/public";
 </script>
+
+<GoogleAnalytics gaId={PUBLIC_GOOGLE_ANALYTICS_ID} />
 
 <svelte:head>
   <link rel="canonical" href="https://vishalk.com" />
