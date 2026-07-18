@@ -70,7 +70,9 @@ Filenames: kebab-case matching the H1 slug. One note per file.
 
 1. Fetch the Spec with `get_note` (user may pass path/title).
 2. After the user approves the breakdown, publish **one Issue note per ticket**, blockers first.
-3. Each Issue:
+3. **Number every ticket in the H1** (required for multi-ticket sets from one Spec): zero-padded `01`–`NN`, em dash, then the short title — e.g. `# 03 — Ship desktop Triptych Dock with left Option A`. Use the same numbered titles in `blocked_by` wikilinks and the body **Blocked by** section so the set stays scannable in search and the note list. Single standalone Issues from `/triage` do not need a number.
+4. Prefer filenames that sort with the set: `03-ship-desktop-triptych-dock-left-chrome.md` (number prefix + kebab slug).
+5. Each Issue:
 
 ```yaml
 ---
@@ -79,10 +81,10 @@ status: ready-for-agent
 belongs_to: "[[vishalk-com]]"
 part_of: "[[spec-filename]]"
 blocked_by:
-  - "[[blocking-issue-filename]]"
+  - "[[01 — Capture SvelteKit production performance baseline]]"
 ---
 
-# Ticket title
+# 02 — Scaffold Solid 2 App Shell with Mode routes and FOUC-safe theme
 
 ## Parent
 
@@ -98,12 +100,13 @@ blocked_by:
 
 ## Blocked by
 
-- [[blocking-issue-filename]]
+- [[01 — Capture SvelteKit production performance baseline]]
 ```
 
-4. Unblocked tickets: omit `blocked_by` or leave it empty; body says "None — can start immediately".
-5. Do **not** write a repo-root `tickets.md`. Do **not** close or rewrite the Spec.
-6. `open_note` on the first unblocked Issue (optional: refresh views).
+6. Unblocked tickets: omit `blocked_by` or leave it empty; body says "None — can start immediately".
+7. Do **not** write a repo-root `tickets.md`. Do **not** close or rewrite the Spec.
+8. Before finishing, verify every Issue in the set has a unique `NN —` H1 prefix matching the approved order; fix any unnumbered titles in the same pass.
+9. `open_note` on the first unblocked Issue (optional: refresh views).
 
 ### `/triage` (incoming / unsolicited work)
 
