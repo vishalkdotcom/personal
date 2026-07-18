@@ -1,38 +1,44 @@
-# sv
+# vishalk.com
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+SolidJS 2 CSR App Shell portfolio for [vishalk.com](https://vishalk.com). Desktop Triptych Dock over Work, About, Resume, and Contact Modes. Glossary: [`CONTEXT.md`](./CONTEXT.md).
 
-## Creating a project
+## Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+- SolidJS 2 + Vite + `vite-plugin-solid`
+- `@solidjs/router` + `@solidjs/meta`
+- Cloudflare Pages (`dist/`)
 
-```sh
-# create a new project in the current directory
-npx sv create
+Solid package versions are pinned to exact betas in `package.json`.
 
-# create a new project in my-app
-npx sv create my-app
+## Setup
+
+```bash
+bun install
+bun dev
 ```
 
-## Developing
+## Scripts
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+| Command | Purpose |
+| --- | --- |
+| `bun dev` | Vite dev server |
+| `bun run build` | Production build → `dist/` |
+| `bun preview` | Preview the production build |
+| `bun check` | TypeScript (`tsc --noEmit`) |
+| `bun test` | Vitest (App Shell seams) |
 
-```sh
-npm run dev
+## Deploy
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+Cloudflare Pages:
 
-## Building
+- Build command: `bun run build`
+- Output directory: `dist`
+- Config: `wrangler.toml` (`pages_build_output_dir = "dist"`)
 
-To create a production version of your app:
+Deep links rely on Pages’ default SPA fallback (no top-level `404.html`).
 
-```sh
-npm run build
-```
+## Agent / product docs
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- Domain glossary: `CONTEXT.md`
+- Issue tracker: Tolaria vault `pro` — see `docs/agents/issue-tracker.md`
+- Spec: SolidJS 2 App Shell portfolio rewrite (Tolaria)

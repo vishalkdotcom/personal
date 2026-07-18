@@ -4,78 +4,75 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a SvelteKit portfolio website for vishalk.com. It's a single-page application built with TypeScript, Svelte 5, and Tailwind CSS.
+Personal portfolio for [vishalk.com](https://vishalk.com): a SolidJS 2 CSR **App Shell** (Triptych Dock over Work, About, Resume, and Contact). Domain terms live in root `CONTEXT.md`.
 
 ## Development Commands
 
 ```bash
-# Install dependencies (using Bun)
+# Install dependencies (Bun)
 bun install
 
-# Run development server
+# Dev server
 bun dev
 
-# Build for production
-bun build
+# Production build → dist/
+bun run build
 
-# Preview production build locally
+# Preview production build
 bun preview
 
-# Linting
-bun lint
+# Typecheck
+bun check
 
-# Format code
-bun format  # Write formatting changes
+# Unit / seam tests
+bun test
+bun test:watch
 
-# Type checking
-bun check  # Run Svelte type checking
-bun check:watch  # Watch mode for type checking
+# SvelteKit production perf baseline (cutover gate artifact; do not re-measure casually)
+bun run perf:baseline
+bun run perf:baseline:test
 ```
 
 ## Architecture
 
 ### Project Structure
-- **`src/routes/`**: SvelteKit file-based routing with special files:
-  - `+page.svelte`: Page components
-  - `+layout.svelte`: Layout components  
-  - `+page.server.ts`: Server-side logic and actions
-  - `+page.ts`/`+layout.ts`: Load functions
-- **`src/lib/components/`**: Svelte components organized by feature
-  - `home/`: Homepage sections (Intro, Expertise, WorkSection, ContactSection)
-  - `work/`: Work/project showcase components
-  - `ui/`: Custom UI components (Button, Input, Textarea, etc.)
-- **`src/lib/data/`**: Static data (projects.ts contains portfolio projects)
-- **`src/lib/`**: Utility functions and shared logic
-- **`static/images/projects/`**: Project screenshot images
-- **`scripts/`**: Build-time scripts (image optimization)
+- **`index.html`**: CSR entry + FOUC-safe theme blocking script (`vk-theme`)
+- **`src/main.tsx`**: Mounts `@solidjs/web` `render` + `@solidjs/router`
+- **`src/app.tsx`**: Mode URL grammar and App Shell root
+- **`src/shell/`**: App Shell chrome (brand row today; Triptych Dock next)
+- **`src/stages/`**: Center-stage surfaces (stubs until Mode/Work tickets land)
+- **`src/theme/`**: System / Light / Dark preference + brand-row control
+- **`static/`**: Public assets copied into `dist/`
+- **`scripts/perf/`**: Lighthouse baseline capture for cutover comparison
+- **`docs/perf/`**: Stored SvelteKit production baseline artifacts
+- **`.scratch/`**: Wayfinder research / prototypes (not the issue tracker)
 
-### Key Technologies & Patterns
-- **Build System**: Vite with SvelteKit optimizations
-- **Styling**: Tailwind CSS with custom animations and responsive design
-- **Forms**: Native SvelteKit forms with Zod validation and server actions
-- **UI Components**: Custom Svelte UI components
-- **Icons**: Phosphor Icons and Simple Icons
-- **Email**: Nodemailer with Zoho SMTP (requires ZOHO_EMAIL and ZOHO_PASSWORD env vars)
-- **Path Aliases**: Uses `$lib/*` for SvelteKit library imports
-- **Deployment**: Cloudflare Pages with @sveltejs/adapter-cloudflare
-- **Image Optimization**: Concurrent Sharp-based processing with smart caching
+### Stack
+- **UI**: SolidJS 2 (`solid-js` / `@solidjs/web` exact betas), `@solidjs/router`, `@solidjs/meta`
+- **Build**: Vite + `vite-plugin-solid` (exact beta); `resolve.dedupe` for Solid packages
+- **Language**: TypeScript strict; `jsxImportSource: "@solidjs/web"`
+- **Deploy**: Cloudflare Pages static `dist/` (`wrangler.toml` `pages_build_output_dir`)
+- **Contact (later)**: Pages Function `POST /api/contact` → Resend — not in the scaffold yet
 
-### Component Architecture
-- Homepage sections implemented as Svelte components
-- Uses FadeInSection Svelte component for scroll animations
-- Work section uses tabs with carousel for project showcases
-- Contact form uses SvelteKit actions for server-side processing
+### URL grammar (Modes)
+| Path | Surface |
+| --- | --- |
+| `/` | Featured Public Storefront (SupplyChain+) |
+| `/about` | About Mode |
+| `/resume` | Resume Surface |
+| `/contact` | Contact Mode |
+| `/work/<folder-slug>` | Work Folder index |
+| `/work/<folder-slug>/<case-slug>` | Work Case |
 
-### SvelteKit Configuration
-- **svelte.config.js**: Configured with Cloudflare adapter and path aliases
-- **vite.config.js**: Vite configuration optimized for SvelteKit
-- **Image Processing**: Pre-build script generates optimized WebP and AVIF formats
+### Theme
+- Preference: `system` \| `light` \| `dark` in `localStorage` key `vk-theme`
+- Inline script in `index.html` sets `document.documentElement.dataset.theme` before CSS paint
+- Brand-row control cycles the preference
 
 ## TypeScript Configuration
-- Strict mode enabled
-- SvelteKit TypeScript integration with proper type checking
-- Path alias `$lib/*` configured for SvelteKit library imports
-- Svelte-specific type checking with `svelte-check`
+- Strict mode; `jsx: "preserve"`, `jsxImportSource: "@solidjs/web"`
+- Path alias `~/*` → `src/*`
+- Check with `bun check` (`tsc --noEmit`)
 
 ## Agent skills
 

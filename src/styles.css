@@ -1,0 +1,160 @@
+:root {
+  color-scheme: light dark;
+  --font-sans: "DM Sans", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+[data-theme="light"] {
+  --bg: #f4f5f6;
+  --bg-deep: #eceef0;
+  --bg-panel: #ffffff;
+  --bg-hover: #e4e7ea;
+  --bg-active: #dce0e4;
+  --border: #cfd4da;
+  --text: #1a1c1e;
+  --muted: rgba(26, 28, 30, 0.62);
+  --faint: rgba(26, 28, 30, 0.42);
+  --accent: #2563a8;
+}
+
+[data-theme="dark"] {
+  --bg: #1a1c1e;
+  --bg-deep: #111315;
+  --bg-panel: #181a1c;
+  --bg-hover: #25292d;
+  --bg-active: #2a2e32;
+  --border: #2c3035;
+  --text: #e8e6e3;
+  --muted: rgba(232, 230, 227, 0.55);
+  --faint: rgba(232, 230, 227, 0.36);
+  --accent: #6cb6ff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(220px, 260px) 1fr;
+  height: 100%;
+  background: var(--bg);
+}
+
+.app-shell__brand-rail {
+  background: var(--bg-deep);
+  border-right: 1px solid var(--border);
+  padding: 12px 8px;
+}
+
+.brand-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px 10px;
+}
+
+.brand-row__name {
+  font-weight: 650;
+  font-size: 14px;
+}
+
+.brand-row__sub {
+  font-size: 11px;
+  color: var(--faint);
+  margin-top: 3px;
+}
+
+.theme-control {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  border: 1px solid transparent;
+  flex-shrink: 0;
+}
+
+.theme-control:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.theme-control__icon {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+.theme-control__icon svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.app-shell__stage {
+  min-width: 0;
+  overflow: auto;
+  padding: 28px 36px;
+  background: var(--bg-panel);
+}
+
+.stub-stage__title {
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  margin: 0 0 8px;
+}
+
+.stub-stage__detail {
+  margin: 0;
+  color: var(--muted);
+  max-width: 52ch;
+  line-height: 1.5;
+}
+
+@media (max-width: 800px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .app-shell__brand-rail {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .app-shell__stage {
+    padding: 18px 16px;
+  }
+}
