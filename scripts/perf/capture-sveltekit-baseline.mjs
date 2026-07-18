@@ -214,12 +214,6 @@ ${baseline.matrix.map((e) => `- **${e.id}** (\`${e.lockedPath}\`): ${e.notes}`).
 ## Machine-readable
 
 See \`docs/perf/sveltekit-production-baseline.json\`.
-
-## Hard / soft gates (for ticket 18)
-
-- Hard: LCP and compressed first-load JS within ~10% of baseline (fail only if worse beyond noise)
-- Soft: CLS (fail only if clearly worse / leaves a good band)
-- Not gates: Lighthouse score, TTI, TBT, INP, field RUM
 `;
 }
 

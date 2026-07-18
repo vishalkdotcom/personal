@@ -1,6 +1,6 @@
 # SvelteKit production performance baseline
 
-Captured for [[18 — Run performance cutover gate vs baseline]] comparison.
+Captured for ticket **18 — Run performance cutover gate vs baseline**.
 Do not re-measure production SvelteKit for cutover — compare rewrite numbers to this artifact.
 
 | Field | Value |
@@ -31,9 +31,3 @@ Do not re-measure production SvelteKit for cutover — compare rewrite numbers t
 ## Machine-readable
 
 See `docs/perf/sveltekit-production-baseline.json`.
-
-## Hard / soft gates (for ticket 18)
-
-- Hard: LCP and compressed first-load JS within ~10% of baseline (fail only if worse beyond noise)
-- Soft: CLS (fail only if clearly worse / leaves a good band)
-- Not gates: Lighthouse score, TTI, TBT, INP, field RUM
