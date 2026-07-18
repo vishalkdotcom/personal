@@ -76,3 +76,17 @@ bun check:watch  # Watch mode for type checking
 - SvelteKit TypeScript integration with proper type checking
 - Path alias `$lib/*` configured for SvelteKit library imports
 - Svelte-specific type checking with `svelte-check`
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in the Tolaria vault `pro` via MCP (not GitHub Issues or `.scratch/`). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `CONTEXT.md` + `docs/adr/`. See `docs/agents/domain.md`.
