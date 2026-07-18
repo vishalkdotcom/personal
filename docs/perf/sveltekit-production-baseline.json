@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "kind": "sveltekit-production-baseline",
+  "forTicket": "18 — Run performance cutover gate vs baseline",
+  "fromTicket": "01 — Capture SvelteKit production performance baseline",
+  "capturedAt": "2026-07-18T13:46:54.406Z",
+  "baseUrl": "https://vishalk.com",
+  "tooling": "lighthouse CLI (Chrome/Edge path: C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe)",
+  "formFactor": "mobile",
+  "runsPerUrl": 3,
+  "aggregation": "median",
+  "theme": "default System→resolved (production default; measured once, no dual light/dark gate)",
+  "metrics": [
+    "lcpMs",
+    "cls",
+    "compressedJsBytes"
+  ],
+  "matrix": [
+    {
+      "id": "home",
+      "lockedPath": "/",
+      "surface": "Featured Public Storefront (`/` — SupplyChain+ on rewrite)",
+      "measuredUrl": "https://vishalk.com/",
+      "standIn": false,
+      "notes": "Current SvelteKit home is marketing About+Work+Contact, not SupplyChain+.",
+      "runs": [
+        {
+          "lcpMs": 3464.481999999999,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 88195
+        },
+        {
+          "lcpMs": 3534.1969999999997,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 88219
+        },
+        {
+          "lcpMs": 4791.215,
+          "cls": 0,
+          "compressedJsBytes": 88208
+        }
+      ],
+      "median": {
+        "lcpMs": 3534.1969999999997,
+        "cls": 0.0002146032779713382,
+        "compressedJsBytes": 88208,
+        "runCount": 3
+      }
+    },
+    {
+      "id": "internal-dossier",
+      "lockedPath": "/work/labor-solutions/engage-reporting",
+      "surface": "Internal Dossier Work Case (Engage reporting)",
+      "measuredUrl": "https://vishalk.com/",
+      "standIn": true,
+      "notes": "Engage reporting has no dedicated SvelteKit route (404). Work content loads on the home document; first-load metrics match `/`.",
+      "runs": [
+        {
+          "lcpMs": 3464.481999999999,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 88195
+        },
+        {
+          "lcpMs": 3534.1969999999997,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 88219
+        },
+        {
+          "lcpMs": 4791.215,
+          "cls": 0,
+          "compressedJsBytes": 88208
+        }
+      ],
+      "median": {
+        "lcpMs": 3534.1969999999997,
+        "cls": 0.0002146032779713382,
+        "compressedJsBytes": 88208,
+        "runCount": 3
+      }
+    },
+    {
+      "id": "resume",
+      "lockedPath": "/resume",
+      "surface": "Resume Surface (PDF embed path)",
+      "measuredUrl": "https://vishalk.com/",
+      "standIn": true,
+      "notes": "No Resume Surface on SvelteKit (`/resume` 404). Recorded home first-load as SPA shell budget stand-in; PDF-specific LCP does not exist yet.",
+      "runs": [
+        {
+          "lcpMs": 3464.481999999999,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 88195
+        },
+        {
+          "lcpMs": 3534.1969999999997,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 88219
+        },
+        {
+          "lcpMs": 4791.215,
+          "cls": 0,
+          "compressedJsBytes": 88208
+        }
+      ],
+      "median": {
+        "lcpMs": 3534.1969999999997,
+        "cls": 0.0002146032779713382,
+        "compressedJsBytes": 88208,
+        "runCount": 3
+      }
+    },
+    {
+      "id": "contact",
+      "lockedPath": "/contact",
+      "surface": "Contact Mode (document load only)",
+      "measuredUrl": "https://vishalk.com/contact",
+      "standIn": false,
+      "notes": "Document load only — form submit not exercised.",
+      "runs": [
+        {
+          "lcpMs": 4588.899,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 70426
+        },
+        {
+          "lcpMs": 3321.3189999999995,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 70345
+        },
+        {
+          "lcpMs": 3826.023000000001,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 70424
+        }
+      ],
+      "median": {
+        "lcpMs": 3826.023000000001,
+        "cls": 0.0002146032779713382,
+        "compressedJsBytes": 70424,
+        "runCount": 3
+      }
+    }
+  ]
+}

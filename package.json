@@ -13,7 +13,9 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "eslint . && prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "perf:baseline": "node scripts/perf/capture-sveltekit-baseline.mjs",
+    "perf:baseline:test": "node --test scripts/perf/extract-lighthouse-metrics.test.mjs"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
