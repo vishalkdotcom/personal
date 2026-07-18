@@ -81,7 +81,7 @@ bun check:watch  # Watch mode for type checking
 
 ### Issue tracker
 
-Issues live in the Tolaria vault `pro` via MCP (not GitHub Issues or `.scratch/`). See `docs/agents/issue-tracker.md`.
+Work lives in Tolaria vault `pro` via MCP as Project → Spec → Issue (not GitHub Issues or `.scratch/`). See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
