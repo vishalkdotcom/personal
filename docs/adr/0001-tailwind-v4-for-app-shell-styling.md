@@ -1,0 +1,3 @@
+# Tailwind CSS v4 for App Shell styling
+
+The SolidJS 2 App Shell started with a global hand-written component stylesheet. That recreates CSS hell (styles far from markup, cascade leaks, dead rules on the wire) as Modes and Work Cases grow. We adopt **Tailwind CSS v4** for co-located utilities and unused-CSS elimination; keep only a minimal CSS entry for Tailwind plus the locked `data-theme` FOUC token bridge; presentational Solid components own class strings; **`@apply` is banned for components**. Rejected for v1: raw/BEM/Sass component sheets, UnoCSS, and typed CSS-in-JS (StyleX / vanilla-extract / Panda) — co-location + purge was enough, and Tailwind is the boring Solid + Vite path. Theme semantics from the rewrite Spec stay unchanged.

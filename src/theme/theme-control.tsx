@@ -13,6 +13,9 @@ function preferenceLabel(preference: ThemePreference): string {
   return "Dark";
 }
 
+const iconSvgClass =
+  "block size-[15px] fill-none stroke-current [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:1.6]";
+
 /** Brand-row control: cycles system → light → dark and persists the preference. */
 export const ThemeControl: Component = () => {
   const [preference, setPreference] = createSignal<ThemePreference>(
@@ -46,23 +49,23 @@ export const ThemeControl: Component = () => {
   return (
     <button
       type="button"
-      class="theme-control"
+      class="grid size-7 shrink-0 place-items-center rounded-md border border-transparent text-muted hover:bg-bg-hover hover:text-fg group-data-[left-collapsed]/shell:hidden"
       onClick={onCycle}
       aria-label={`Theme: ${preferenceLabel(preference())}. Click to cycle System, Light, Dark.`}
       title={`Theme: ${preferenceLabel(preference())}`}
     >
-      <span class="theme-control__icon" aria-hidden="true">
+      <span class="block size-[15px]" aria-hidden="true">
         {preference() === "light" ? (
-          <svg viewBox="0 0 24 24">
+          <svg class={iconSvgClass} viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="4" />
             <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
           </svg>
         ) : preference() === "dark" ? (
-          <svg viewBox="0 0 24 24">
+          <svg class={iconSvgClass} viewBox="0 0 24 24">
             <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5z" />
           </svg>
         ) : (
-          <svg viewBox="0 0 24 24">
+          <svg class={iconSvgClass} viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="9" />
             <path d="M12 3v18" />
             <path

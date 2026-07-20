@@ -7,8 +7,12 @@ type StubStageProps = {
 
 /** Labeled placeholder for a Mode / Work surface until a later ticket fills it. */
 export const StubStage: Component<StubStageProps> = (props) => (
-  <section class="stub-stage" aria-label={props.label}>
-    <h1 class="stub-stage__title">{props.label}</h1>
-    {props.detail ? <p class="stub-stage__detail">{props.detail}</p> : null}
+  <section aria-label={props.label}>
+    <h1 class="mb-2 mt-0 text-[22px] font-[650] tracking-[-0.03em]">
+      {props.label}
+    </h1>
+    {props.detail ? (
+      <p class="m-0 max-w-[52ch] leading-normal text-muted">{props.detail}</p>
+    ) : null}
   </section>
 );
