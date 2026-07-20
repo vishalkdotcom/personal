@@ -24,7 +24,7 @@ describe("App Shell Mode routes (App Shell seam)", () => {
       ["/about", /About Mode/i],
       ["/resume", /Resume Surface/i],
       ["/contact", /Contact Mode/i],
-      ["/work/labor-solutions/indicator-bank", /Work Case/i],
+      ["/work/prototypes/qgenai", /Work Case/i],
     ];
 
     for (const [path, label] of cases) {
@@ -293,13 +293,38 @@ describe("Work Folder dense outcome indexes (App Shell seam)", () => {
     await expect.element(main.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
     await expect.element(main.getByRole("link", { name: /Indicator Bank/i })).toBeVisible();
     await expect.element(main.getByText(/dashboard vs Excel score drift/i)).toBeVisible();
-    await expect.element(main.getByText(/Indicator Bank outcomes/i)).toBeVisible();
+    await expect.element(main.getByText(/four administration surfaces/i)).toBeVisible();
     await expect
       .element(main.getByRole("link", { name: /Engage reporting.*Production/i }))
       .toBeVisible();
     await expect
+      .element(main.getByRole("link", { name: /Indicator Bank.*Production/i }))
+      .toBeVisible();
+    await expect
       .element(screen.getByText(/Work Folder · Labor Solutions \(stub\)/i))
       .not.toBeInTheDocument();
+  });
+
+  it("shows a dense outcome list for Advance Auto Parts Internal Dossiers", async () => {
+    const { screen } = renderAt("/work/advance-auto-parts");
+    const main = screen.getByRole("main");
+
+    await expect
+      .element(main.getByRole("heading", { name: /^Advance Auto Parts$/i }))
+      .toBeVisible();
+    await expect.element(main.getByRole("list", { name: /outcome index/i })).toBeVisible();
+    await expect.element(main.getByText(/store KPI measurement UI/i)).toBeVisible();
+    await expect.element(main.getByText(/self-service ML model hosting/i)).toBeVisible();
+    await expect.element(main.getByText(/actual vs predicted/i)).toBeVisible();
+    await expect
+      .element(main.getByRole("link", { name: /Measurement Framework.*Production/i }))
+      .toBeVisible();
+    await expect
+      .element(main.getByRole("link", { name: /Model Deployment Framework.*Production/i }))
+      .toBeVisible();
+    await expect
+      .element(main.getByRole("link", { name: /Store Dashboard.*Production/i }))
+      .toBeVisible();
   });
 
   it("shows a Work-root dense outcome list grouped by Work Folder", async () => {
@@ -509,6 +534,104 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
     await expect.element(rail).not.toHaveTextContent(/\(stub\)/i);
   });
+});
+
+const internalDossierCases = [
+  {
+    path: "/work/labor-solutions/indicator-bank",
+    title: /^Indicator Bank$/i,
+    article: /Indicator Bank Internal Dossier/i,
+    folder: /Labor Solutions/i,
+    claim: /four administration surfaces/i,
+    stack: /^Django$/i,
+    forbidden: [/OKR at 1\.0/i, /WPM-3219/i, /71\.47/i, /29%→9%/i, /124 PRs/i],
+  },
+  {
+    path: "/work/advance-auto-parts/measurement-framework",
+    title: /^Measurement Framework$/i,
+    article: /Measurement Framework Internal Dossier/i,
+    folder: /Advance Auto Parts/i,
+    claim: /store KPI measurement UI/i,
+    stack: /^Snowflake$/i,
+    forbidden: [/owned the/i, /redacted/i],
+  },
+  {
+    path: "/work/advance-auto-parts/model-deployment-framework",
+    title: /^Model Deployment Framework$/i,
+    article: /Model Deployment Framework Internal Dossier/i,
+    folder: /Advance Auto Parts/i,
+    claim: /self-service ML model hosting/i,
+    stack: /^Tailwind CSS$/i,
+    forbidden: [/owned the/i, /redacted/i],
+  },
+  {
+    path: "/work/advance-auto-parts/store-dashboard",
+    title: /^Store Dashboard$/i,
+    article: /Store Dashboard Internal Dossier/i,
+    folder: /Advance Auto Parts/i,
+    claim: /actual vs predicted/i,
+    stack: /^Streamlit$/i,
+    forbidden: [/owned the/i, /redacted/i],
+  },
+] as const;
+
+describe("Internal Dossier Indicator Bank and Advance Auto Parts (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  for (const dossier of internalDossierCases) {
+    it(`deep-links ${dossier.path} as Internal Dossier Production under its Work Folder`, async () => {
+      const { screen } = renderAt(dossier.path);
+      const stage = screen.getByRole("main");
+
+      await expect.element(stage.getByRole("heading", { name: dossier.title })).toBeVisible();
+      await expect.element(stage.getByText(/^Production$/i)).toBeVisible();
+      await expect.element(stage).toHaveTextContent(dossier.folder);
+      await expect.element(stage.getByRole("article", { name: dossier.article })).toBeVisible();
+      await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
+      await expect.element(stage).not.toHaveTextContent(/Public Storefront/i);
+    });
+
+    it(`keeps Preview off and Live without a public URL for ${dossier.path}`, async () => {
+      const { screen } = renderAt(dossier.path);
+      const rail = screen.getByRole("complementary", { name: /context rail/i });
+
+      const previewChip = screen.getByRole("button", { name: /^Preview$/i });
+      await expect.element(previewChip).toBeVisible();
+      expect(previewChip.element().hasAttribute("disabled")).toBe(true);
+      await expect
+        .element(screen.getByRole("dialog", { name: /^Preview$/i }))
+        .not.toBeInTheDocument();
+
+      await expect.element(rail).toHaveTextContent(/Auth-walled · no public URL/i);
+      await expect
+        .element(rail.getByRole("link", { name: /https?:\/\//i }))
+        .not.toBeInTheDocument();
+    });
+
+    it(`shows Public Claims without fake screenshots for ${dossier.path}`, async () => {
+      const { screen } = renderAt(dossier.path);
+      const stage = screen.getByRole("main");
+      const rail = screen.getByRole("complementary", { name: /context rail/i });
+
+      await expect.element(stage).toHaveTextContent(/no public demo URL/i);
+      await expect.element(stage.getByRole("list", { name: /^Outcomes$/i })).toBeVisible();
+      await expect.element(stage).toHaveTextContent(dossier.claim);
+      await expect.element(rail).toHaveTextContent(dossier.claim);
+      await expect.element(rail.getByText(dossier.stack)).toBeVisible();
+      await expect
+        .element(stage.getByRole("region", { name: /case media/i }))
+        .not.toBeInTheDocument();
+      await expect.element(stage).not.toHaveTextContent(/Shot \d/i);
+      await expect.element(stage).not.toHaveTextContent(/redacted/i);
+      await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
+      await expect.element(rail).not.toHaveTextContent(/\(stub\)/i);
+
+      for (const pattern of dossier.forbidden) {
+        await expect.element(stage).not.toHaveTextContent(pattern);
+        await expect.element(rail).not.toHaveTextContent(pattern);
+      }
+    });
+  }
 });
 
 describe("Featured Public Storefront SupplyChain+ (App Shell seam)", () => {
