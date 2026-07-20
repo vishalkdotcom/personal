@@ -9,6 +9,7 @@ import {
 } from "../work/inventory";
 import { StubStage } from "./stub-stage";
 import { WorkCaseNarrative } from "./work-case-narrative";
+import { WorkFolderIndex, WorkRootIndex } from "./work-outcome-index";
 
 export const FeaturedWorkStage: Component = () => (
   <WorkCaseNarrative folder={getFeaturedWorkFolder()} workCase={getFeaturedWorkCase()} />
@@ -20,15 +21,21 @@ export const ResumeStage: Component = () => <StubStage label="Resume Surface (st
 
 export const ContactStage: Component = () => <StubStage label="Contact Mode (stub)" />;
 
+export const WorkRootStage: Component = () => <WorkRootIndex />;
+
 export const WorkFolderStage: Component = () => {
   const params = useParams<{ folderSlug: string }>();
   const folder = () => getWorkFolder(params.folderSlug);
-  const title = () => folder()?.title ?? params.folderSlug;
+
   return (
-    <StubStage
-      label={`Work Folder · ${title()} (stub)`}
-      detail="Dense outcome list ships in a later ticket."
-    />
+    <Show
+      when={folder()}
+      fallback={
+        <StubStage label={`Work Folder · ${params.folderSlug}`} detail="Unknown Work Folder." />
+      }
+    >
+      {(active) => <WorkFolderIndex folder={active()} />}
+    </Show>
   );
 };
 

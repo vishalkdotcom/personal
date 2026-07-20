@@ -9,6 +9,7 @@ import {
   ResumeStage,
   WorkCaseStage,
   WorkFolderStage,
+  WorkRootStage,
 } from "./stages/mode-stages";
 
 const ShellRoot: ParentComponent = (props) => (
@@ -26,6 +27,7 @@ export const AppShellRoutes = {
       <Route path="/about" component={AboutStage} />
       <Route path="/resume" component={ResumeStage} />
       <Route path="/contact" component={ContactStage} />
+      <Route path="/work" component={WorkRootStage} />
       <Route path="/work/:folderSlug" component={WorkFolderStage} />
       <Route path="/work/:folderSlug/:caseSlug" component={WorkCaseStage} />
     </>

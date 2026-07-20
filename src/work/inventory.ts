@@ -177,6 +177,11 @@ export const WORK_FOLDERS: WorkFolder[] = [
   },
 ];
 
+/** Work-root dense outcome index (All work). */
+export function workRootHref(): string {
+  return "/work";
+}
+
 export function workFolderHref(folderSlug: string): string {
   return `/work/${folderSlug}`;
 }

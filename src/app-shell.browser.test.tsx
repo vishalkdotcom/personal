@@ -24,7 +24,6 @@ describe("App Shell Mode routes (App Shell seam)", () => {
       ["/about", /About Mode/i],
       ["/resume", /Resume Surface/i],
       ["/contact", /Contact Mode/i],
-      ["/work/labor-solutions", /Work Folder/i],
       ["/work/labor-solutions/engage-reporting", /Work Case/i],
     ];
 
@@ -230,14 +229,26 @@ describe("Work inventory and Work tree (App Shell seam)", () => {
     const { history, screen } = renderAt("/");
 
     await screen.getByRole("link", { name: /^Labor Solutions$/i }).click();
-    await expect.element(screen.getByText(/Work Folder · Labor Solutions/i)).toBeVisible();
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^Labor Solutions$/i }))
+      .toBeVisible();
     expect(history.get()).toBe("/work/labor-solutions");
 
-    await screen.getByRole("link", { name: /Engage reporting/i }).click();
+    await screen
+      .getByRole("navigation", { name: /work tree/i })
+      .getByRole("link", {
+        name: /Engage reporting/i,
+      })
+      .click();
     await expect.element(screen.getByText(/Work Case · Engage reporting/i)).toBeVisible();
     expect(history.get()).toBe("/work/labor-solutions/engage-reporting");
 
-    await screen.getByRole("link", { name: /SupplyChain\+/i }).click();
+    await screen
+      .getByRole("navigation", { name: /work tree/i })
+      .getByRole("link", {
+        name: /SupplyChain\+/i,
+      })
+      .click();
     await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
       .toBeVisible();
@@ -264,6 +275,67 @@ describe("Work inventory and Work tree (App Shell seam)", () => {
 
     await screen.getByRole("button", { name: /expand Labor Solutions/i }).click();
     await expect.element(screen.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
+  });
+});
+
+describe("Work Folder dense outcome indexes (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  it("shows a dense outcome list for a Work Folder URL", async () => {
+    const { screen } = renderAt("/work/labor-solutions");
+    const main = screen.getByRole("main");
+
+    await expect.element(main.getByText(/^Work Folder$/i)).toBeVisible();
+    await expect.element(main.getByRole("heading", { name: /^Labor Solutions$/i })).toBeVisible();
+    await expect.element(main.getByRole("list", { name: /outcome index/i })).toBeVisible();
+    await expect.element(main.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
+    await expect.element(main.getByRole("link", { name: /Indicator Bank/i })).toBeVisible();
+    await expect.element(main.getByText(/Engage reporting outcomes/i)).toBeVisible();
+    await expect.element(main.getByText(/Indicator Bank outcomes/i)).toBeVisible();
+    await expect
+      .element(main.getByRole("link", { name: /Engage reporting.*Production/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByText(/Work Folder · Labor Solutions \(stub\)/i))
+      .not.toBeInTheDocument();
+  });
+
+  it("shows a Work-root dense outcome list grouped by Work Folder", async () => {
+    const { screen } = renderAt("/work");
+    const main = screen.getByRole("main");
+
+    await expect.element(main.getByRole("heading", { name: /^All work$/i })).toBeVisible();
+    await expect.element(main.getByText(/^Labor Solutions$/i)).toBeVisible();
+    await expect.element(main.getByText(/^Prototypes$/i)).toBeVisible();
+    await expect.element(main.getByText(/^Tools$/i)).toBeVisible();
+    await expect.element(main.getByRole("link", { name: /SupplyChain\+/i })).toBeVisible();
+    await expect.element(main.getByRole("link", { name: /Snap2Paper/i })).toBeVisible();
+  });
+
+  it("offers All work in the Work tree and navigates to the Work-root index", async () => {
+    const { history, screen } = renderAt("/");
+
+    await screen
+      .getByRole("navigation", { name: /work tree/i })
+      .getByRole("link", {
+        name: /^All work$/i,
+      })
+      .click();
+    expect(history.get()).toBe("/work");
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^All work$/i }))
+      .toBeVisible();
+  });
+
+  it("navigates to the Work Case URL when an index row is selected", async () => {
+    const { history, screen } = renderAt("/work/labor-solutions");
+
+    await screen
+      .getByRole("main")
+      .getByRole("link", { name: /Engage reporting/i })
+      .click();
+    expect(history.get()).toBe("/work/labor-solutions/engage-reporting");
+    await expect.element(screen.getByText(/Work Case · Engage reporting/i)).toBeVisible();
   });
 });
 

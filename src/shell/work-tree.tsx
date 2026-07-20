@@ -5,6 +5,7 @@ import {
   WORK_FOLDERS,
   workCaseHref,
   workFolderHref,
+  workRootHref,
   type WorkBadge,
   type WorkCase,
   type WorkFolder,
@@ -46,11 +47,21 @@ const folderLinkClass = (active: boolean) =>
     active ? "text-accent" : "text-faint hover:text-fg",
   ].join(" ");
 
+const rootLinkClass = (active: boolean) =>
+  [
+    "mb-1 rounded-md px-2.5 py-1.5 text-[13px]",
+    active ? "bg-bg-active text-fg" : "text-muted hover:bg-bg-hover hover:text-fg",
+  ].join(" ");
+
 const caseLinkClass = (active: boolean) =>
   [
     "flex items-center justify-between gap-2 rounded-md py-1.5 pr-2.5 pl-7 text-[13px]",
     active ? "bg-bg-active text-fg" : "text-muted hover:bg-bg-hover hover:text-fg",
   ].join(" ");
+
+function rootActive(pathname: string): boolean {
+  return pathname === workRootHref() || pathname === `${workRootHref()}/`;
+}
 
 const WorkCaseLink: Component<{ folderSlug: string; workCase: WorkCase }> = (props) => {
   const location = useLocation();
@@ -121,7 +132,29 @@ const WorkFolderGroup: Component<{ folder: WorkFolder }> = (props) => {
   );
 };
 
-/** Left chrome Work tree: Work Folders → Work Cases with Production/Prototype badges. */
+const WorkRootLink: Component = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const href = workRootHref();
+
+  return (
+    <A
+      href={href}
+      class={rootLinkClass(rootActive(location.pathname))}
+      activeClass=""
+      inactiveClass=""
+      onClick={(event) => {
+        if (event.defaultPrevented || isModifiedClick(event)) return;
+        event.preventDefault();
+        navigate(href);
+      }}
+    >
+      All work
+    </A>
+  );
+};
+
+/** Left chrome Work tree: Work root → Work Folders → Work Cases with Production/Prototype badges. */
 export const WorkTree: Component = () => (
   <nav
     class="flex min-h-0 flex-1 flex-col overflow-hidden group-data-[left-collapsed]/shell:hidden"
@@ -129,6 +162,7 @@ export const WorkTree: Component = () => (
   >
     <div class="px-2 pt-1 pb-1.5 text-[11px] font-[550] tracking-[0.02em] text-faint">Work</div>
     <div class="flex min-h-0 flex-1 flex-col gap-px overflow-auto">
+      <WorkRootLink />
       <For each={WORK_FOLDERS}>{(folder) => <WorkFolderGroup folder={folder} />}</For>
     </div>
   </nav>
