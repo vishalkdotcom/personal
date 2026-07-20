@@ -3,6 +3,7 @@ import { Show, createEffect, createSignal, type ParentComponent } from "solid-js
 import { getActiveWorkCaseFromPath, isPreviewEnabledForPath } from "../work/inventory";
 import { ContextRail } from "./context-rail";
 import { shellCrumbForPath } from "./header-crumb";
+import { HireSignalChip } from "./hire-signal-chip";
 import { LeftChrome } from "./left-chrome";
 import { PreviewSlideOver } from "./preview-slide-over";
 
@@ -94,6 +95,8 @@ export const MobileShell: ParentComponent = (props) => {
       <main class="min-h-0 min-w-0 flex-1 overflow-auto bg-bg-panel px-4 py-5" id="stage">
         {props.children}
       </main>
+
+      <HireSignalChip />
 
       <Show when={drawerOpen() || sheetOpen()}>
         <button

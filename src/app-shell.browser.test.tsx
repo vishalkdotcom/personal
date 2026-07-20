@@ -4,6 +4,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { page } from "vitest/browser";
 import { AppShellRoutes } from "./app";
 import { CONTACT_EMAIL } from "./contact/content";
+import {
+  HIRE_SIGNAL_SNOOZE_KEY,
+  HIRE_SIGNAL_SNOOZE_MS,
+  setHireSignalEnabledForTests,
+} from "./shell/hire-signal";
 import { THEME_STORAGE_KEY } from "./theme/theme";
 
 function renderAt(path: string) {
@@ -1335,5 +1340,112 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect
       .element(dossier.screen.getByRole("dialog", { name: /^Preview$/i }))
       .not.toBeInTheDocument();
+  });
+});
+
+describe("Hire Signal (App Shell seam)", () => {
+  afterEach(async () => {
+    cleanup();
+    setHireSignalEnabledForTests(undefined);
+    localStorage.removeItem(HIRE_SIGNAL_SNOOZE_KEY);
+    await restoreDesktopViewport();
+  });
+
+  it("shows desktop Context Rail hire CTA and mobile Open to roles chip when the flag is on", async () => {
+    setHireSignalEnabledForTests(true);
+    const desktop = renderAt("/work/prototypes/supplychain-plus");
+    const rail = desktop.screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail.getByRole("link", { name: /^Open to roles$/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
+    cleanup();
+
+    await setMobileViewport();
+    const mobile = renderAt("/");
+    await expect
+      .element(mobile.screen.getByRole("button", { name: /^Open to roles$/i }))
+      .toBeVisible();
+  });
+
+  it("hides both Hire Signal surfaces when the flag is off", async () => {
+    setHireSignalEnabledForTests(false);
+    const desktop = renderAt("/work/prototypes/supplychain-plus");
+    const rail = desktop.screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
+    await expect
+      .element(rail.getByRole("link", { name: /^Open to roles$/i }))
+      .not.toBeInTheDocument();
+    await expect.element(rail.getByRole("link", { name: /get in touch/i })).not.toBeInTheDocument();
+    cleanup();
+
+    await setMobileViewport();
+    const mobile = renderAt("/");
+    await expect
+      .element(mobile.screen.getByRole("button", { name: /^Open to roles$/i }))
+      .not.toBeInTheDocument();
+  });
+
+  it("expands the mobile chip to Get in touch + Snooze and persists a 7-day snooze", async () => {
+    setHireSignalEnabledForTests(true);
+    localStorage.removeItem(HIRE_SIGNAL_SNOOZE_KEY);
+    await setMobileViewport();
+    const { screen, history } = renderAt("/");
+
+    const chip = screen.getByRole("button", { name: /^Open to roles$/i });
+    await expect.element(chip).toBeVisible();
+    await chip.click();
+
+    const getInTouch = screen.getByRole("link", { name: /^Get in touch$/i });
+    await expect.element(getInTouch).toBeVisible();
+    await expect.element(screen.getByRole("button", { name: /^Snooze$/i })).toBeVisible();
+    expect(getInTouch.element().getAttribute("href")).toBe("/contact");
+
+    await getInTouch.click();
+    expect(history.get()).toBe("/contact");
+    cleanup();
+
+    const again = renderAt("/");
+    await again.screen.getByRole("button", { name: /^Open to roles$/i }).click();
+    const before = Date.now();
+    await again.screen.getByRole("button", { name: /^Snooze$/i }).click();
+    await expect
+      .element(again.screen.getByRole("button", { name: /^Open to roles$/i }))
+      .not.toBeInTheDocument();
+
+    const until = Number(localStorage.getItem(HIRE_SIGNAL_SNOOZE_KEY));
+    expect(until).toBeGreaterThanOrEqual(before + HIRE_SIGNAL_SNOOZE_MS);
+    expect(until).toBeLessThanOrEqual(Date.now() + HIRE_SIGNAL_SNOOZE_MS);
+  });
+
+  it("never hides the desktop rail hire CTA after a mobile snooze while the flag is on", async () => {
+    setHireSignalEnabledForTests(true);
+    localStorage.setItem(HIRE_SIGNAL_SNOOZE_KEY, String(Date.now() + HIRE_SIGNAL_SNOOZE_MS));
+
+    await setMobileViewport();
+    const mobile = renderAt("/");
+    await expect
+      .element(mobile.screen.getByRole("button", { name: /^Open to roles$/i }))
+      .not.toBeInTheDocument();
+    cleanup();
+
+    await restoreDesktopViewport();
+    const desktop = renderAt("/about");
+    const rail = desktop.screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
+  });
+
+  it("keeps Contact Mode, form, and quick links available when Hire Signal is off", async () => {
+    setHireSignalEnabledForTests(false);
+    const { screen } = renderAt("/contact");
+    const stage = screen.getByRole("main");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+
+    await expect.element(stage.getByRole("heading", { name: /^Get in touch$/i })).toBeVisible();
+    await expect.element(stage.getByLabelText(/^Name$/i)).toBeVisible();
+    await expect.element(stage.getByLabelText(/^Email$/i)).toBeVisible();
+    await expect.element(stage.getByLabelText(/^Message$/i)).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^Email/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^LinkedIn/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^GitHub/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^CV/i })).toBeVisible();
   });
 });

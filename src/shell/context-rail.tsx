@@ -4,6 +4,7 @@ import { ABOUT_AVAILABILITY, ABOUT_ELSEWHERE, ABOUT_FACTS } from "../about/conte
 import { CONTACT_AVAILABILITY, CONTACT_QUICK_LINKS } from "../contact/content";
 import { RESUME_AVAILABILITY, RESUME_LINKS } from "../resume/content";
 import { getActiveWorkCaseFromPath, isHttpLiveUrl, type WorkCase } from "../work/inventory";
+import { isHireSignalEnabled } from "./hire-signal";
 
 const sectionHeadingClass = "m-0 text-[11px] font-[650] tracking-[0.06em] text-faint uppercase";
 
@@ -64,15 +65,17 @@ const RailLinkList: Component<{ links: readonly RailLink[] }> = (props) => (
 
 const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
   <div class="flex flex-col gap-4 p-2">
-    <section aria-labelledby="rail-availability">
-      <h2 id="rail-availability" class={sectionHeadingClass}>
-        Availability
-      </h2>
-      <p class={sectionBodyClass}>Open to roles · Senior FE</p>
-      <A href="/contact" class={`${ctaClass} mt-2`}>
-        Open to roles
-      </A>
-    </section>
+    <Show when={isHireSignalEnabled()}>
+      <section aria-labelledby="rail-availability">
+        <h2 id="rail-availability" class={sectionHeadingClass}>
+          Availability
+        </h2>
+        <p class={sectionBodyClass}>Open to roles · Senior FE</p>
+        <A href="/contact" class={`${ctaClass} mt-2`}>
+          Open to roles
+        </A>
+      </section>
+    </Show>
 
     <section aria-labelledby="rail-live">
       <h2 id="rail-live" class={sectionHeadingClass}>
@@ -119,26 +122,30 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
       </ul>
     </section>
 
-    <div class="border-t border-border pt-3">
-      <A href="/contact" class={`${ctaClass} w-full`} aria-label="Get in touch">
-        Get in touch
-      </A>
-    </div>
+    <Show when={isHireSignalEnabled()}>
+      <div class="border-t border-border pt-3">
+        <A href="/contact" class={`${ctaClass} w-full`} aria-label="Get in touch">
+          Get in touch
+        </A>
+      </div>
+    </Show>
   </div>
 );
 
 /** About Mode rail: Availability CTA → Facts → Elsewhere (shell-round-9 A). */
 const AboutContext: Component = () => (
   <div class="flex flex-col gap-4 p-2">
-    <section aria-labelledby="rail-availability">
-      <h2 id="rail-availability" class={sectionHeadingClass}>
-        Availability
-      </h2>
-      <p class={sectionBodyClass}>{ABOUT_AVAILABILITY}</p>
-      <A href="/contact" class={`${ctaClass} mt-2`}>
-        Get in touch
-      </A>
-    </section>
+    <Show when={isHireSignalEnabled()}>
+      <section aria-labelledby="rail-availability">
+        <h2 id="rail-availability" class={sectionHeadingClass}>
+          Availability
+        </h2>
+        <p class={sectionBodyClass}>{ABOUT_AVAILABILITY}</p>
+        <A href="/contact" class={`${ctaClass} mt-2`}>
+          Get in touch
+        </A>
+      </section>
+    </Show>
 
     <section aria-labelledby="rail-facts">
       <h2 id="rail-facts" class={sectionHeadingClass}>
@@ -168,15 +175,17 @@ const AboutContext: Component = () => (
 /** Resume Mode thin rail: Availability CTA → Links (PDF download + elsewhere). */
 const ResumeContext: Component = () => (
   <div class="flex flex-col gap-4 p-2">
-    <section aria-labelledby="rail-availability">
-      <h2 id="rail-availability" class={sectionHeadingClass}>
-        Availability
-      </h2>
-      <p class={sectionBodyClass}>{RESUME_AVAILABILITY}</p>
-      <A href="/contact" class={`${ctaClass} mt-2`}>
-        Get in touch
-      </A>
-    </section>
+    <Show when={isHireSignalEnabled()}>
+      <section aria-labelledby="rail-availability">
+        <h2 id="rail-availability" class={sectionHeadingClass}>
+          Availability
+        </h2>
+        <p class={sectionBodyClass}>{RESUME_AVAILABILITY}</p>
+        <A href="/contact" class={`${ctaClass} mt-2`}>
+          Get in touch
+        </A>
+      </section>
+    </Show>
 
     <section aria-labelledby="rail-links">
       <h2 id="rail-links" class={sectionHeadingClass}>

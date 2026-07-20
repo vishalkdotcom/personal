@@ -34,6 +34,9 @@ export default defineConfig({
         test: {
           name: "browser",
           include: ["src/**/*.browser.test.{ts,tsx}"],
+          env: {
+            VITE_HIRE_SIGNAL: "true",
+          },
           browser: {
             enabled: true,
             provider: playwright(),
