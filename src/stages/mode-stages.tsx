@@ -44,17 +44,17 @@ export const WorkCaseStage: Component = () => {
   const folder = () => getWorkFolder(params.folderSlug);
   const workCase = () => getWorkCase(params.folderSlug, params.caseSlug);
   const title = () => workCase()?.title ?? `${params.folderSlug}/${params.caseSlug}`;
-  const shipped = () => {
+  const narrative = () => {
     const activeFolder = folder();
     const activeCase = workCase();
-    return activeFolder && activeCase?.lede && activeCase.surface === "public-storefront"
+    return activeFolder && activeCase?.lede
       ? { folder: activeFolder, workCase: activeCase }
       : undefined;
   };
 
   return (
     <Show
-      when={shipped()}
+      when={narrative()}
       fallback={
         <StubStage
           label={`Work Case · ${title()} (stub)`}

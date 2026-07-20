@@ -25,7 +25,7 @@ export type WorkCase = {
   stack: string[];
   /**
    * Proof-first stage lede (Public Claims only).
-   * When set on a Public Storefront, the case narrative ships instead of a stub.
+   * When set, the case narrative ships instead of a stub.
    */
   lede?: string;
   /** Public Storefront stage carousel slides (placeholders OK). */
@@ -52,9 +52,13 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Production",
         surface: "internal-dossier",
         live: dossierLive,
-        role: "Engage reporting · FE lead",
-        outcomes: ["Engage reporting outcomes (stub)"],
-        stack: ["Reporting UI", "TypeScript"],
+        role: "Senior Frontend Developer · Labor Solutions · PIC on Engage reporting OKR",
+        lede: "Auth-walled Engage questionnaire reporting — Summary, Categories, and Miscellaneous with Metabase embeds, risk maps, and dashboard/export score parity. No public demo URL.",
+        outcomes: [
+          "Problem → solution: dashboard vs Excel score drift — facility-first vs question-first aggregations diverged; exports aligned to analytics cards as the single scoring authority",
+          "Reporting artifacts shipped in-product: Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, and top/bottom sites",
+        ],
+        stack: ["React", "Next.js", "TypeScript", "Metabase Embedding SDK", "Redux Toolkit"],
       },
       {
         slug: "indicator-bank",
