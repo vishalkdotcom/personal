@@ -10,11 +10,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "**/*.{test,spec}.{ts,tsx,js,mjs,cjs}",
-        "**/test-setup.ts",
-        "scripts/**/*.test.mjs"
-      ],
+      "files": ["**/*.{test,spec}.{ts,tsx,js,mjs,cjs}", "scripts/**/*.test.mjs"],
       "plugins": ["typescript", "unicorn", "oxc", "vitest"]
     }
   ]

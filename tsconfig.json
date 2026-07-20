@@ -13,7 +13,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["vite/client", "vitest/globals"],
+    "types": [
+      "vite/client",
+      "vitest/globals",
+      "@vitest/browser/matchers",
+      "@vitest/browser-playwright"
+    ],
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"]

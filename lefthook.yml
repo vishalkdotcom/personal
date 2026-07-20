@@ -1,5 +1,5 @@
 # Local Quality Gate: staged oxfmt + oxlint only.
-# Full `bun check` / `bun test` stay out of the commit hook (CI owns those).
+# Full `bun check` / `bun run test` stay out of the commit hook (CI owns those).
 # https://lefthook.dev/configuration/
 
 pre-commit:

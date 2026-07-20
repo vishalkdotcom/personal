@@ -7,6 +7,7 @@ Use Bun (not npm or yarn).
 Non-standard commands:
 
 - `bun check` — TypeScript (`tsc --noEmit`); type SoT, not the linter
+- `bun run test` — Vitest (`bun test` is Bun's runner, not this script)
 - `bun lint` / `bun format` — oxlint + oxfmt
 - Lefthook pre-commit — staged oxfmt + oxlint only (`bun install` / `prepare` installs hooks; not full check/test)
 

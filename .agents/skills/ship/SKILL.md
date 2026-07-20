@@ -10,7 +10,7 @@ Resolve the ticket per `docs/agents/issue-tracker.md`. Follow `AGENTS.md`.
 
 Use /tdd where possible, at pre-agreed seams.
 
-Run `bun check` regularly and single test files regularly. Before review, `bun check`, `bun lint`, and `bun test` are all green.
+Run `bun check` regularly and single test files regularly. Before review, `bun check`, `bun lint`, and `bun run test` are all green.
 
 Once done, use /code-review to review the work.
 
