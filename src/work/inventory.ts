@@ -4,6 +4,12 @@ export type WorkBadge = "Production" | "Prototype";
 
 export type WorkSurface = "public-storefront" | "internal-dossier";
 
+/** Stage carousel slide — label required; src optional until screenshot assets land. */
+export type WorkMediaSlide = {
+  label: string;
+  src?: string;
+};
+
 export type WorkCase = {
   slug: string;
   title: string;
@@ -22,6 +28,8 @@ export type WorkCase = {
    * When set on a Public Storefront, the case narrative ships instead of a stub.
    */
   lede?: string;
+  /** Public Storefront stage carousel slides (placeholders OK). */
+  media?: WorkMediaSlide[];
 };
 
 export type WorkFolder = {
@@ -113,6 +121,11 @@ export const WORK_FOLDERS: WorkFolder[] = [
           "Multi-provider LLM tools for summarization, sentiment analysis, and audit-oriented evidence export",
         ],
         stack: ["Next.js 16", "React 19", "PostgreSQL/pgvector", "Drizzle ORM", "Vercel AI SDK"],
+        media: [
+          { label: "Shot 1 · Home" },
+          { label: "Shot 2 · Diagnosis" },
+          { label: "Shot 3 · Audit" },
+        ],
       },
       {
         slug: "qgenai",
@@ -217,4 +230,13 @@ export function getActiveWorkCaseFromPath(pathname: string): WorkCase | undefine
 
 export function isHttpLiveUrl(live: string): boolean {
   return /^https?:\/\//i.test(live);
+}
+
+/**
+ * Desktop Preview header chip — Public Storefront with an honest HTTP Live URL only.
+ * Stub Live lines and Internal Dossiers stay disabled.
+ */
+export function isPreviewEnabledForPath(pathname: string): boolean {
+  const workCase = getActiveWorkCaseFromPath(pathname);
+  return workCase?.surface === "public-storefront" && isHttpLiveUrl(workCase.live);
 }

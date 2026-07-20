@@ -1,5 +1,6 @@
-import { For, type Component } from "solid-js";
+import { For, Show, type Component } from "solid-js";
 import type { WorkBadge, WorkCase, WorkFolder } from "../work/inventory";
+import { MediaCarousel } from "./media-carousel";
 
 function badgeClass(badge: WorkBadge): string {
   if (badge === "Prototype") {
@@ -14,12 +15,13 @@ type WorkCaseNarrativeProps = {
 };
 
 /**
- * Proof-first Work Case stage: badge · folder · title · lede · outcomes · media.
- * Brand stays in App Shell chrome; ticket 06 allows placeholder media for SupplyChain+.
+ * Proof-first Work Case stage: badge · folder · title · lede · outcomes · media carousel.
+ * Brand stays in App Shell chrome; Public Storefront media defaults to the stage carousel.
  */
 export const WorkCaseNarrative: Component<WorkCaseNarrativeProps> = (props) => {
   const surfaceLabel = () =>
     props.workCase.surface === "public-storefront" ? "Public Storefront" : "Internal Dossier";
+  const slides = () => props.workCase.media ?? [];
 
   return (
     <article aria-label={`${props.workCase.title} ${surfaceLabel()}`}>
@@ -38,12 +40,9 @@ export const WorkCaseNarrative: Component<WorkCaseNarrativeProps> = (props) => {
           )}
         </For>
       </ul>
-      <div
-        class="grid aspect-[16/10] place-items-end justify-items-start rounded-xl border border-border bg-[radial-gradient(ellipse_at_20%_20%,rgba(108,182,255,0.2),transparent_50%),linear-gradient(160deg,#1e2430,#141820)] p-2.5 text-[11px] text-faint"
-        aria-label="Media placeholder"
-      >
-        Media placeholder
-      </div>
+      <Show when={slides().length > 0}>
+        <MediaCarousel slides={slides()} />
+      </Show>
     </article>
   );
 };

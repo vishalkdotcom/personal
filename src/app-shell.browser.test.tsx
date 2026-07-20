@@ -367,7 +367,7 @@ describe("Featured Public Storefront SupplyChain+ (App Shell seam)", () => {
 
     const text = stage.element().textContent ?? "";
     const outcomesIndex = text.search(/explainable supplier-risk scoring/i);
-    const mediaIndex = text.search(/media placeholder/i);
+    const mediaIndex = text.search(/Shot 1/i);
     expect(outcomesIndex).toBeGreaterThan(-1);
     expect(mediaIndex).toBeGreaterThan(outcomesIndex);
   });
@@ -420,9 +420,80 @@ describe("Featured Public Storefront SupplyChain+ (App Shell seam)", () => {
     const stage = screen.getByRole("main");
     await expect.element(stage.getByRole("heading", { name: /^SupplyChain\+$/i })).toBeVisible();
     await expect.element(stage.getByText(/^Prototype$/i)).toBeVisible();
-    await expect.element(stage).toHaveTextContent(/media placeholder/i);
+    await expect.element(stage.getByRole("region", { name: /case media/i })).toBeVisible();
     await expect
       .element(screen.getByRole("complementary", { name: /context rail/i }))
       .toHaveTextContent(/sc-plus\.vercel\.app/i);
+  });
+});
+
+describe("Public Storefront carousel and Preview (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  it("uses a stage carousel for Public Storefront media by default", async () => {
+    const { screen } = renderAt("/");
+    const stage = screen.getByRole("main");
+    const carousel = stage.getByRole("region", { name: /case media/i });
+
+    await expect.element(carousel).toBeVisible();
+    await expect.element(carousel).toHaveTextContent(/Shot 1/i);
+    await expect.element(stage).not.toHaveTextContent(/media placeholder/i);
+
+    await carousel.getByRole("button", { name: /next/i }).click();
+    await expect.element(carousel).toHaveTextContent(/Shot 2/i);
+  });
+
+  it("opens a Preview slide-over with Desktop/Mobile frames from the header chip", async () => {
+    const { screen } = renderAt("/");
+
+    const previewChip = screen.getByRole("button", { name: /^Preview$/i });
+    await expect.element(previewChip).toBeVisible();
+    expect(previewChip.element().hasAttribute("disabled")).toBe(false);
+
+    await previewChip.click();
+    const dialog = screen.getByRole("dialog", { name: /^Preview$/i });
+    await expect.element(dialog).toBeVisible();
+    await expect.element(dialog.getByRole("button", { name: /^Desktop$/i })).toBeVisible();
+    await expect.element(dialog.getByRole("button", { name: /^Mobile$/i })).toBeVisible();
+    await expect.element(dialog).toHaveTextContent(/sc-plus\.vercel\.app/i);
+
+    await dialog.getByRole("button", { name: /^Mobile$/i }).click();
+    await expect.element(dialog).toHaveTextContent(/mobile/i);
+  });
+
+  it("keeps Preview disabled on Internal Dossier Work Cases", async () => {
+    const { screen } = renderAt("/work/labor-solutions/engage-reporting");
+
+    const previewChip = screen.getByRole("button", { name: /^Preview$/i });
+    await expect.element(previewChip).toBeVisible();
+    expect(previewChip.element().hasAttribute("disabled")).toBe(true);
+
+    await expect
+      .element(screen.getByRole("dialog", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
+  });
+
+  it("keeps Preview disabled when Public Storefront Live is still a stub", async () => {
+    const { screen } = renderAt("/work/prototypes/qgenai");
+    const previewChip = screen.getByRole("button", { name: /^Preview$/i });
+    await expect.element(previewChip).toBeVisible();
+    expect(previewChip.element().hasAttribute("disabled")).toBe(true);
+  });
+
+  it("closes Preview without losing the active Work Case", async () => {
+    const { history, screen } = renderAt("/work/prototypes/supplychain-plus");
+
+    await screen.getByRole("button", { name: /^Preview$/i }).click();
+    const dialog = screen.getByRole("dialog", { name: /^Preview$/i });
+    await expect.element(dialog).toBeVisible();
+
+    await dialog.getByRole("button", { name: /close preview/i }).click();
+    await expect
+      .element(screen.getByRole("dialog", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
+    expect(history.get()).toBe("/work/prototypes/supplychain-plus");
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
+      .toBeVisible();
   });
 });

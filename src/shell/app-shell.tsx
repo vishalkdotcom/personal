@@ -1,22 +1,36 @@
 import { useLocation } from "@solidjs/router";
-import { createSignal, type ParentComponent } from "solid-js";
+import { Show, createEffect, createSignal, type ParentComponent } from "solid-js";
 import { ThemeControl } from "../theme/theme-control";
+import { getActiveWorkCaseFromPath, isPreviewEnabledForPath } from "../work/inventory";
 import { ContextRail } from "./context-rail";
 import { ModeNav } from "./mode-nav";
 import { modeTitleForPath } from "./modes";
+import { PreviewSlideOver } from "./preview-slide-over";
 import { WorkTree } from "./work-tree";
 
 const shellChipClass =
-  "rounded-md border border-border bg-bg-deep px-2.5 py-[5px] text-xs leading-none text-muted hover:bg-bg-hover hover:text-fg aria-pressed:bg-bg-active aria-pressed:text-fg";
+  "rounded-md border border-border bg-bg-deep px-2.5 py-[5px] text-xs leading-none text-muted hover:bg-bg-hover hover:text-fg aria-pressed:bg-bg-active aria-pressed:text-fg disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-bg-deep disabled:hover:text-muted";
 
 /**
  * Desktop Triptych Dock: left IA · center stage · Context Rail.
- * Left chrome Modes + Work tree; header chips collapse left / Context Rail.
+ * Header hybrid A: Preview (Public Storefront only) + pane collapse chips.
  */
 export const AppShell: ParentComponent = (props) => {
   const location = useLocation();
   const [leftCollapsed, setLeftCollapsed] = createSignal(false);
   const [rightCollapsed, setRightCollapsed] = createSignal(false);
+  const [previewOpen, setPreviewOpen] = createSignal(false);
+
+  const previewEnabled = () => isPreviewEnabledForPath(location.pathname);
+  const activeCase = () => getActiveWorkCaseFromPath(location.pathname);
+
+  // Solid 2 createEffect: compute + effect. Close Preview on navigation.
+  createEffect(
+    () => location.pathname,
+    () => {
+      setPreviewOpen(false);
+    },
+  );
 
   const gridColumns = () =>
     [leftCollapsed() ? "48px" : "252px", "minmax(0, 1fr)", rightCollapsed() ? "0fr" : "288px"].join(
@@ -29,6 +43,7 @@ export const AppShell: ParentComponent = (props) => {
       style={{ "grid-template-columns": gridColumns() }}
       data-left-collapsed={leftCollapsed() ? "" : undefined}
       data-right-collapsed={rightCollapsed() ? "" : undefined}
+      data-preview-open={previewOpen() ? "" : undefined}
     >
       <aside
         class="flex min-w-0 flex-col overflow-hidden border-r border-border bg-bg-deep p-[12px_8px] transition-[padding] duration-[160ms] ease-shell group-data-[left-collapsed]/shell:p-[10px_6px]"
@@ -54,6 +69,19 @@ export const AppShell: ParentComponent = (props) => {
             <button
               type="button"
               class={shellChipClass}
+              aria-pressed={previewOpen() ? "true" : "false"}
+              disabled={!previewEnabled()}
+              title={previewEnabled() ? "Preview" : "No public preview"}
+              onClick={() => {
+                if (!previewEnabled()) return;
+                setPreviewOpen((value) => !value);
+              }}
+            >
+              Preview
+            </button>
+            <button
+              type="button"
+              class={shellChipClass}
               aria-pressed={leftCollapsed() ? "true" : "false"}
               aria-label={leftCollapsed() ? "Expand left chrome" : "Collapse left chrome"}
               title={leftCollapsed() ? "Expand left" : "Collapse left"}
@@ -73,9 +101,16 @@ export const AppShell: ParentComponent = (props) => {
             </button>
           </div>
         </header>
-        <main class="min-w-0 flex-1 overflow-auto bg-bg-panel px-9 py-7" id="stage">
-          {props.children}
-        </main>
+        <div class="relative min-h-0 min-w-0 flex-1 overflow-hidden">
+          <main class="h-full min-w-0 overflow-auto bg-bg-panel px-9 py-7" id="stage">
+            {props.children}
+          </main>
+          <Show when={previewOpen() && previewEnabled() ? activeCase() : undefined}>
+            {(workCase) => (
+              <PreviewSlideOver live={workCase().live} onClose={() => setPreviewOpen(false)} />
+            )}
+          </Show>
+        </div>
       </div>
 
       <aside
