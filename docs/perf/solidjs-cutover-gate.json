@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "kind": "solidjs-cutover-gate",
+  "forTicket": "18 — Run performance cutover gate vs baseline",
+  "baselineArtifact": "docs/perf/sveltekit-production-baseline.json",
+  "baseline": {
+    "kind": "sveltekit-production-baseline",
+    "capturedAt": "2026-07-18T13:46:54.406Z",
+    "baseUrl": "https://vishalk.com",
+    "fromTicket": "01 — Capture SvelteKit production performance baseline"
+  },
+  "capturedAt": "2026-07-20T16:49:16.721Z",
+  "baseUrl": "http://127.0.0.1:63365",
+  "environmentClass": "local-lab",
+  "tooling": "lighthouse programmatic + Playwright Chromium (lab mobile)",
+  "formFactor": "mobile",
+  "runsPerUrl": 3,
+  "aggregation": "median",
+  "theme": "default System→resolved (measured once, no dual light/dark gate)",
+  "metrics": [
+    "lcpMs",
+    "cls",
+    "compressedJsBytes"
+  ],
+  "matrix": [
+    {
+      "id": "home",
+      "lockedPath": "/",
+      "surface": "Featured Public Storefront (`/` — SupplyChain+ on rewrite)",
+      "notes": "Document load of featured Public Storefront home.",
+      "measuredUrl": "http://127.0.0.1:63365/",
+      "standIn": false,
+      "runs": [
+        {
+          "lcpMs": 1483.0879999999997,
+          "cls": 0,
+          "compressedJsBytes": 34288
+        },
+        {
+          "lcpMs": 1465.531,
+          "cls": 0,
+          "compressedJsBytes": 34288
+        },
+        {
+          "lcpMs": 1481.735,
+          "cls": 0,
+          "compressedJsBytes": 34288
+        }
+      ],
+      "median": {
+        "lcpMs": 1481.735,
+        "cls": 0,
+        "compressedJsBytes": 34288,
+        "runCount": 3
+      }
+    },
+    {
+      "id": "internal-dossier",
+      "lockedPath": "/work/labor-solutions/engage-reporting",
+      "surface": "Internal Dossier Work Case (Engage reporting)",
+      "notes": "Document load of Engage reporting Internal Dossier.",
+      "measuredUrl": "http://127.0.0.1:63365/work/labor-solutions/engage-reporting",
+      "standIn": false,
+      "runs": [
+        {
+          "lcpMs": 1487.3580000000002,
+          "cls": 0,
+          "compressedJsBytes": 34288
+        },
+        {
+          "lcpMs": 1480.1429999999998,
+          "cls": 0,
+          "compressedJsBytes": 34288
+        },
+        {
+          "lcpMs": 1470.8529999999998,
+          "cls": 0,
+          "compressedJsBytes": 34288
+        }
+      ],
+      "median": {
+        "lcpMs": 1480.1429999999998,
+        "cls": 0,
+        "compressedJsBytes": 34288,
+        "runCount": 3
+      }
+    },
+    {
+      "id": "resume",
+      "lockedPath": "/resume",
+      "surface": "Resume Surface (PDF embed path)",
+      "notes": "Document load of Resume Surface (PDF path present in shell).",
+      "measuredUrl": "http://127.0.0.1:63365/resume",
+      "standIn": false,
+      "runs": [
+        {
+          "lcpMs": 1499.75,
+          "cls": 0,
+          "compressedJsBytes": 34288
+        },
+        {
+          "lcpMs": 1486.957,
+          "cls": 0,
+          "compressedJsBytes": 34288
+        },
+        {
+          "lcpMs": 1493.7005,
+          "cls": 0,
+          "compressedJsBytes": 34288
+        }
+      ],
+      "median": {
+        "lcpMs": 1493.7005,
+        "cls": 0,
+        "compressedJsBytes": 34288,
+        "runCount": 3
+      }
+    },
+    {
+      "id": "contact",
+      "lockedPath": "/contact",
+      "surface": "Contact Mode (document load only)",
+      "notes": "Document load only — form submit not exercised.",
+      "measuredUrl": "http://127.0.0.1:63365/contact",
+      "standIn": false,
+      "runs": [
+        {
+          "lcpMs": 1486.6610000000003,
+          "cls": 0.009981680057046463,
+          "compressedJsBytes": 34288
+        },
+        {
+          "lcpMs": 1495.6339999999998,
+          "cls": 0.009981680057046463,
+          "compressedJsBytes": 34288
+        },
+        {
+          "lcpMs": 1475.4940000000001,
+          "cls": 0.009981680057046463,
+          "compressedJsBytes": 34288
+        }
+      ],
+      "median": {
+        "lcpMs": 1486.6610000000003,
+        "cls": 0.009981680057046463,
+        "compressedJsBytes": 34288,
+        "runCount": 3
+      }
+    }
+  ],
+  "comparison": {
+    "hardRegressionRatio": 1.1,
+    "clsGoodBand": 0.1,
+    "hardPass": true,
+    "softPass": true,
+    "pass": true,
+    "verdict": "pass",
+    "cutoverBlocked": false,
+    "urls": [
+      {
+        "id": "home",
+        "lockedPath": "/",
+        "rewriteMedian": {
+          "lcpMs": 1481.735,
+          "cls": 0,
+          "compressedJsBytes": 34288,
+          "runCount": 3
+        },
+        "baselineMedian": {
+          "lcpMs": 3534.1969999999997,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 88208,
+          "runCount": 3
+        },
+        "lcp": {
+          "rewrite": 1481.735,
+          "baseline": 3534.1969999999997,
+          "limit": 3887.6167,
+          "ratio": 1.1,
+          "delta": -2052.4619999999995,
+          "deltaRatio": -0.5807435182588859,
+          "pass": true
+        },
+        "compressedJs": {
+          "rewrite": 34288,
+          "baseline": 88208,
+          "limit": 97028.8,
+          "ratio": 1.1,
+          "delta": -53920,
+          "deltaRatio": -0.6112824233629602,
+          "pass": true
+        },
+        "cls": {
+          "rewrite": 0,
+          "goodBand": 0.1,
+          "leavesGoodBand": false,
+          "pass": true,
+          "baseline": 0.0002146032779713382
+        },
+        "hardPass": true,
+        "softPass": true,
+        "pass": true
+      },
+      {
+        "id": "internal-dossier",
+        "lockedPath": "/work/labor-solutions/engage-reporting",
+        "rewriteMedian": {
+          "lcpMs": 1480.1429999999998,
+          "cls": 0,
+          "compressedJsBytes": 34288,
+          "runCount": 3
+        },
+        "baselineMedian": {
+          "lcpMs": 3534.1969999999997,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 88208,
+          "runCount": 3
+        },
+        "lcp": {
+          "rewrite": 1480.1429999999998,
+          "baseline": 3534.1969999999997,
+          "limit": 3887.6167,
+          "ratio": 1.1,
+          "delta": -2054.054,
+          "deltaRatio": -0.5811939741898938,
+          "pass": true
+        },
+        "compressedJs": {
+          "rewrite": 34288,
+          "baseline": 88208,
+          "limit": 97028.8,
+          "ratio": 1.1,
+          "delta": -53920,
+          "deltaRatio": -0.6112824233629602,
+          "pass": true
+        },
+        "cls": {
+          "rewrite": 0,
+          "goodBand": 0.1,
+          "leavesGoodBand": false,
+          "pass": true,
+          "baseline": 0.0002146032779713382
+        },
+        "hardPass": true,
+        "softPass": true,
+        "pass": true
+      },
+      {
+        "id": "resume",
+        "lockedPath": "/resume",
+        "rewriteMedian": {
+          "lcpMs": 1493.7005,
+          "cls": 0,
+          "compressedJsBytes": 34288,
+          "runCount": 3
+        },
+        "baselineMedian": {
+          "lcpMs": 3534.1969999999997,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 88208,
+          "runCount": 3
+        },
+        "lcp": {
+          "rewrite": 1493.7005,
+          "baseline": 3534.1969999999997,
+          "limit": 3887.6167,
+          "ratio": 1.1,
+          "delta": -2040.4964999999997,
+          "deltaRatio": -0.5773578835588395,
+          "pass": true
+        },
+        "compressedJs": {
+          "rewrite": 34288,
+          "baseline": 88208,
+          "limit": 97028.8,
+          "ratio": 1.1,
+          "delta": -53920,
+          "deltaRatio": -0.6112824233629602,
+          "pass": true
+        },
+        "cls": {
+          "rewrite": 0,
+          "goodBand": 0.1,
+          "leavesGoodBand": false,
+          "pass": true,
+          "baseline": 0.0002146032779713382
+        },
+        "hardPass": true,
+        "softPass": true,
+        "pass": true
+      },
+      {
+        "id": "contact",
+        "lockedPath": "/contact",
+        "rewriteMedian": {
+          "lcpMs": 1486.6610000000003,
+          "cls": 0.009981680057046463,
+          "compressedJsBytes": 34288,
+          "runCount": 3
+        },
+        "baselineMedian": {
+          "lcpMs": 3826.023000000001,
+          "cls": 0.0002146032779713382,
+          "compressedJsBytes": 70424,
+          "runCount": 3
+        },
+        "lcp": {
+          "rewrite": 1486.6610000000003,
+          "baseline": 3826.023000000001,
+          "limit": 4208.6253000000015,
+          "ratio": 1.1,
+          "delta": -2339.362000000001,
+          "deltaRatio": -0.6114343797724165,
+          "pass": true
+        },
+        "compressedJs": {
+          "rewrite": 34288,
+          "baseline": 70424,
+          "limit": 77466.40000000001,
+          "ratio": 1.1,
+          "delta": -36136,
+          "deltaRatio": -0.5131205270930365,
+          "pass": true
+        },
+        "cls": {
+          "rewrite": 0.009981680057046463,
+          "goodBand": 0.1,
+          "leavesGoodBand": false,
+          "pass": true,
+          "baseline": 0.0002146032779713382
+        },
+        "hardPass": true,
+        "softPass": true,
+        "pass": true
+      }
+    ],
+    "nonGates": [
+      "lighthousePerformanceScore",
+      "tti",
+      "tbt",
+      "inp",
+      "fieldRum",
+      "crux"
+    ]
+  }
+}

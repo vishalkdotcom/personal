@@ -16,7 +16,9 @@
     "test:install": "playwright install chromium",
     "prepare": "lefthook install",
     "perf:baseline": "node scripts/perf/capture-sveltekit-baseline.mjs",
-    "perf:baseline:test": "node --test scripts/perf/extract-lighthouse-metrics.test.mjs"
+    "perf:baseline:test": "node --test scripts/perf/extract-lighthouse-metrics.test.mjs",
+    "perf:cutover": "node scripts/perf/run-cutover-gate.mjs",
+    "perf:cutover:test": "node --test scripts/perf/compare-cutover-gate.test.mjs scripts/perf/gzip-static-server.test.mjs"
   },
   "dependencies": {
     "@solidjs/meta": "0.30.0-next.0",
@@ -30,6 +32,7 @@
     "@types/node": "^22.15.0",
     "@vitest/browser-playwright": "4.1.10",
     "lefthook": "^2.1.10",
+    "lighthouse": "^13.4.0",
     "oxfmt": "^0.59.0",
     "oxlint": "^1.74.0",
     "playwright": "^1.61.1",
