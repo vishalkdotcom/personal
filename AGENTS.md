@@ -8,6 +8,7 @@ Non-standard commands:
 
 - `bun check` — TypeScript (`tsc --noEmit`); type SoT, not the linter
 - `bun lint` / `bun format` — oxlint + oxfmt
+- Lefthook pre-commit — staged oxfmt + oxlint only (`bun install` / `prepare` installs hooks; not full check/test)
 
 Domain terms live in `CONTEXT.md`. For how to use domain docs and ADRs, see `docs/agents/domain.md`.
 

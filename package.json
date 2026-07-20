@@ -13,6 +13,7 @@
     "format:check": "oxfmt --check",
     "test": "vitest run",
     "test:watch": "vitest",
+    "prepare": "lefthook install",
     "perf:baseline": "node scripts/perf/capture-sveltekit-baseline.mjs",
     "perf:baseline:test": "node --test scripts/perf/extract-lighthouse-metrics.test.mjs"
   },
@@ -28,6 +29,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@types/node": "^22.15.0",
     "jsdom": "29.1.1",
+    "lefthook": "^2.1.10",
     "oxfmt": "^0.59.0",
     "oxlint": "^1.74.0",
     "tailwindcss": "4.3.3",

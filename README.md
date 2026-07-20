@@ -17,6 +17,8 @@ bun install
 bun dev
 ```
 
+`bun install` enables Lefthook via the `prepare` script (`lefthook install`). Pre-commit runs oxfmt + oxlint on staged files only — not full `bun check` / `bun test`. Skip once with `LEFTHOOK=0 git commit`.
+
 ## Scripts
 
 | Command | Purpose |
@@ -29,6 +31,7 @@ bun dev
 | `bun format` | Oxfmt write fixes |
 | `bun format:check` | Oxfmt check (CI / dirty tree) |
 | `bun test` | Vitest (App Shell seams) |
+| `bun prepare` | Install Lefthook git hooks (also runs after `bun install`) |
 
 ## Deploy
 

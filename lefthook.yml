@@ -1,0 +1,22 @@
+# Local Quality Gate: staged oxfmt + oxlint only.
+# Full `bun check` / `bun test` stay out of the commit hook (CI owns those).
+# https://lefthook.dev/configuration/
+
+pre-commit:
+  jobs:
+    - name: oxfmt
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs,json,css,html}"
+      exclude:
+        - "dist/**"
+        - "docs/perf/**"
+        - ".scratch/**"
+      run: bunx oxfmt {staged_files}
+      stage_fixed: true
+
+    - name: oxlint
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
+      exclude:
+        - "dist/**"
+        - "docs/perf/**"
+        - ".scratch/**"
+      run: bunx oxlint {staged_files}
