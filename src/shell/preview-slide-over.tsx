@@ -3,9 +3,13 @@ import { isHttpLiveUrl } from "../work/inventory";
 
 type PreviewFrame = "desktop" | "mobile";
 
+type PreviewLayout = "slide-over" | "fullscreen";
+
 type PreviewSlideOverProps = {
   live: string;
   onClose: () => void;
+  /** Desktop slide-over (default) or mobile full-screen overlay. */
+  layout?: PreviewLayout;
 };
 
 function frameButtonClass(active: boolean): string {
@@ -24,20 +28,26 @@ function deviceFrameClass(frame: PreviewFrame): string {
 }
 
 /**
- * Desktop Public Storefront Preview — slide-over with Desktop/Mobile frames.
+ * Public Storefront Preview — desktop slide-over or mobile full-screen overlay.
  * Frames are device chrome labeled with the honest Live URL (embed deferred; hosts often block iframes).
  */
 export const PreviewSlideOver: Component<PreviewSlideOverProps> = (props) => {
   const [frame, setFrame] = createSignal<PreviewFrame>("desktop");
+  const layout = () => props.layout ?? "slide-over";
   const hostLabel = () =>
     isHttpLiveUrl(props.live) ? props.live.replace(/^https?:\/\//i, "") : props.live;
 
   return (
     <div
-      class="absolute inset-0 z-10 flex flex-col border-t border-border bg-bg shadow-[0_-12px_40px_rgba(0,0,0,0.35)]"
+      class={
+        layout() === "fullscreen"
+          ? "absolute inset-0 z-50 flex flex-col bg-bg"
+          : "absolute inset-0 z-10 flex flex-col border-t border-border bg-bg shadow-[0_-12px_40px_rgba(0,0,0,0.35)]"
+      }
       role="dialog"
       aria-modal="true"
       aria-label="Preview"
+      data-preview-layout={layout()}
     >
       <div class="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-bg-deep px-4 py-2.5">
         <strong class="text-[13px] font-semibold">Preview</strong>

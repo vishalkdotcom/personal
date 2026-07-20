@@ -1,12 +1,12 @@
 import { useLocation } from "@solidjs/router";
 import { Show, createEffect, createSignal, type ParentComponent } from "solid-js";
-import { ThemeControl } from "../theme/theme-control";
 import { getActiveWorkCaseFromPath, isPreviewEnabledForPath } from "../work/inventory";
 import { ContextRail } from "./context-rail";
-import { ModeNav } from "./mode-nav";
+import { MOBILE_SHELL_QUERY, createMediaQuery } from "./create-media-query";
+import { LeftChrome } from "./left-chrome";
+import { MobileShell } from "./mobile-shell";
 import { modeTitleForPath } from "./modes";
 import { PreviewSlideOver } from "./preview-slide-over";
-import { WorkTree } from "./work-tree";
 
 const shellChipClass =
   "rounded-md border border-border bg-bg-deep px-2.5 py-[5px] text-xs leading-none text-muted hover:bg-bg-hover hover:text-fg aria-pressed:bg-bg-active aria-pressed:text-fg disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-bg-deep disabled:hover:text-muted";
@@ -15,7 +15,7 @@ const shellChipClass =
  * Desktop Triptych Dock: left IA · center stage · Context Rail.
  * Header hybrid A: Preview (Public Storefront only) + pane collapse chips.
  */
-export const AppShell: ParentComponent = (props) => {
+const DesktopTriptych: ParentComponent = (props) => {
   const location = useLocation();
   const [leftCollapsed, setLeftCollapsed] = createSignal(false);
   const [rightCollapsed, setRightCollapsed] = createSignal(false);
@@ -24,7 +24,6 @@ export const AppShell: ParentComponent = (props) => {
   const previewEnabled = () => isPreviewEnabledForPath(location.pathname);
   const activeCase = () => getActiveWorkCaseFromPath(location.pathname);
 
-  // Solid 2 createEffect: compute + effect. Close Preview on navigation.
   createEffect(
     () => location.pathname,
     () => {
@@ -44,22 +43,13 @@ export const AppShell: ParentComponent = (props) => {
       data-left-collapsed={leftCollapsed() ? "" : undefined}
       data-right-collapsed={rightCollapsed() ? "" : undefined}
       data-preview-open={previewOpen() ? "" : undefined}
+      data-shell="desktop"
     >
       <aside
         class="flex min-w-0 flex-col overflow-hidden border-r border-border bg-bg-deep p-[12px_8px] transition-[padding] duration-[160ms] ease-shell group-data-[left-collapsed]/shell:p-[10px_6px]"
         aria-label="Left chrome"
       >
-        <div class="flex items-start justify-between gap-2 p-[4px_8px_14px] group-data-[left-collapsed]/shell:justify-center group-data-[left-collapsed]/shell:p-[4px_0_10px]">
-          <div class="group-data-[left-collapsed]/shell:hidden">
-            <div class="whitespace-nowrap text-sm font-[650] tracking-[-0.02em]">Vishal Kumar</div>
-            <div class="mt-[3px] whitespace-nowrap text-[11px] text-faint">
-              Senior FE · Reporting UIs
-            </div>
-          </div>
-          <ThemeControl />
-        </div>
-        <ModeNav />
-        <WorkTree />
+        <LeftChrome />
       </aside>
 
       <div class="flex min-w-0 flex-col overflow-hidden bg-bg">
@@ -121,5 +111,18 @@ export const AppShell: ParentComponent = (props) => {
         <ContextRail />
       </aside>
     </div>
+  );
+};
+
+/**
+ * App Shell: desktop Triptych Dock or mobile single-column drawers by viewport.
+ */
+export const AppShell: ParentComponent = (props) => {
+  const isMobile = createMediaQuery(MOBILE_SHELL_QUERY);
+
+  return (
+    <Show when={isMobile()} fallback={<DesktopTriptych>{props.children}</DesktopTriptych>}>
+      <MobileShell>{props.children}</MobileShell>
+    </Show>
   );
 };

@@ -38,6 +38,8 @@ export default defineConfig({
             enabled: true,
             provider: playwright(),
             headless: true,
+            // Desktop Triptych Dock default; mobile App Shell tests call page.viewport.
+            viewport: { width: 1280, height: 800 },
             instances: [{ browser: "chromium" }],
           },
         },

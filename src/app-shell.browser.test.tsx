@@ -1211,3 +1211,129 @@ describe("Contact Mode (App Shell seam)", () => {
       .toBeVisible();
   });
 });
+
+const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
+const DESKTOP_VIEWPORT = { width: 1280, height: 800 } as const;
+
+async function setMobileViewport() {
+  await page.viewport(MOBILE_VIEWPORT.width, MOBILE_VIEWPORT.height);
+}
+
+async function restoreDesktopViewport() {
+  await page.viewport(DESKTOP_VIEWPORT.width, DESKTOP_VIEWPORT.height);
+}
+
+describe("Mobile App Shell (App Shell seam)", () => {
+  afterEach(async () => {
+    cleanup();
+    await restoreDesktopViewport();
+  });
+
+  it("uses a single-column active surface with no bottom tabs or always-on icon rail", async () => {
+    await setMobileViewport();
+    const { screen } = renderAt("/");
+
+    await expect.element(screen.getByRole("main")).toBeVisible();
+    await expect.element(screen.getByRole("button", { name: /open navigation/i })).toBeVisible();
+    await expect.element(screen.getByRole("button", { name: /open context/i })).toBeVisible();
+
+    await expect
+      .element(screen.getByRole("navigation", { name: /modes/i }))
+      .not.toBeInTheDocument();
+    await expect
+      .element(screen.getByRole("complementary", { name: /context rail/i }))
+      .not.toBeInTheDocument();
+    await expect.element(screen.getByRole("tablist")).not.toBeInTheDocument();
+    await expect
+      .element(screen.getByRole("button", { name: /collapse left/i }))
+      .not.toBeInTheDocument();
+  });
+
+  it("opens Modes + Work tree in the left IA drawer from ☰", async () => {
+    await setMobileViewport();
+    const { history, screen } = renderAt("/");
+
+    await screen.getByRole("button", { name: /open navigation/i }).click();
+    const drawer = screen.getByRole("dialog", { name: /navigation/i });
+    await expect.element(drawer).toBeVisible();
+    await expect.element(drawer.getByRole("navigation", { name: /modes/i })).toBeVisible();
+    await expect.element(drawer.getByRole("link", { name: /^About$/i })).toBeVisible();
+    await expect.element(drawer.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
+    await expect.element(drawer.getByRole("button", { name: /theme/i })).toBeVisible();
+
+    await drawer.getByRole("link", { name: /^About$/i }).click();
+    expect(history.get()).toBe("/about");
+    await expect
+      .element(screen.getByRole("dialog", { name: /navigation/i }))
+      .not.toBeInTheDocument();
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
+      .toBeVisible();
+  });
+
+  it("opens Context Rail content as a sheet from ···, full-screen when dense", async () => {
+    await setMobileViewport();
+    const { screen } = renderAt("/");
+
+    await screen.getByRole("button", { name: /open context/i }).click();
+    const sheet = screen.getByRole("dialog", { name: /context/i });
+    await expect.element(sheet).toBeVisible();
+    expect(sheet.element().getAttribute("data-dense")).toBe("");
+    await expect.element(sheet.getByText(/^Live$/i)).toBeVisible();
+    await expect.element(sheet.getByText(/^Role$/i)).toBeVisible();
+    await expect.element(sheet.getByText(/^Outcomes$/i)).toBeVisible();
+    await expect.element(sheet.getByText(/^Stack$/i)).toBeVisible();
+    await expect.element(sheet).toHaveTextContent(/sc-plus\.vercel\.app/i);
+
+    cleanup();
+    const about = renderAt("/about");
+    await about.screen.getByRole("button", { name: /open context/i }).click();
+    const aboutSheet = about.screen.getByRole("dialog", { name: /context/i });
+    await expect.element(aboutSheet).toBeVisible();
+    expect(aboutSheet.element().hasAttribute("data-dense")).toBe(false);
+    await expect.element(aboutSheet.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(aboutSheet.getByText(/^Facts$/i)).toBeVisible();
+  });
+
+  it("shows a header crumb for wayfinding", async () => {
+    await setMobileViewport();
+    const { screen } = renderAt("/");
+
+    const crumb = screen.getByRole("navigation", { name: /breadcrumb/i });
+    await expect.element(crumb).toBeVisible();
+    await expect.element(crumb).toHaveTextContent(/Prototypes/i);
+    await expect.element(crumb).toHaveTextContent(/SupplyChain\+/i);
+    await expect.element(crumb).toHaveTextContent(/Work/i);
+
+    cleanup();
+    const dossier = renderAt("/work/labor-solutions/engage-reporting");
+    const dossierCrumb = dossier.screen.getByRole("navigation", { name: /breadcrumb/i });
+    await expect.element(dossierCrumb).toHaveTextContent(/Labor Solutions/i);
+    await expect.element(dossierCrumb).toHaveTextContent(/Engage reporting/i);
+  });
+
+  it("opens Public Storefront Preview as a full-screen overlay and keeps Internal Dossier Preview off", async () => {
+    await setMobileViewport();
+    const { screen } = renderAt("/");
+
+    const previewChip = screen.getByRole("button", { name: /^Preview$/i });
+    await expect.element(previewChip).toBeVisible();
+    expect(previewChip.element().hasAttribute("disabled")).toBe(false);
+
+    await previewChip.click();
+    const dialog = screen.getByRole("dialog", { name: /^Preview$/i });
+    await expect.element(dialog).toBeVisible();
+    expect(dialog.element().getAttribute("data-preview-layout")).toBe("fullscreen");
+    await expect.element(dialog.getByRole("button", { name: /^Desktop$/i })).toBeVisible();
+    await expect.element(dialog.getByRole("button", { name: /^Mobile$/i })).toBeVisible();
+
+    cleanup();
+    const dossier = renderAt("/work/labor-solutions/engage-reporting");
+    const dossierPreview = dossier.screen.getByRole("button", { name: /^Preview$/i });
+    await expect.element(dossierPreview).toBeVisible();
+    expect(dossierPreview.element().hasAttribute("disabled")).toBe(true);
+    await expect
+      .element(dossier.screen.getByRole("dialog", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
+  });
+});
