@@ -21,10 +21,7 @@ export function writeThemePreference(preference: ThemePreference): void {
   localStorage.setItem(THEME_STORAGE_KEY, preference);
 }
 
-export function resolveTheme(
-  preference: ThemePreference,
-  systemDark: boolean,
-): ResolvedTheme {
+export function resolveTheme(preference: ThemePreference, systemDark: boolean): ResolvedTheme {
   if (preference === "light") return "light";
   if (preference === "dark") return "dark";
   return systemDark ? "dark" : "light";
@@ -34,9 +31,7 @@ export function applyResolvedTheme(resolved: ResolvedTheme): void {
   document.documentElement.dataset.theme = resolved;
 }
 
-export function cycleThemePreference(
-  current: ThemePreference,
-): ThemePreference {
+export function cycleThemePreference(current: ThemePreference): ThemePreference {
   if (current === "system") return "light";
   if (current === "light") return "dark";
   return "system";

@@ -18,9 +18,7 @@ const iconSvgClass =
 
 /** Brand-row control: cycles system → light → dark and persists the preference. */
 export const ThemeControl: Component = () => {
-  const [preference, setPreference] = createSignal<ThemePreference>(
-    readThemePreference(),
-  );
+  const [preference, setPreference] = createSignal<ThemePreference>(readThemePreference());
 
   onSettled(() => {
     syncThemeFromPreference(preference());
@@ -68,12 +66,7 @@ export const ThemeControl: Component = () => {
           <svg class={iconSvgClass} viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="9" />
             <path d="M12 3v18" />
-            <path
-              d="M12 3a9 9 0 0 1 0 18"
-              fill="currentColor"
-              stroke="none"
-              opacity="0.35"
-            />
+            <path d="M12 3a9 9 0 0 1 0 18" fill="currentColor" stroke="none" opacity="0.35" />
           </svg>
         )}
       </span>

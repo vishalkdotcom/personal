@@ -6,13 +6,7 @@ export default defineConfig({
   plugins: [solid(), tailwindcss()],
   publicDir: "static",
   resolve: {
-    dedupe: [
-      "solid-js",
-      "@solidjs/web",
-      "@solidjs/router",
-      "@solidjs/meta",
-      "@solidjs/signals",
-    ],
+    dedupe: ["solid-js", "@solidjs/web", "@solidjs/router", "@solidjs/meta", "@solidjs/signals"],
   },
   build: {
     outDir: "dist",

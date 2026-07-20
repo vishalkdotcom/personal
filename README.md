@@ -25,6 +25,9 @@ bun dev
 | `bun run build` | Production build → `dist/` |
 | `bun preview` | Preview the production build |
 | `bun check` | TypeScript (`tsc --noEmit`) |
+| `bun lint` | Oxlint over the in-scope tree |
+| `bun format` | Oxfmt write fixes |
+| `bun format:check` | Oxfmt check (CI / dirty tree) |
 | `bun test` | Vitest (App Shell seams) |
 
 ## Deploy

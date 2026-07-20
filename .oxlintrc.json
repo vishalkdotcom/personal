@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": ["dist/**", "docs/perf/**", ".scratch/**"],
+  "env": {
+    "builtin": true
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.{test,spec}.{ts,tsx,js,mjs,cjs}",
+        "**/test-setup.ts",
+        "scripts/**/*.test.mjs"
+      ],
+      "plugins": ["typescript", "unicorn", "oxc", "vitest"]
+    }
+  ]
+}

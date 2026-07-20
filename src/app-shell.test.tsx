@@ -27,10 +27,7 @@ describe("App Shell Mode routes (App Shell seam)", () => {
       ["/resume", /Resume Surface/i],
       ["/contact", /Contact Mode/i],
       ["/work/labor-solutions", /Work Folder/i],
-      [
-        "/work/labor-solutions/engage-reporting",
-        /Work Case/i,
-      ],
+      ["/work/labor-solutions/engage-reporting", /Work Case/i],
     ];
 
     for (const [path, label] of cases) {
@@ -66,33 +63,19 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
 
   it("shows always-on left IA, center stage, and Context Rail", async () => {
     renderAt("/");
-    expect(
-      await screen.findByRole("navigation", { name: /modes/i }),
-    ).toBeInTheDocument();
+    expect(await screen.findByRole("navigation", { name: /modes/i })).toBeInTheDocument();
     expect(screen.getByRole("main")).toBeInTheDocument();
-    expect(
-      screen.getByRole("complementary", { name: /context rail/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("complementary", { name: /context rail/i })).toBeInTheDocument();
   });
 
   it("offers Work · About · Resume · Contact Modes without Notes", async () => {
     renderAt("/");
     const nav = await screen.findByRole("navigation", { name: /modes/i });
-    expect(
-      screen.getByRole("link", { name: /^Work$/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /^About$/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /^Resume$/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /^Contact$/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("link", { name: /^Notes$/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^Work$/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^About$/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^Resume$/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^Contact$/i })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /^Notes$/i })).not.toBeInTheDocument();
     expect(nav.textContent).not.toMatch(/Notes/i);
   });
 
@@ -111,9 +94,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     expect(history.get()).toBe("/contact");
 
     fireEvent.click(screen.getByRole("link", { name: /^Work$/i }));
-    expect(
-      await screen.findByText(/Featured Public Storefront/i),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/Featured Public Storefront/i)).toBeInTheDocument();
     expect(history.get()).toBe("/");
   });
 
@@ -131,27 +112,17 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     expect(
       await screen.findByRole("button", { name: /expand (right|context)/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("complementary", { name: /context rail/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("complementary", { name: /context rail/i })).not.toBeInTheDocument();
 
     fireEvent.click(leftChip);
-    expect(
-      await screen.findByRole("button", { name: /expand left/i }),
-    ).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /expand left/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^About$/i })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("link", { name: /^Contact$/i }));
     expect(await screen.findByText(/Contact Mode/i)).toBeInTheDocument();
 
-    fireEvent.click(
-      screen.getByRole("button", { name: /expand (right|context)/i }),
-    );
-    expect(
-      await screen.findByRole("complementary", { name: /context rail/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /collapse (right|context)/i }),
-    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /expand (right|context)/i }));
+    expect(await screen.findByRole("complementary", { name: /context rail/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /collapse (right|context)/i })).toBeInTheDocument();
   });
 
   it("omits chat/IDE product chrome labels", async () => {

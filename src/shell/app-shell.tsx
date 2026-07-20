@@ -18,11 +18,9 @@ export const AppShell: ParentComponent = (props) => {
   const [rightCollapsed, setRightCollapsed] = createSignal(false);
 
   const gridColumns = () =>
-    [
-      leftCollapsed() ? "48px" : "252px",
-      "minmax(0, 1fr)",
-      rightCollapsed() ? "0fr" : "288px",
-    ].join(" ");
+    [leftCollapsed() ? "48px" : "252px", "minmax(0, 1fr)", rightCollapsed() ? "0fr" : "288px"].join(
+      " ",
+    );
 
   return (
     <div
@@ -37,9 +35,7 @@ export const AppShell: ParentComponent = (props) => {
       >
         <div class="flex items-start justify-between gap-2 p-[4px_8px_14px] group-data-[left-collapsed]/shell:justify-center group-data-[left-collapsed]/shell:p-[4px_0_10px]">
           <div class="group-data-[left-collapsed]/shell:hidden">
-            <div class="whitespace-nowrap text-sm font-[650] tracking-[-0.02em]">
-              Vishal Kumar
-            </div>
+            <div class="whitespace-nowrap text-sm font-[650] tracking-[-0.02em]">Vishal Kumar</div>
             <div class="mt-[3px] whitespace-nowrap text-[11px] text-faint">
               Senior FE · Reporting UIs
             </div>
@@ -51,17 +47,13 @@ export const AppShell: ParentComponent = (props) => {
 
       <div class="flex min-w-0 flex-col overflow-hidden bg-bg">
         <header class="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-2.5">
-          <h1 class="m-0 text-[13.5px] font-semibold">
-            {modeTitleForPath(location.pathname)}
-          </h1>
+          <h1 class="m-0 text-[13.5px] font-semibold">{modeTitleForPath(location.pathname)}</h1>
           <div class="flex items-center gap-1.5">
             <button
               type="button"
               class={shellChipClass}
               aria-pressed={leftCollapsed() ? "true" : "false"}
-              aria-label={
-                leftCollapsed() ? "Expand left chrome" : "Collapse left chrome"
-              }
+              aria-label={leftCollapsed() ? "Expand left chrome" : "Collapse left chrome"}
               title={leftCollapsed() ? "Expand left" : "Collapse left"}
               onClick={() => setLeftCollapsed((value) => !value)}
             >
@@ -71,24 +63,15 @@ export const AppShell: ParentComponent = (props) => {
               type="button"
               class={shellChipClass}
               aria-pressed={rightCollapsed() ? "true" : "false"}
-              aria-label={
-                rightCollapsed()
-                  ? "Expand Context Rail"
-                  : "Collapse Context Rail"
-              }
-              title={
-                rightCollapsed() ? "Expand Context Rail" : "Collapse Context Rail"
-              }
+              aria-label={rightCollapsed() ? "Expand Context Rail" : "Collapse Context Rail"}
+              title={rightCollapsed() ? "Expand Context Rail" : "Collapse Context Rail"}
               onClick={() => setRightCollapsed((value) => !value)}
             >
               ⌟
             </button>
           </div>
         </header>
-        <main
-          class="min-w-0 flex-1 overflow-auto bg-bg-panel px-9 py-7"
-          id="stage"
-        >
+        <main class="min-w-0 flex-1 overflow-auto bg-bg-panel px-9 py-7" id="stage">
           {props.children}
         </main>
       </div>

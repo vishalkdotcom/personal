@@ -9,9 +9,4 @@ if (!root) {
   throw new Error("Missing #app mount point");
 }
 
-render(
-  () => (
-    <Router root={AppShellRoutes.root}>{AppShellRoutes.routes}</Router>
-  ),
-  root,
-);
+render(() => <Router root={AppShellRoutes.root}>{AppShellRoutes.routes}</Router>, root);

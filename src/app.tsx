@@ -27,10 +27,7 @@ export const AppShellRoutes = {
       <Route path="/resume" component={ResumeStage} />
       <Route path="/contact" component={ContactStage} />
       <Route path="/work/:folderSlug" component={WorkFolderStage} />
-      <Route
-        path="/work/:folderSlug/:caseSlug"
-        component={WorkCaseStage}
-      />
+      <Route path="/work/:folderSlug/:caseSlug" component={WorkCaseStage} />
     </>
   ),
 };

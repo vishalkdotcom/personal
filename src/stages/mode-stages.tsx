@@ -9,17 +9,11 @@ export const FeaturedWorkStage: Component = () => (
   />
 );
 
-export const AboutStage: Component = () => (
-  <StubStage label="About Mode (stub)" />
-);
+export const AboutStage: Component = () => <StubStage label="About Mode (stub)" />;
 
-export const ResumeStage: Component = () => (
-  <StubStage label="Resume Surface (stub)" />
-);
+export const ResumeStage: Component = () => <StubStage label="Resume Surface (stub)" />;
 
-export const ContactStage: Component = () => (
-  <StubStage label="Contact Mode (stub)" />
-);
+export const ContactStage: Component = () => <StubStage label="Contact Mode (stub)" />;
 
 export const WorkFolderStage: Component = () => {
   const params = useParams<{ folderSlug: string }>();

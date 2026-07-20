@@ -41,22 +41,14 @@ const ModeIcon: Component<{ id: ModeId }> = (props) => {
 };
 
 function isModifiedClick(event: MouseEvent): boolean {
-  return (
-    event.button !== 0 ||
-    event.metaKey ||
-    event.altKey ||
-    event.ctrlKey ||
-    event.shiftKey
-  );
+  return event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey;
 }
 
 function modeItemClass(active: boolean): string {
   return [
     "flex items-center gap-2.5 whitespace-nowrap rounded-md px-2.5 py-[7px] text-[13px] font-medium",
     "group-data-[left-collapsed]/shell:justify-center group-data-[left-collapsed]/shell:p-2",
-    active
-      ? "bg-bg-active text-fg"
-      : "text-muted hover:bg-bg-hover hover:text-fg",
+    active ? "bg-bg-active text-fg" : "text-muted hover:bg-bg-hover hover:text-fg",
   ].join(" ");
 }
 
@@ -85,15 +77,10 @@ export const ModeNav: Component = () => {
                 navigate(mode.href);
               }}
             >
-              <span
-                class="grid size-4 shrink-0 place-items-center opacity-75"
-                aria-hidden="true"
-              >
+              <span class="grid size-4 shrink-0 place-items-center opacity-75" aria-hidden="true">
                 <ModeIcon id={mode.id} />
               </span>
-              <span class="group-data-[left-collapsed]/shell:hidden">
-                {mode.label}
-              </span>
+              <span class="group-data-[left-collapsed]/shell:hidden">{mode.label}</span>
             </A>
           );
         }}
