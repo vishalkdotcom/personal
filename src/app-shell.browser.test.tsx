@@ -263,3 +263,83 @@ describe("Work inventory and Work tree (App Shell seam)", () => {
     await expect.element(screen.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
   });
 });
+
+describe("Work Context Rail (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  it("shows locked Work Context Rail section order when a Work Case is active", async () => {
+    const { screen } = renderAt("/work/prototypes/supplychain-plus");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail).toBeVisible();
+
+    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Role$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Outcomes$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Stack$/i)).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
+
+    const text = rail.element().textContent ?? "";
+    const markers = ["Availability", "Live", "Role", "Outcomes", "Stack", "Get in touch"];
+    let previous = -1;
+    for (const marker of markers) {
+      const index = text.indexOf(marker);
+      expect(index, `expected "${marker}" after prior sections`).toBeGreaterThan(previous);
+      previous = index;
+    }
+  });
+
+  it("keeps Stack expanded without a collapse control", async () => {
+    const { screen } = renderAt("/work/labor-solutions/engage-reporting");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail).toBeVisible();
+    await expect.element(rail.getByText(/^Stack$/i)).toBeVisible();
+    await expect.element(rail.getByText(/Reporting UI/i)).toBeVisible();
+    await expect.element(rail.getByRole("button", { name: /stack/i })).not.toBeInTheDocument();
+  });
+
+  it("updates Context Rail body when the active Work Case changes", async () => {
+    const { history, screen } = renderAt("/work/labor-solutions/engage-reporting");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail).toBeVisible();
+    await expect.element(rail).toHaveTextContent(/Engage reporting/i);
+    await expect.element(rail).toHaveTextContent(/Auth-walled/i);
+
+    await screen.getByRole("link", { name: /SupplyChain\+/i }).click();
+    expect(history.get()).toBe("/work/prototypes/supplychain-plus");
+    await expect.element(rail).toHaveTextContent(/SupplyChain\+/i);
+    await expect.element(rail).toHaveTextContent(/Public URL/i);
+    await expect.element(rail).not.toHaveTextContent(/Engage reporting/i);
+  });
+
+  it("keeps Context Rail in the Triptych Dock collapse model", async () => {
+    const { screen } = renderAt("/work/tools/snap2paper");
+    await expect
+      .element(screen.getByRole("complementary", { name: /context rail/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("complementary", { name: /context rail/i }))
+      .toHaveTextContent(/Snap2Paper/i);
+
+    await screen.getByRole("button", { name: /collapse (right|context)/i }).click();
+    await expect
+      .element(screen.getByRole("complementary", { name: /context rail/i }))
+      .not.toBeInTheDocument();
+
+    await screen.getByRole("button", { name: /expand (right|context)/i }).click();
+    await expect
+      .element(screen.getByRole("complementary", { name: /context rail/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("complementary", { name: /context rail/i }))
+      .toHaveTextContent(/Snap2Paper/i);
+  });
+
+  it("omits Outputs and Sources product labels from the Context Rail", async () => {
+    const { screen } = renderAt("/work/prototypes/qgenai");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail).toBeVisible();
+    await expect.element(rail.getByText(/^Outputs$/i)).not.toBeInTheDocument();
+    await expect.element(rail.getByText(/^Sources$/i)).not.toBeInTheDocument();
+  });
+});

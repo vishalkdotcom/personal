@@ -1,6 +1,7 @@
 import { useLocation } from "@solidjs/router";
 import { createSignal, type ParentComponent } from "solid-js";
 import { ThemeControl } from "../theme/theme-control";
+import { ContextRail } from "./context-rail";
 import { ModeNav } from "./mode-nav";
 import { modeTitleForPath } from "./modes";
 import { WorkTree } from "./work-tree";
@@ -11,7 +12,6 @@ const shellChipClass =
 /**
  * Desktop Triptych Dock: left IA · center stage · Context Rail.
  * Left chrome Modes + Work tree; header chips collapse left / Context Rail.
- * Context Rail body ships in a later ticket.
  */
 export const AppShell: ParentComponent = (props) => {
   const location = useLocation();
@@ -83,9 +83,7 @@ export const AppShell: ParentComponent = (props) => {
         aria-label="Context Rail"
         aria-hidden={rightCollapsed() ? "true" : "false"}
       >
-        <p class="m-0 p-2 text-xs leading-[1.45] text-faint">
-          Context Rail — case and Mode context ships in a later ticket.
-        </p>
+        <ContextRail />
       </aside>
     </div>
   );
