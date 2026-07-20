@@ -17,3 +17,5 @@ Issue tracking is Obsidian vault `pro` (Project → Spec → Ticket), not GitHub
 
 For SolidJS 2 / build / deploy constraints, see `docs/agents/stack.md`.
 For the SvelteKit perf cutover baseline, see `docs/agents/perf-baseline.md`.
+
+`/ship` runs the Ship Review Gate (fix-in-loop before commit); details in `.agents/skills/ship/`.
