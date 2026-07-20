@@ -3,14 +3,15 @@ import { createSignal, type ParentComponent } from "solid-js";
 import { ThemeControl } from "../theme/theme-control";
 import { ModeNav } from "./mode-nav";
 import { modeTitleForPath } from "./modes";
+import { WorkTree } from "./work-tree";
 
 const shellChipClass =
   "rounded-md border border-border bg-bg-deep px-2.5 py-[5px] text-xs leading-none text-muted hover:bg-bg-hover hover:text-fg aria-pressed:bg-bg-active aria-pressed:text-fg";
 
 /**
  * Desktop Triptych Dock: left IA · center stage · Context Rail.
- * Left chrome Modes; header chips collapse left / Context Rail.
- * Work tree and Context Rail body ship in later tickets.
+ * Left chrome Modes + Work tree; header chips collapse left / Context Rail.
+ * Context Rail body ships in a later ticket.
  */
 export const AppShell: ParentComponent = (props) => {
   const location = useLocation();
@@ -43,6 +44,7 @@ export const AppShell: ParentComponent = (props) => {
           <ThemeControl />
         </div>
         <ModeNav />
+        <WorkTree />
       </aside>
 
       <div class="flex min-w-0 flex-col overflow-hidden bg-bg">
