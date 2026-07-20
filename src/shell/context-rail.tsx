@@ -1,6 +1,7 @@
 import { A, useLocation } from "@solidjs/router";
 import { For, Match, Show, Switch, type Component } from "solid-js";
 import { ABOUT_AVAILABILITY, ABOUT_ELSEWHERE, ABOUT_FACTS } from "../about/content";
+import { CONTACT_AVAILABILITY, CONTACT_QUICK_LINKS } from "../contact/content";
 import { RESUME_AVAILABILITY, RESUME_LINKS } from "../resume/content";
 import { getActiveWorkCaseFromPath, isHttpLiveUrl, type WorkCase } from "../work/inventory";
 
@@ -12,6 +13,54 @@ const ctaClass =
   "inline-flex items-center justify-center rounded-md border border-border bg-bg-panel px-2.5 py-1.5 text-[12px] font-medium text-fg hover:bg-bg-hover";
 
 const linkClass = "text-accent underline-offset-2 hover:underline";
+
+type RailLink = {
+  label: string;
+  href: string;
+  external?: boolean;
+};
+
+/** Shared Context Rail link rendering for About / Resume / Contact lists. */
+const RailLinkItem: Component<{ link: RailLink }> = (props) => {
+  const href = () => props.link.href;
+  return (
+    <Switch
+      fallback={
+        <A href={href()} class={linkClass}>
+          {props.link.label}
+        </A>
+      }
+    >
+      <Match when={props.link.external}>
+        <a href={href()} class={linkClass} target="_blank" rel="noreferrer">
+          {props.link.label}
+        </a>
+      </Match>
+      <Match when={href().startsWith("mailto:")}>
+        <a href={href()} class={linkClass}>
+          {props.link.label}
+        </a>
+      </Match>
+      <Match when={/\.pdf$/i.test(href())}>
+        <a href={href()} class={linkClass} download>
+          {props.link.label}
+        </a>
+      </Match>
+    </Switch>
+  );
+};
+
+const RailLinkList: Component<{ links: readonly RailLink[] }> = (props) => (
+  <ul class="m-0 mt-1.5 list-none space-y-2 p-0 text-[12.5px] leading-[1.45]">
+    <For each={[...props.links]}>
+      {(link) => (
+        <li>
+          <RailLinkItem link={link} />
+        </li>
+      )}
+    </For>
+  </ul>
+);
 
 const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
   <div class="flex flex-col gap-4 p-2">
@@ -111,23 +160,7 @@ const AboutContext: Component = () => (
       <h2 id="rail-elsewhere" class={sectionHeadingClass}>
         Elsewhere
       </h2>
-      <ul class="m-0 mt-1.5 list-none space-y-2 p-0 text-[12.5px] leading-[1.45]">
-        <For each={ABOUT_ELSEWHERE}>
-          {(link) => (
-            <li>
-              {link.external ? (
-                <a href={link.href} class={linkClass} target="_blank" rel="noreferrer">
-                  {link.label}
-                </a>
-              ) : (
-                <A href={link.href} class={linkClass}>
-                  {link.label}
-                </A>
-              )}
-            </li>
-          )}
-        </For>
-      </ul>
+      <RailLinkList links={ABOUT_ELSEWHERE} />
     </section>
   </div>
 );
@@ -149,23 +182,26 @@ const ResumeContext: Component = () => (
       <h2 id="rail-links" class={sectionHeadingClass}>
         Links
       </h2>
-      <ul class="m-0 mt-1.5 list-none space-y-2 p-0 text-[12.5px] leading-[1.45]">
-        <For each={RESUME_LINKS}>
-          {(link) => (
-            <li>
-              {link.external ? (
-                <a href={link.href} class={linkClass} target="_blank" rel="noreferrer">
-                  {link.label}
-                </a>
-              ) : (
-                <a href={link.href} class={linkClass} download>
-                  {link.label}
-                </a>
-              )}
-            </li>
-          )}
-        </For>
-      </ul>
+      <RailLinkList links={RESUME_LINKS} />
+    </section>
+  </div>
+);
+
+/** Contact Mode rail: availability + email / LinkedIn / GitHub / CV (not Hire-Signal-gated). */
+const ContactContext: Component = () => (
+  <div class="flex flex-col gap-4 p-2">
+    <section aria-labelledby="rail-availability">
+      <h2 id="rail-availability" class={sectionHeadingClass}>
+        Availability
+      </h2>
+      <p class={sectionBodyClass}>{CONTACT_AVAILABILITY}</p>
+    </section>
+
+    <section aria-labelledby="rail-quick-links">
+      <h2 id="rail-quick-links" class={sectionHeadingClass}>
+        Quick links
+      </h2>
+      <RailLinkList links={CONTACT_QUICK_LINKS} />
     </section>
   </div>
 );
@@ -173,7 +209,7 @@ const ResumeContext: Component = () => (
 /**
  * Context Rail body: Work Case sections when a case is active (including featured `/`);
  * About Mode Availability → Facts → Elsewhere on `/about`; thin Resume links/hire on
- * `/resume`; otherwise Mode placeholder.
+ * `/resume`; Contact availability + quick links on `/contact`; otherwise Mode placeholder.
  */
 export const ContextRail: Component = () => {
   const location = useLocation();
@@ -193,6 +229,9 @@ export const ContextRail: Component = () => {
       </Match>
       <Match when={pathname().startsWith("/resume")}>
         <ResumeContext />
+      </Match>
+      <Match when={pathname().startsWith("/contact")}>
+        <ContactContext />
       </Match>
       <Match when={activeCase()}>{(workCase) => <WorkCaseContext workCase={workCase()} />}</Match>
     </Switch>

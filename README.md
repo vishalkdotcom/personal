@@ -40,6 +40,8 @@ Cloudflare Pages:
 - Build command: `bun run build`
 - Output directory: `dist`
 - Config: `wrangler.toml` (`pages_build_output_dir = "dist"`)
+- Contact: `functions/api/contact.ts` + `static/_routes.json` (`/api/*` only)
+- Env secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` (Pages dashboard; never client-shipped)
 
 Deep links rely on Pages’ default SPA fallback (no top-level `404.html`).
 

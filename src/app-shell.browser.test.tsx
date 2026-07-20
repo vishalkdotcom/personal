@@ -1,8 +1,9 @@
 import { cleanup, render } from "@solidjs/testing-library";
 import { createMemoryHistory, MemoryRouter } from "@solidjs/router";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { page } from "vitest/browser";
 import { AppShellRoutes } from "./app";
+import { CONTACT_EMAIL } from "./contact/content";
 import { THEME_STORAGE_KEY } from "./theme/theme";
 
 function renderAt(path: string) {
@@ -19,9 +20,11 @@ function renderAt(path: string) {
 describe("App Shell Mode routes (App Shell seam)", () => {
   afterEach(() => cleanup());
 
-  it("shows labeled stub stages for Contact Mode URL", async () => {
+  it("shows Contact Mode for Contact Mode URL", async () => {
     const { screen } = renderAt("/contact");
-    await expect.element(screen.getByText(/Contact Mode/i)).toBeVisible();
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^Get in touch$/i }))
+      .toBeVisible();
   });
 
   it("exposes brand-row theme control that cycles and persists preference", async () => {
@@ -87,7 +90,9 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     expect(history.get()).toBe("/resume");
 
     await screen.getByRole("link", { name: /^Contact$/i }).click();
-    await expect.element(screen.getByText(/Contact Mode/i)).toBeVisible();
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^Get in touch$/i }))
+      .toBeVisible();
     expect(history.get()).toBe("/contact");
 
     await screen.getByRole("link", { name: /^Work$/i }).click();
@@ -117,7 +122,9 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(screen.getByRole("button", { name: /expand left/i })).toBeVisible();
     await expect.element(screen.getByRole("link", { name: /^About$/i })).toBeVisible();
     await screen.getByRole("link", { name: /^Contact$/i }).click();
-    await expect.element(screen.getByText(/Contact Mode/i)).toBeVisible();
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^Get in touch$/i }))
+      .toBeVisible();
 
     await screen.getByRole("button", { name: /expand (right|context)/i }).click();
     await expect
@@ -1035,6 +1042,171 @@ describe("Resume Surface (App Shell seam)", () => {
     await expect
       .element(
         screen.getByRole("navigation", { name: /modes/i }).getByRole("link", { name: /^Resume$/i }),
+      )
+      .toBeVisible();
+  });
+});
+
+describe("Contact Mode (App Shell seam)", () => {
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("shows the full form in the center on /contact", async () => {
+    const { screen } = renderAt("/contact");
+    const stage = screen.getByRole("main");
+
+    await expect.element(stage.getByRole("heading", { name: /^Get in touch$/i })).toBeVisible();
+    await expect.element(stage.getByLabelText(/^Name$/i)).toBeVisible();
+    await expect.element(stage.getByLabelText(/^Email$/i)).toBeVisible();
+    await expect.element(stage.getByLabelText(/^Message$/i)).toBeVisible();
+    await expect.element(stage.getByRole("button", { name: /^Send message$/i })).toBeVisible();
+    await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
+  });
+
+  it("validates name, email, and message before submit", async () => {
+    const { screen } = renderAt("/contact");
+    const stage = screen.getByRole("main");
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    await stage.getByRole("button", { name: /^Send message$/i }).click();
+
+    await expect.element(stage.getByText(/^Name is required$/i)).toBeVisible();
+    await expect.element(stage.getByText(/^Invalid email address$/i)).toBeVisible();
+    await expect.element(stage.getByText(/^Message is required$/i)).toBeVisible();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("submits a valid form and shows the success message", async () => {
+    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(
+      async () =>
+        new Response(JSON.stringify({ success: true, message: "Message sent successfully!" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { screen } = renderAt("/contact");
+    const stage = screen.getByRole("main");
+
+    await stage.getByLabelText(/^Name$/i).fill("Ada Lovelace");
+    await stage.getByLabelText(/^Email$/i).fill("ada@example.com");
+    await stage.getByLabelText(/^Message$/i).fill("Hello from Analytical Engine.");
+    await stage.getByRole("button", { name: /^Send message$/i }).click();
+
+    await expect.element(stage.getByText(/^Message sent successfully!$/i)).toBeVisible();
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const call = fetchMock.mock.calls[0];
+    expect(call).toBeDefined();
+    const [url, init] = call!;
+    expect(url).toBe("/api/contact");
+    expect(init?.method).toBe("POST");
+    expect(JSON.parse(String(init?.body))).toEqual({
+      name: "Ada Lovelace",
+      email: "ada@example.com",
+      message: "Hello from Analytical Engine.",
+    });
+  });
+
+  it("surfaces a safe delivery error without leaking internals", async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            error: true,
+            message: "Email service is temporarily unavailable. Please contact me directly.",
+          }),
+          { status: 500, headers: { "Content-Type": "application/json" } },
+        ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { screen } = renderAt("/contact");
+    const stage = screen.getByRole("main");
+
+    await stage.getByLabelText(/^Name$/i).fill("Ada Lovelace");
+    await stage.getByLabelText(/^Email$/i).fill("ada@example.com");
+    await stage.getByLabelText(/^Message$/i).fill("Hello from Analytical Engine.");
+    await stage.getByRole("button", { name: /^Send message$/i }).click();
+
+    await expect
+      .element(
+        stage.getByText(/Email service is temporarily unavailable\. Please contact me directly\./i),
+      )
+      .toBeVisible();
+    await expect.element(stage.getByRole("link", { name: /Email me directly/i })).toBeVisible();
+    expect(
+      stage
+        .getByRole("link", { name: /Email me directly/i })
+        .element()
+        .getAttribute("href"),
+    ).toBe(`mailto:${CONTACT_EMAIL}`);
+    await expect.element(stage).not.toHaveTextContent(/RESEND_API_KEY|stack|re_/i);
+  });
+
+  it("shows availability plus email / LinkedIn / GitHub / CV in the Context Rail", async () => {
+    const { screen } = renderAt("/contact");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+
+    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(rail).toHaveTextContent(/Open to roles · Senior Frontend/i);
+    await expect.element(rail.getByText(/^Quick links$/i)).toBeVisible();
+
+    const email = rail.getByRole("link", { name: /^Email/i });
+    await expect.element(email).toBeVisible();
+    expect(email.element().getAttribute("href")).toBe(`mailto:${CONTACT_EMAIL}`);
+
+    const linkedIn = rail.getByRole("link", { name: /^LinkedIn/i });
+    await expect.element(linkedIn).toBeVisible();
+    expect(linkedIn.element().getAttribute("href")).toBe(
+      "https://www.linkedin.com/in/vishalkdotcom",
+    );
+
+    const github = rail.getByRole("link", { name: /^GitHub/i });
+    await expect.element(github).toBeVisible();
+    expect(github.element().getAttribute("href")).toBe("https://github.com/vishalkdotcom");
+
+    const cv = rail.getByRole("link", { name: /^CV/i });
+    await expect.element(cv).toBeVisible();
+    expect(cv.element().getAttribute("href")).toBe("/vishal-cv.pdf");
+
+    const text = rail.element().textContent ?? "";
+    const markers = ["Availability", "Quick links"];
+    let previous = -1;
+    for (const marker of markers) {
+      const index = text.indexOf(marker);
+      expect(index, `expected "${marker}" after prior sections`).toBeGreaterThan(previous);
+      previous = index;
+    }
+  });
+
+  it("keeps Contact Mode and quick links available without Hire Signal gating", async () => {
+    const { screen } = renderAt("/contact");
+    const stage = screen.getByRole("main");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+
+    await expect.element(stage.getByRole("heading", { name: /^Get in touch$/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^Email/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^LinkedIn/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^GitHub/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^CV/i })).toBeVisible();
+  });
+
+  it("deep-links /contact to Contact Mode", async () => {
+    const { history, screen } = renderAt("/contact");
+    expect(history.get()).toBe("/contact");
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^Get in touch$/i }))
+      .toBeVisible();
+    await expect
+      .element(
+        screen
+          .getByRole("navigation", { name: /modes/i })
+          .getByRole("link", { name: /^Contact$/i }),
       )
       .toBeVisible();
   });
