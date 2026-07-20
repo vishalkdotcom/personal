@@ -1,7 +1,10 @@
+import { resolve } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import { playwright } from "@vitest/browser-playwright";
+import type { Plugin } from "vite";
 import { defineConfig } from "vitest/config";
 import solid from "vite-plugin-solid";
+import { emitMetaShells } from "./src/meta/emit-meta-shells";
 
 const solidDedupe = [
   "solid-js",
@@ -11,8 +14,23 @@ const solidDedupe = [
   "@solidjs/signals",
 ] as const;
 
+/** Stamp per-path HTML meta shells after Vite emits the SPA index HTML. */
+function stampMetaShellsPlugin(): Plugin {
+  let outDir = "dist";
+  return {
+    name: "stamp-meta-shells",
+    apply: "build",
+    configResolved(config) {
+      outDir = config.build.outDir;
+    },
+    closeBundle() {
+      emitMetaShells(resolve(outDir));
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [solid(), tailwindcss()],
+  plugins: [solid(), tailwindcss(), stampMetaShellsPlugin()],
   publicDir: "static",
   resolve: {
     dedupe: [...solidDedupe],

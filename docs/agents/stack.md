@@ -18,6 +18,7 @@ Read this when changing dependencies, build config, JSX/TS setup, or deploy wiri
 ## Deploy
 
 - Cloudflare Pages static output: `dist/` (`wrangler.toml` `pages_build_output_dir`).
+- Build stamps per-path HTML meta shells for the finite Mode + Work Case deep-link set (`src/meta/`); full-body SSR is not required.
 - Contact form: Pages Function `POST /api/contact` → Resend via `fetch` (`functions/api/contact.ts`).
 - Secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` in Pages env only (never `VITE_`-prefixed).
 - Functions scope: `dist/_routes.json` include `/api/*` only (copied from `static/_routes.json`).

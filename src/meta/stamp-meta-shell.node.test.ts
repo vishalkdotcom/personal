@@ -1,0 +1,114 @@
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, describe, expect, it } from "vitest";
+import { emitMetaShells } from "./emit-meta-shells";
+import { DEEP_LINK_ROUTES, pageMetaForPath } from "./route-manifest";
+import { OG_IMAGE_URL, SITE_NAME, SITE_ORIGIN } from "./site";
+import { escapeHtmlAttr, shellOutputPath, stampMetaShell } from "./stamp-meta-shell";
+
+const SPA_SHELL = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vishal Kumar</title>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
+`;
+
+describe("Stamped meta shells (build output seam)", () => {
+  let tempRoot: string | undefined;
+
+  afterEach(() => {
+    if (tempRoot) {
+      rmSync(tempRoot, { recursive: true, force: true });
+      tempRoot = undefined;
+    }
+  });
+
+  it("stamps title, description, OG, and canonical into the SPA shell", () => {
+    const meta = pageMetaForPath("/about");
+    const html = stampMetaShell(SPA_SHELL, meta);
+
+    expect(html).toContain(`<title data-sm="stamp-title">About · ${SITE_NAME}</title>`);
+    expect(html).toContain(
+      `<meta data-sm="stamp-description" name="description" content="${escapeHtmlAttr(meta.description)}" />`,
+    );
+    expect(html).toContain(
+      `<meta data-sm="stamp-og-title" property="og:title" content="${escapeHtmlAttr(meta.title)}" />`,
+    );
+    expect(html).toContain(
+      `<meta data-sm="stamp-og-description" property="og:description" content="${escapeHtmlAttr(meta.description)}" />`,
+    );
+    expect(html).toContain(
+      `<meta data-sm="stamp-og-url" property="og:url" content="${SITE_ORIGIN}/about" />`,
+    );
+    expect(html).toContain(`<meta data-sm="stamp-og-type" property="og:type" content="website" />`);
+    expect(html).toContain(
+      `<meta data-sm="stamp-og-site-name" property="og:site_name" content="${SITE_NAME}" />`,
+    );
+    expect(html).toContain(
+      `<meta data-sm="stamp-og-image" property="og:image" content="${OG_IMAGE_URL}" />`,
+    );
+    expect(html).toContain(
+      `<link data-sm="stamp-canonical" rel="canonical" href="${SITE_ORIGIN}/about" />`,
+    );
+    // Cold-load contract: meta present before any client mount markup changes.
+    expect(html.indexOf("<title")).toBeLessThan(html.indexOf('id="app"'));
+  });
+
+  it("escapes attribute-sensitive characters in stamped meta", () => {
+    const html = stampMetaShell(SPA_SHELL, {
+      path: "/x",
+      title: `A <B> & "C"`,
+      description: `Say "hello" & <bye>`,
+      canonical: `${SITE_ORIGIN}/x`,
+    });
+
+    expect(html).toContain('<title data-sm="stamp-title">A &lt;B&gt; &amp; "C"</title>');
+    expect(html).toContain('content="Say &quot;hello&quot; &amp; &lt;bye&gt;"');
+  });
+
+  it("emits per-path HTML shells for the finite deep-link set", () => {
+    tempRoot = mkdtempSync(join(tmpdir(), "meta-shells-"));
+    writeFileSync(join(tempRoot, "index.html"), SPA_SHELL, "utf8");
+
+    emitMetaShells(tempRoot);
+
+    for (const route of DEEP_LINK_ROUTES) {
+      const relative = shellOutputPath(route.path);
+      const absolute = join(tempRoot, relative);
+      const html = readFileSync(absolute, "utf8");
+      expect(html).toContain(`<title data-sm="stamp-title">${route.title}</title>`);
+      expect(html).toContain(`content="${escapeHtmlAttr(route.description)}"`);
+      expect(html).toContain(`href="${escapeHtmlAttr(route.canonical)}"`);
+      expect(html).toContain('data-sm="stamp-canonical"');
+      expect(html).toContain(`property="og:image" content="${OG_IMAGE_URL}"`);
+    }
+
+    // Spot-check cold-load paths from the ticket AC (first HTML meta before client mount).
+    for (const path of [
+      "/about",
+      "/contact",
+      "/resume",
+      "/work/labor-solutions/engage-reporting",
+    ]) {
+      const meta = pageMetaForPath(path);
+      const html = readFileSync(join(tempRoot, shellOutputPath(path)), "utf8");
+      expect(html).toContain(`<title data-sm="stamp-title">${meta.title}</title>`);
+      expect(html).toContain(`og:url" content="${meta.canonical}"`);
+    }
+  });
+
+  it("maps deep-link paths to Cloudflare pretty-URL shell files", () => {
+    expect(shellOutputPath("/")).toBe("index.html");
+    expect(shellOutputPath("/about")).toBe("about.html");
+    expect(shellOutputPath("/work/labor-solutions/engage-reporting")).toBe(
+      "work/labor-solutions/engage-reporting.html",
+    );
+  });
+});

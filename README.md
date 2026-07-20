@@ -43,7 +43,7 @@ Cloudflare Pages:
 - Contact: `functions/api/contact.ts` + `static/_routes.json` (`/api/*` only)
 - Env secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` (Pages dashboard; never client-shipped)
 
-Deep links rely on Pages’ default SPA fallback (no top-level `404.html`).
+Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical per Mode and Work Case). Unknown paths still use Pages’ SPA fallback (no top-level `404.html`).
 
 ## Agent / product docs
 

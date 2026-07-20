@@ -1,6 +1,7 @@
 import type { ParentComponent } from "solid-js";
-import { MetaProvider, Title } from "@solidjs/meta";
+import { MetaProvider } from "@solidjs/meta";
 import { Route } from "@solidjs/router";
+import { DocumentHead } from "./meta/document-head";
 import { AppShell } from "./shell/app-shell";
 import {
   AboutStage,
@@ -14,7 +15,7 @@ import {
 
 const ShellRoot: ParentComponent = (props) => (
   <MetaProvider>
-    <Title>Vishal Kumar</Title>
+    <DocumentHead />
     <AppShell>{props.children}</AppShell>
   </MetaProvider>
 );
