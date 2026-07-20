@@ -59,6 +59,30 @@ export function headTagsFor(meta: PageMeta): HeadTag[] {
       content: OG_IMAGE_URL,
     },
     {
+      kind: "meta",
+      dataSm: "stamp-twitter-card",
+      name: "twitter:card",
+      content: "summary_large_image",
+    },
+    {
+      kind: "meta",
+      dataSm: "stamp-twitter-title",
+      name: "twitter:title",
+      content: meta.title,
+    },
+    {
+      kind: "meta",
+      dataSm: "stamp-twitter-description",
+      name: "twitter:description",
+      content: meta.description,
+    },
+    {
+      kind: "meta",
+      dataSm: "stamp-twitter-image",
+      name: "twitter:image",
+      content: OG_IMAGE_URL,
+    },
+    {
       kind: "link",
       dataSm: "stamp-canonical",
       rel: "canonical",

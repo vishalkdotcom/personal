@@ -55,6 +55,12 @@ describe("Stamped meta shells (build output seam)", () => {
       `<meta data-sm="stamp-og-image" property="og:image" content="${OG_IMAGE_URL}" />`,
     );
     expect(html).toContain(
+      `<meta data-sm="stamp-twitter-card" name="twitter:card" content="summary_large_image" />`,
+    );
+    expect(html).toContain(
+      `<meta data-sm="stamp-twitter-image" name="twitter:image" content="${OG_IMAGE_URL}" />`,
+    );
+    expect(html).toContain(
       `<link data-sm="stamp-canonical" rel="canonical" href="${SITE_ORIGIN}/about" />`,
     );
     // Cold-load contract: meta present before any client mount markup changes.
@@ -88,19 +94,7 @@ describe("Stamped meta shells (build output seam)", () => {
       expect(html).toContain(`href="${escapeHtmlAttr(route.canonical)}"`);
       expect(html).toContain('data-sm="stamp-canonical"');
       expect(html).toContain(`property="og:image" content="${OG_IMAGE_URL}"`);
-    }
-
-    // Spot-check cold-load paths from the ticket AC (first HTML meta before client mount).
-    for (const path of [
-      "/about",
-      "/contact",
-      "/resume",
-      "/work/labor-solutions/engage-reporting",
-    ]) {
-      const meta = pageMetaForPath(path);
-      const html = readFileSync(join(tempRoot, shellOutputPath(path)), "utf8");
-      expect(html).toContain(`<title data-sm="stamp-title">${meta.title}</title>`);
-      expect(html).toContain(`og:url" content="${meta.canonical}"`);
+      expect(html).toContain(`name="twitter:card" content="summary_large_image"`);
     }
   });
 

@@ -58,4 +58,12 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(featuredPath.canonical).toBe(`${SITE_ORIGIN}/work/prototypes/supplychain-plus`);
     expect(home.description).toBe(featuredPath.description);
   });
+
+  it("keeps path and canonical honest for unknown deep links", () => {
+    const unknown = pageMetaForPath("/work/nope");
+    expect(unknown.path).toBe("/work/nope");
+    expect(unknown.canonical).toBe(`${SITE_ORIGIN}/work/nope`);
+    expect(unknown.title).toBe(SITE_NAME);
+    expect(unknown.description).toBe(ABOUT_PITCH);
+  });
 });

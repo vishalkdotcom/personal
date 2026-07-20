@@ -52,11 +52,10 @@ export function stampMetaShell(templateHtml: string, meta: PageMeta): string {
   }
 
   const titleRe = /<title\b[^>]*>[^<]*<\/title>/i;
-  if (titleRe.test(templateHtml)) {
-    return templateHtml.replace(titleRe, block);
+  if (!titleRe.test(templateHtml)) {
+    throw new Error("stampMetaShell: SPA template must include a <title> to replace");
   }
-
-  return templateHtml.replace(/<\/head>/i, `    ${block}\n  </head>`);
+  return templateHtml.replace(titleRe, block);
 }
 
 /**

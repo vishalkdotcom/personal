@@ -80,17 +80,14 @@ export const DEEP_LINK_ROUTES: PageMeta[] = [...MODE_META, ...folderMeta(), ...c
 
 const byPath = new Map(DEEP_LINK_ROUTES.map((entry) => [entry.path, entry]));
 
-/** Home-surface fallback when pathname is outside the finite deep-link set. */
-export const DEFAULT_PAGE_META: PageMeta = {
-  path: "/",
-  title: SITE_NAME,
-  description: ABOUT_PITCH,
-  canonical: canonicalFor("/"),
-};
+/** Home-surface title/description used when pathname is outside the finite set. */
+const FALLBACK_TITLE = SITE_NAME;
+const FALLBACK_DESCRIPTION = ABOUT_PITCH;
 
 /**
  * Resolve page meta for a pathname (trailing slash normalized).
  * Featured `/` and the SupplyChain+ Work Case path keep distinct canonicals.
+ * Unknown paths keep path + canonical honest to the request URL (SPA still mounts home).
  */
 export function pageMetaForPath(pathname: string): PageMeta {
   const normalized =
@@ -100,7 +97,15 @@ export function pageMetaForPath(pathname: string): PageMeta {
         ? "/"
         : pathname;
 
-  return byPath.get(normalized) ?? DEFAULT_PAGE_META;
+  const exact = byPath.get(normalized);
+  if (exact) return exact;
+
+  return {
+    path: normalized,
+    title: FALLBACK_TITLE,
+    description: FALLBACK_DESCRIPTION,
+    canonical: canonicalFor(normalized),
+  };
 }
 
 /** Absolute paths covered by the route manifest (for tests / build asserts). */
