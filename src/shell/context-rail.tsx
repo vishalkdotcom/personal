@@ -1,6 +1,6 @@
 import { A, useLocation } from "@solidjs/router";
 import { For, Show, type Component } from "solid-js";
-import { getWorkCaseFromPath, type WorkCase } from "../work/inventory";
+import { getActiveWorkCaseFromPath, isHttpLiveUrl, type WorkCase } from "../work/inventory";
 
 const sectionHeadingClass = "m-0 text-[11px] font-[650] tracking-[0.06em] text-faint uppercase";
 
@@ -25,7 +25,21 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
       <h2 id="rail-live" class={sectionHeadingClass}>
         Live
       </h2>
-      <p class={sectionBodyClass}>{props.workCase.live}</p>
+      <Show
+        when={isHttpLiveUrl(props.workCase.live)}
+        fallback={<p class={sectionBodyClass}>{props.workCase.live}</p>}
+      >
+        <p class={sectionBodyClass}>
+          <a
+            href={props.workCase.live}
+            class="text-accent underline-offset-2 hover:underline"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {props.workCase.live.replace(/^https?:\/\//i, "")}
+          </a>
+        </p>
+      </Show>
     </section>
 
     <section aria-labelledby="rail-role">
@@ -66,12 +80,12 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
 );
 
 /**
- * Context Rail body: Work Case sections in locked order when a case is active.
- * Mode-specific rail bodies ship in later tickets.
+ * Context Rail body: Work Case sections in locked order when a case is active
+ * (including featured `/` → SupplyChain+). Mode-specific rail bodies ship later.
  */
 export const ContextRail: Component = () => {
   const location = useLocation();
-  const activeCase = () => getWorkCaseFromPath(location.pathname);
+  const activeCase = () => getActiveWorkCaseFromPath(location.pathname);
 
   return (
     <Show

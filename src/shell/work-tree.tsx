@@ -1,6 +1,7 @@
 import { A, useLocation, useNavigate } from "@solidjs/router";
 import { For, Show, createSignal, type Component } from "solid-js";
 import {
+  FEATURED_WORK,
   WORK_FOLDERS,
   workCaseHref,
   workFolderHref,
@@ -21,11 +22,21 @@ function badgeClass(badge: WorkBadge): string {
 }
 
 function folderActive(pathname: string, folder: WorkFolder): boolean {
+  if ((pathname === "/" || pathname === "") && folder.slug === FEATURED_WORK.folderSlug) {
+    return true;
+  }
   const base = workFolderHref(folder.slug);
   return pathname === base || pathname.startsWith(`${base}/`);
 }
 
 function caseActive(pathname: string, folderSlug: string, caseSlug: string): boolean {
+  if (
+    (pathname === "/" || pathname === "") &&
+    folderSlug === FEATURED_WORK.folderSlug &&
+    caseSlug === FEATURED_WORK.caseSlug
+  ) {
+    return true;
+  }
   return pathname === workCaseHref(folderSlug, caseSlug);
 }
 

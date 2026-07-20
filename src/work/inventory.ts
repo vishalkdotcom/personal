@@ -13,10 +13,15 @@ export type WorkCase = {
   live: string;
   /** Context Rail Role stub — richer copy in later case tickets. */
   role: string;
-  /** Context Rail Outcomes stubs — Public Claims only when filled. */
+  /** Center + Context Rail Outcomes — Public Claims only when filled. */
   outcomes: string[];
   /** Context Rail Stack — always shown expanded. */
   stack: string[];
+  /**
+   * Proof-first stage lede (Public Claims only).
+   * When set on a Public Storefront, the case narrative ships instead of a stub.
+   */
+  lede?: string;
 };
 
 export type WorkFolder = {
@@ -100,10 +105,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "SupplyChain+",
         badge: "Prototype",
         surface: "public-storefront",
-        live: publicLive,
+        live: "https://sc-plus.vercel.app",
         role: "SupplyChain+ · solo build",
-        outcomes: ["SupplyChain+ outcomes (stub)"],
-        stack: ["SolidJS", "Vite"],
+        lede: "AI supply-chain compliance prototype — explainable supplier-risk scoring, complaint clustering, and audit-oriented evidence export. Public deploy you can open.",
+        outcomes: [
+          "Portfolio demo of explainable supplier-risk scoring, complaint clustering, and compliance/reporting workflows — not a production launch",
+          "Multi-provider LLM tools for summarization, sentiment analysis, and audit-oriented evidence export",
+        ],
+        stack: ["Next.js 16", "React 19", "PostgreSQL/pgvector", "Drizzle ORM", "Vercel AI SDK"],
       },
       {
         slug: "qgenai",
@@ -171,9 +180,41 @@ export function getWorkCase(folderSlug: string, caseSlug: string): WorkCase | un
   return getWorkFolder(folderSlug)?.cases.find((entry) => entry.slug === caseSlug);
 }
 
+/** Featured Public Storefront on `/` — SupplyChain+. */
+export const FEATURED_WORK = {
+  folderSlug: "prototypes",
+  caseSlug: "supplychain-plus",
+} as const;
+
+export function getFeaturedWorkCase(): WorkCase {
+  const workCase = getWorkCase(FEATURED_WORK.folderSlug, FEATURED_WORK.caseSlug);
+  if (!workCase) {
+    throw new Error("Featured Work Case SupplyChain+ missing from inventory");
+  }
+  return workCase;
+}
+
+export function getFeaturedWorkFolder(): WorkFolder {
+  const folder = getWorkFolder(FEATURED_WORK.folderSlug);
+  if (!folder) {
+    throw new Error("Featured Work Folder Prototypes missing from inventory");
+  }
+  return folder;
+}
+
 /** Resolve the active Work Case from a pathname (`/work/<folder>/<case>`). */
 export function getWorkCaseFromPath(pathname: string): WorkCase | undefined {
   const match = pathname.match(/^\/work\/([^/]+)\/([^/]+)\/?$/);
   if (!match) return undefined;
   return getWorkCase(match[1], match[2]);
+}
+
+/** Active Work Case for stage + Context Rail, including featured `/`. */
+export function getActiveWorkCaseFromPath(pathname: string): WorkCase | undefined {
+  if (pathname === "/" || pathname === "") return getFeaturedWorkCase();
+  return getWorkCaseFromPath(pathname);
+}
+
+export function isHttpLiveUrl(live: string): boolean {
+  return /^https?:\/\//i.test(live);
 }

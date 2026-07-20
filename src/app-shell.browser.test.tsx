@@ -21,7 +21,6 @@ describe("App Shell Mode routes (App Shell seam)", () => {
 
   it("shows labeled stub stages for each Mode URL", async () => {
     const cases: Array<[string, string | RegExp]> = [
-      ["/", /Featured Public Storefront/i],
       ["/about", /About Mode/i],
       ["/resume", /Resume Surface/i],
       ["/contact", /Contact Mode/i],
@@ -101,7 +100,9 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     expect(history.get()).toBe("/contact");
 
     await screen.getByRole("link", { name: /^Work$/i }).click();
-    await expect.element(screen.getByText(/Featured Public Storefront/i)).toBeVisible();
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
+      .toBeVisible();
     expect(history.get()).toBe("/");
   });
 
@@ -237,7 +238,9 @@ describe("Work inventory and Work tree (App Shell seam)", () => {
     expect(history.get()).toBe("/work/labor-solutions/engage-reporting");
 
     await screen.getByRole("link", { name: /SupplyChain\+/i }).click();
-    await expect.element(screen.getByText(/Work Case · SupplyChain\+/i)).toBeVisible();
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
+      .toBeVisible();
     expect(history.get()).toBe("/work/prototypes/supplychain-plus");
   });
 
@@ -308,7 +311,7 @@ describe("Work Context Rail (App Shell seam)", () => {
     await screen.getByRole("link", { name: /SupplyChain\+/i }).click();
     expect(history.get()).toBe("/work/prototypes/supplychain-plus");
     await expect.element(rail).toHaveTextContent(/SupplyChain\+/i);
-    await expect.element(rail).toHaveTextContent(/Public URL/i);
+    await expect.element(rail).toHaveTextContent(/sc-plus\.vercel\.app/i);
     await expect.element(rail).not.toHaveTextContent(/Engage reporting/i);
   });
 
@@ -341,5 +344,85 @@ describe("Work Context Rail (App Shell seam)", () => {
     await expect.element(rail).toBeVisible();
     await expect.element(rail.getByText(/^Outputs$/i)).not.toBeInTheDocument();
     await expect.element(rail.getByText(/^Sources$/i)).not.toBeInTheDocument();
+  });
+});
+
+describe("Featured Public Storefront SupplyChain+ (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  it("cold-loads / as SupplyChain+ Public Storefront, not About hub", async () => {
+    const { screen } = renderAt("/");
+    const stage = screen.getByRole("main");
+    await expect.element(stage.getByRole("heading", { name: /^SupplyChain\+$/i })).toBeVisible();
+    await expect.element(stage.getByText(/^Prototype$/i)).toBeVisible();
+    await expect.element(stage).not.toHaveTextContent(/About Mode/i);
+    await expect.element(stage).not.toHaveTextContent(/Featured Public Storefront \(stub\)/i);
+    await expect.element(stage).not.toHaveTextContent(/Vishal Kumar/i);
+  });
+
+  it("keeps center proof-first with outcomes above media", async () => {
+    const { screen } = renderAt("/");
+    const stage = screen.getByRole("main");
+    await expect.element(stage.getByRole("heading", { name: /^SupplyChain\+$/i })).toBeVisible();
+
+    const text = stage.element().textContent ?? "";
+    const outcomesIndex = text.search(/explainable supplier-risk scoring/i);
+    const mediaIndex = text.search(/media placeholder/i);
+    expect(outcomesIndex).toBeGreaterThan(-1);
+    expect(mediaIndex).toBeGreaterThan(outcomesIndex);
+  });
+
+  it("shows Prototype badge and Live pointing at the honest public URL", async () => {
+    const { screen } = renderAt("/");
+    const stage = screen.getByRole("main");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+
+    await expect.element(stage.getByText(/^Prototype$/i)).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /sc-plus\.vercel\.app/i })).toBeVisible();
+    expect(
+      rail
+        .getByRole("link", { name: /sc-plus\.vercel\.app/i })
+        .element()
+        .getAttribute("href"),
+    ).toBe("https://sc-plus.vercel.app");
+  });
+
+  it("binds Context Rail Live/Role/Outcomes/Stack to SupplyChain+ on /", async () => {
+    const { screen } = renderAt("/");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail).toBeVisible();
+    await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Role$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Outcomes$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Stack$/i)).toBeVisible();
+    await expect.element(rail).toHaveTextContent(/SupplyChain\+/i);
+    await expect.element(rail).toHaveTextContent(/Next\.js/i);
+    await expect.element(rail).not.toHaveTextContent(/Context follows the active Mode/i);
+  });
+
+  it("surfaces only Public Claims in center and rail copy", async () => {
+    const { screen } = renderAt("/");
+    const stage = screen.getByRole("main");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+
+    await expect.element(stage).toHaveTextContent(/not a production launch/i);
+    await expect.element(rail).toHaveTextContent(/not a production launch/i);
+    await expect.element(stage).not.toHaveTextContent(/206 authored commits/i);
+    await expect.element(rail).not.toHaveTextContent(/206 authored commits/i);
+    await expect.element(stage).not.toHaveTextContent(/300 factories/i);
+    await expect.element(rail).not.toHaveTextContent(/300 factories/i);
+    await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
+    await expect.element(rail).not.toHaveTextContent(/\(stub\)/i);
+  });
+
+  it("deep-links SupplyChain+ with the same proof-first Public Storefront", async () => {
+    const { screen } = renderAt("/work/prototypes/supplychain-plus");
+    const stage = screen.getByRole("main");
+    await expect.element(stage.getByRole("heading", { name: /^SupplyChain\+$/i })).toBeVisible();
+    await expect.element(stage.getByText(/^Prototype$/i)).toBeVisible();
+    await expect.element(stage).toHaveTextContent(/media placeholder/i);
+    await expect
+      .element(screen.getByRole("complementary", { name: /context rail/i }))
+      .toHaveTextContent(/sc-plus\.vercel\.app/i);
   });
 });
