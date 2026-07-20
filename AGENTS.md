@@ -13,7 +13,7 @@ Non-standard commands:
 
 Domain terms live in `CONTEXT.md`. For how to use domain docs and ADRs, see `docs/agents/domain.md`.
 
-Issue tracking is Tolaria vault `pro` (Project → Spec → Issue), not GitHub Issues or `.scratch/`. See `docs/agents/issue-tracker.md` and `docs/agents/triage-labels.md`.
+Issue tracking is Obsidian vault `pro` (Project → Spec → Ticket), not GitHub Issues or `.scratch/`. See `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`, and the project skill `pro-vault`.
 
 For SolidJS 2 / build / deploy constraints, see `docs/agents/stack.md`.
 For the SvelteKit perf cutover baseline, see `docs/agents/perf-baseline.md`.

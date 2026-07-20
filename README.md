@@ -46,5 +46,5 @@ Deep links rely on Pages’ default SPA fallback (no top-level `404.html`).
 ## Agent / product docs
 
 - Domain glossary: `CONTEXT.md`
-- Issue tracker: Tolaria vault `pro` — see `docs/agents/issue-tracker.md`
-- Spec: SolidJS 2 App Shell portfolio rewrite (Tolaria)
+- Issue tracker: Obsidian vault `pro` — see `docs/agents/issue-tracker.md` and skill `pro-vault`
+- Spec: SolidJS 2 App Shell portfolio rewrite (pro vault)

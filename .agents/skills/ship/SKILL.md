@@ -1,12 +1,12 @@
 ---
 name: ship
-description: "Ship a Spec or Issue to a committed branch in this portfolio repo."
+description: "Ship a Spec or Ticket to a committed branch in this portfolio repo."
 disable-model-invocation: true
 ---
 
-Ship the work described by the user in the Spec or Issue.
+Ship the work described by the user in the Spec or Ticket.
 
-Resolve the ticket per `docs/agents/issue-tracker.md`. Follow `AGENTS.md`.
+Resolve the ticket per `docs/agents/issue-tracker.md` and `pro-vault`. Follow `AGENTS.md`.
 
 Use /tdd where possible, at pre-agreed seams.
 
