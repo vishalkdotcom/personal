@@ -146,3 +146,120 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(screen.getByText(/^Sources$/i)).not.toBeInTheDocument();
   });
 });
+
+describe("Work inventory and Work tree (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  it("shows locked Work Folders and Work Cases only", async () => {
+    const { screen } = renderAt("/");
+    const tree = screen.getByRole("navigation", { name: /work tree/i });
+    await expect.element(tree).toBeVisible();
+
+    await expect.element(tree).toHaveTextContent("Labor Solutions");
+    await expect.element(tree).toHaveTextContent("Advance Auto Parts");
+    await expect.element(tree).toHaveTextContent("Prototypes");
+    await expect.element(tree).toHaveTextContent("Tools");
+
+    await expect.element(screen.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /Indicator Bank/i })).toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /Measurement Framework/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /Model Deployment Framework/i }))
+      .toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /Store Dashboard/i })).toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /SupplyChain\+/i })).toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /QGenAI/i })).toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /Snap2Paper/i })).toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /PhotoGrid/i })).toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /PDFGrid/i })).toBeVisible();
+  });
+
+  it("omits locked-out Work Cases from the tree", async () => {
+    const { screen } = renderAt("/");
+    await expect.element(screen.getByRole("navigation", { name: /work tree/i })).toBeVisible();
+
+    for (const omitted of [
+      "Auto-Bot",
+      "JLGS",
+      "Advance Assist",
+      "DLS",
+      "Auto Assist",
+      "FYTV",
+      "Zajj.music",
+    ]) {
+      await expect.element(screen.getByText(omitted)).not.toBeInTheDocument();
+    }
+  });
+
+  it("shows Production or Prototype badges on locked cases", async () => {
+    const { screen } = renderAt("/");
+    await expect.element(screen.getByRole("navigation", { name: /work tree/i })).toBeVisible();
+
+    await expect
+      .element(screen.getByRole("link", { name: /Engage reporting.*Production/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /Indicator Bank.*Production/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /Measurement Framework.*Production/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /Model Deployment Framework.*Production/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /Store Dashboard.*Production/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /SupplyChain\+.*Prototype/i }))
+      .toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /QGenAI.*Prototype/i })).toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /Snap2Paper.*Production/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /PhotoGrid.*Production/i }))
+      .toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /PDFGrid.*Production/i })).toBeVisible();
+  });
+
+  it("updates URL and stage when a Work Folder or Work Case is selected", async () => {
+    const { history, screen } = renderAt("/");
+
+    await screen.getByRole("link", { name: /^Labor Solutions$/i }).click();
+    await expect.element(screen.getByText(/Work Folder · Labor Solutions/i)).toBeVisible();
+    expect(history.get()).toBe("/work/labor-solutions");
+
+    await screen.getByRole("link", { name: /Engage reporting/i }).click();
+    await expect.element(screen.getByText(/Work Case · Engage reporting/i)).toBeVisible();
+    expect(history.get()).toBe("/work/labor-solutions/engage-reporting");
+
+    await screen.getByRole("link", { name: /SupplyChain\+/i }).click();
+    await expect.element(screen.getByText(/Work Case · SupplyChain\+/i)).toBeVisible();
+    expect(history.get()).toBe("/work/prototypes/supplychain-plus");
+  });
+
+  it("collapses Work Cases under a folder group", async () => {
+    const { screen } = renderAt("/");
+    await expect.element(screen.getByRole("navigation", { name: /work tree/i })).toBeVisible();
+
+    await expect.element(screen.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
+
+    await screen.getByRole("button", { name: /collapse Labor Solutions/i }).click();
+    await expect
+      .element(screen.getByRole("button", { name: /expand Labor Solutions/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: /Engage reporting/i }))
+      .not.toBeInTheDocument();
+    await expect
+      .element(screen.getByRole("link", { name: /Indicator Bank/i }))
+      .not.toBeInTheDocument();
+    await expect.element(screen.getByRole("link", { name: /^Labor Solutions$/i })).toBeVisible();
+
+    await screen.getByRole("button", { name: /expand Labor Solutions/i }).click();
+    await expect.element(screen.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
+  });
+});
