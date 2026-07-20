@@ -19,9 +19,8 @@ function renderAt(path: string) {
 describe("App Shell Mode routes (App Shell seam)", () => {
   afterEach(() => cleanup());
 
-  it("shows labeled stub stages for each Mode URL", async () => {
+  it("shows labeled stub stages for Resume and Contact Mode URLs", async () => {
     const cases: Array<[string, string | RegExp]> = [
-      ["/about", /About Mode/i],
       ["/resume", /Resume Surface/i],
       ["/contact", /Contact Mode/i],
     ];
@@ -86,7 +85,9 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     const { history, screen } = renderAt("/");
 
     await screen.getByRole("link", { name: /^About$/i }).click();
-    await expect.element(screen.getByText(/About Mode/i)).toBeVisible();
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
+      .toBeVisible();
     expect(history.get()).toBe("/about");
 
     await screen.getByRole("link", { name: /^Resume$/i }).click();
@@ -889,4 +890,85 @@ describe("Public Storefront QGenAI and Tools (App Shell seam)", () => {
       }
     });
   }
+});
+
+describe("About Mode (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  it("shows pitch and skills strip in the center on /about", async () => {
+    const { screen } = renderAt("/about");
+    const stage = screen.getByRole("main");
+
+    await expect.element(stage.getByRole("heading", { name: /^Vishal Kumar$/i })).toBeVisible();
+    await expect
+      .element(
+        stage.getByText(
+          /Senior Frontend Engineer · React \/ Next\.js · Analytics & Reporting UIs/i,
+        ),
+      )
+      .toBeVisible();
+    await expect
+      .element(
+        stage.getByText(
+          /7\+ years on data-heavy reporting UIs for remote US\/APAC teams — 13\+ years total/i,
+        ),
+      )
+      .toBeVisible();
+
+    const skills = stage.getByRole("list", { name: /^Skills$/i });
+    await expect.element(skills).toBeVisible();
+    for (const skill of [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "JavaScript",
+      "Figma",
+      "Metabase",
+      "Playwright",
+    ]) {
+      await expect.element(skills.getByText(skill)).toBeVisible();
+    }
+  });
+
+  it("omits a seeking-roles line from the About center", async () => {
+    const { screen } = renderAt("/about");
+    const stage = screen.getByRole("main");
+
+    await expect.element(stage).not.toHaveTextContent(/seeking roles/i);
+    await expect.element(stage).not.toHaveTextContent(/seeking senior/i);
+  });
+
+  it("shows Availability CTA, Facts, and Elsewhere in Context Rail order", async () => {
+    const { screen } = renderAt("/about");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail).toBeVisible();
+
+    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
+    await expect.element(rail.getByText(/^Facts$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Elsewhere$/i)).toBeVisible();
+    await expect.element(rail.getByText(/Punjab · remote/i)).toBeVisible();
+    await expect.element(rail.getByText(/13\+ yrs/i)).toBeVisible();
+    await expect.element(rail.getByText("Reporting UIs", { exact: true })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /Resume \(PDF\)/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^LinkedIn/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^GitHub/i })).toBeVisible();
+
+    const text = rail.element().textContent ?? "";
+    const markers = ["Availability", "Facts", "Elsewhere"];
+    let previous = -1;
+    for (const marker of markers) {
+      const index = text.indexOf(marker);
+      expect(index, `expected "${marker}" after prior sections`).toBeGreaterThan(previous);
+      previous = index;
+    }
+  });
+
+  it("keeps Notes absent from Mode nav while on About", async () => {
+    const { screen } = renderAt("/about");
+    const nav = screen.getByRole("navigation", { name: /modes/i });
+    await expect.element(nav).toBeVisible();
+    await expect.element(screen.getByRole("link", { name: /^Notes$/i })).not.toBeInTheDocument();
+    await expect.element(nav).not.toHaveTextContent(/Notes/i);
+  });
 });

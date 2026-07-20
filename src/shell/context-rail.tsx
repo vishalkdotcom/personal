@@ -1,5 +1,6 @@
 import { A, useLocation } from "@solidjs/router";
-import { For, Show, type Component } from "solid-js";
+import { For, Match, Show, Switch, type Component } from "solid-js";
+import { ABOUT_AVAILABILITY, ABOUT_ELSEWHERE, ABOUT_FACTS } from "../about/content";
 import { getActiveWorkCaseFromPath, isHttpLiveUrl, type WorkCase } from "../work/inventory";
 
 const sectionHeadingClass = "m-0 text-[11px] font-[650] tracking-[0.06em] text-faint uppercase";
@@ -8,6 +9,8 @@ const sectionBodyClass = "m-0 mt-1.5 text-[12.5px] leading-[1.45] text-muted";
 
 const ctaClass =
   "inline-flex items-center justify-center rounded-md border border-border bg-bg-panel px-2.5 py-1.5 text-[12px] font-medium text-fg hover:bg-bg-hover";
+
+const linkClass = "text-accent underline-offset-2 hover:underline";
 
 const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
   <div class="flex flex-col gap-4 p-2">
@@ -30,12 +33,7 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
         fallback={<p class={sectionBodyClass}>{props.workCase.live}</p>}
       >
         <p class={sectionBodyClass}>
-          <a
-            href={props.workCase.live}
-            class="text-accent underline-offset-2 hover:underline"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href={props.workCase.live} class={linkClass} target="_blank" rel="noreferrer">
             {props.workCase.live.replace(/^https?:\/\//i, "")}
           </a>
         </p>
@@ -79,24 +77,81 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
   </div>
 );
 
+/** About Mode rail: Availability CTA → Facts → Elsewhere (shell-round-9 A). */
+const AboutContext: Component = () => (
+  <div class="flex flex-col gap-4 p-2">
+    <section aria-labelledby="rail-availability">
+      <h2 id="rail-availability" class={sectionHeadingClass}>
+        Availability
+      </h2>
+      <p class={sectionBodyClass}>{ABOUT_AVAILABILITY}</p>
+      <A href="/contact" class={`${ctaClass} mt-2`}>
+        Get in touch
+      </A>
+    </section>
+
+    <section aria-labelledby="rail-facts">
+      <h2 id="rail-facts" class={sectionHeadingClass}>
+        Facts
+      </h2>
+      <dl class="m-0 mt-1.5 space-y-1">
+        <For each={ABOUT_FACTS}>
+          {(fact) => (
+            <div class="flex justify-between gap-2.5 text-[12px]">
+              <dt class="m-0 text-faint">{fact.label}</dt>
+              <dd class="m-0 text-right text-muted">{fact.value}</dd>
+            </div>
+          )}
+        </For>
+      </dl>
+    </section>
+
+    <section aria-labelledby="rail-elsewhere">
+      <h2 id="rail-elsewhere" class={sectionHeadingClass}>
+        Elsewhere
+      </h2>
+      <ul class="m-0 mt-1.5 list-none space-y-2 p-0 text-[12.5px] leading-[1.45]">
+        <For each={ABOUT_ELSEWHERE}>
+          {(link) => (
+            <li>
+              {link.external ? (
+                <a href={link.href} class={linkClass} target="_blank" rel="noreferrer">
+                  {link.label}
+                </a>
+              ) : (
+                <A href={link.href} class={linkClass}>
+                  {link.label}
+                </A>
+              )}
+            </li>
+          )}
+        </For>
+      </ul>
+    </section>
+  </div>
+);
+
 /**
- * Context Rail body: Work Case sections in locked order when a case is active
- * (including featured `/` → SupplyChain+). Mode-specific rail bodies ship later.
+ * Context Rail body: Work Case sections when a case is active (including featured `/`);
+ * About Mode Availability → Facts → Elsewhere on `/about`; otherwise Mode placeholder.
  */
 export const ContextRail: Component = () => {
   const location = useLocation();
-  const activeCase = () => getActiveWorkCaseFromPath(location.pathname);
+  const pathname = () => location.pathname;
+  const activeCase = () => getActiveWorkCaseFromPath(pathname());
 
   return (
-    <Show
-      when={activeCase()}
+    <Switch
       fallback={
         <p class="m-0 p-2 text-xs leading-[1.45] text-faint">
           Context follows the active Mode or Work Case.
         </p>
       }
     >
-      {(workCase) => <WorkCaseContext workCase={workCase()} />}
-    </Show>
+      <Match when={pathname().startsWith("/about")}>
+        <AboutContext />
+      </Match>
+      <Match when={activeCase()}>{(workCase) => <WorkCaseContext workCase={workCase()} />}</Match>
+    </Switch>
   );
 };
