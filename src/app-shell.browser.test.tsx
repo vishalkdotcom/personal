@@ -19,17 +19,9 @@ function renderAt(path: string) {
 describe("App Shell Mode routes (App Shell seam)", () => {
   afterEach(() => cleanup());
 
-  it("shows labeled stub stages for Resume and Contact Mode URLs", async () => {
-    const cases: Array<[string, string | RegExp]> = [
-      ["/resume", /Resume Surface/i],
-      ["/contact", /Contact Mode/i],
-    ];
-
-    for (const [path, label] of cases) {
-      cleanup();
-      const { screen } = renderAt(path);
-      await expect.element(screen.getByText(label)).toBeVisible();
-    }
+  it("shows labeled stub stages for Contact Mode URL", async () => {
+    const { screen } = renderAt("/contact");
+    await expect.element(screen.getByText(/Contact Mode/i)).toBeVisible();
   });
 
   it("exposes brand-row theme control that cycles and persists preference", async () => {
@@ -91,7 +83,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     expect(history.get()).toBe("/about");
 
     await screen.getByRole("link", { name: /^Resume$/i }).click();
-    await expect.element(screen.getByText(/Resume Surface/i)).toBeVisible();
+    await expect.element(screen.getByRole("main").getByTitle(/Vishal Kumar resume/i)).toBeVisible();
     expect(history.get()).toBe("/resume");
 
     await screen.getByRole("link", { name: /^Contact$/i }).click();
@@ -970,5 +962,80 @@ describe("About Mode (App Shell seam)", () => {
     await expect.element(nav).toBeVisible();
     await expect.element(screen.getByRole("link", { name: /^Notes$/i })).not.toBeInTheDocument();
     await expect.element(nav).not.toHaveTextContent(/Notes/i);
+  });
+});
+
+describe("Resume Surface (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  it("embeds the real PDF in the center stage on /resume", async () => {
+    const { screen } = renderAt("/resume");
+    const stage = screen.getByRole("main");
+
+    const embed = stage.getByTitle(/Vishal Kumar resume/i);
+    await expect.element(embed).toBeVisible();
+    expect(embed.element().getAttribute("src")).toBe("/vishal-cv.pdf");
+    await expect.element(stage.getByRole("article", { name: /Resume Surface/i })).toBeVisible();
+  });
+
+  it("does not rebuild the CV as HTML in the center", async () => {
+    const { screen } = renderAt("/resume");
+    const stage = screen.getByRole("main");
+
+    await expect
+      .element(stage.getByRole("heading", { name: /^Vishal Kumar$/i }))
+      .not.toBeInTheDocument();
+    await expect.element(stage.getByRole("list", { name: /^Skills$/i })).not.toBeInTheDocument();
+    await expect
+      .element(
+        stage.getByText(
+          /7\+ years on data-heavy reporting UIs for remote US\/APAC teams — 13\+ years total/i,
+        ),
+      )
+      .not.toBeInTheDocument();
+    await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
+  });
+
+  it("keeps shell chrome and a thin Context Rail with links and Availability CTA", async () => {
+    const { screen } = renderAt("/resume");
+
+    await expect.element(screen.getByRole("navigation", { name: /modes/i })).toBeVisible();
+    await expect.element(screen.getByRole("main")).toBeVisible();
+
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail).toBeVisible();
+    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
+    await expect.element(rail.getByText(/^Links$/i)).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /Download PDF/i })).toBeVisible();
+    expect(
+      rail
+        .getByRole("link", { name: /Download PDF/i })
+        .element()
+        .getAttribute("href"),
+    ).toBe("/vishal-cv.pdf");
+    await expect.element(rail.getByRole("link", { name: /^LinkedIn/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^GitHub/i })).toBeVisible();
+    await expect.element(rail).not.toHaveTextContent(/Context follows the active Mode/i);
+
+    const text = rail.element().textContent ?? "";
+    const markers = ["Availability", "Links"];
+    let previous = -1;
+    for (const marker of markers) {
+      const index = text.indexOf(marker);
+      expect(index, `expected "${marker}" after prior sections`).toBeGreaterThan(previous);
+      previous = index;
+    }
+  });
+
+  it("deep-links /resume to the Resume Surface", async () => {
+    const { history, screen } = renderAt("/resume");
+    expect(history.get()).toBe("/resume");
+    await expect.element(screen.getByRole("main").getByTitle(/Vishal Kumar resume/i)).toBeVisible();
+    await expect
+      .element(
+        screen.getByRole("navigation", { name: /modes/i }).getByRole("link", { name: /^Resume$/i }),
+      )
+      .toBeVisible();
   });
 });

@@ -12,12 +12,11 @@ import { WorkCaseNarrative } from "./work-case-narrative";
 import { WorkFolderIndex, WorkRootIndex } from "./work-outcome-index";
 
 export { AboutStage } from "./about-stage";
+export { ResumeStage } from "./resume-stage";
 
 export const FeaturedWorkStage: Component = () => (
   <WorkCaseNarrative folder={getFeaturedWorkFolder()} workCase={getFeaturedWorkCase()} />
 );
-
-export const ResumeStage: Component = () => <StubStage label="Resume Surface (stub)" />;
 
 export const ContactStage: Component = () => <StubStage label="Contact Mode (stub)" />;
 

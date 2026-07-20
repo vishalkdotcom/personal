@@ -1,6 +1,7 @@
 import { A, useLocation } from "@solidjs/router";
 import { For, Match, Show, Switch, type Component } from "solid-js";
 import { ABOUT_AVAILABILITY, ABOUT_ELSEWHERE, ABOUT_FACTS } from "../about/content";
+import { RESUME_AVAILABILITY, RESUME_LINKS } from "../resume/content";
 import { getActiveWorkCaseFromPath, isHttpLiveUrl, type WorkCase } from "../work/inventory";
 
 const sectionHeadingClass = "m-0 text-[11px] font-[650] tracking-[0.06em] text-faint uppercase";
@@ -131,9 +132,48 @@ const AboutContext: Component = () => (
   </div>
 );
 
+/** Resume Mode thin rail: Availability CTA → Links (PDF download + elsewhere). */
+const ResumeContext: Component = () => (
+  <div class="flex flex-col gap-4 p-2">
+    <section aria-labelledby="rail-availability">
+      <h2 id="rail-availability" class={sectionHeadingClass}>
+        Availability
+      </h2>
+      <p class={sectionBodyClass}>{RESUME_AVAILABILITY}</p>
+      <A href="/contact" class={`${ctaClass} mt-2`}>
+        Get in touch
+      </A>
+    </section>
+
+    <section aria-labelledby="rail-links">
+      <h2 id="rail-links" class={sectionHeadingClass}>
+        Links
+      </h2>
+      <ul class="m-0 mt-1.5 list-none space-y-2 p-0 text-[12.5px] leading-[1.45]">
+        <For each={RESUME_LINKS}>
+          {(link) => (
+            <li>
+              {link.external ? (
+                <a href={link.href} class={linkClass} target="_blank" rel="noreferrer">
+                  {link.label}
+                </a>
+              ) : (
+                <a href={link.href} class={linkClass} download>
+                  {link.label}
+                </a>
+              )}
+            </li>
+          )}
+        </For>
+      </ul>
+    </section>
+  </div>
+);
+
 /**
  * Context Rail body: Work Case sections when a case is active (including featured `/`);
- * About Mode Availability → Facts → Elsewhere on `/about`; otherwise Mode placeholder.
+ * About Mode Availability → Facts → Elsewhere on `/about`; thin Resume links/hire on
+ * `/resume`; otherwise Mode placeholder.
  */
 export const ContextRail: Component = () => {
   const location = useLocation();
@@ -150,6 +190,9 @@ export const ContextRail: Component = () => {
     >
       <Match when={pathname().startsWith("/about")}>
         <AboutContext />
+      </Match>
+      <Match when={pathname().startsWith("/resume")}>
+        <ResumeContext />
       </Match>
       <Match when={activeCase()}>{(workCase) => <WorkCaseContext workCase={workCase()} />}</Match>
     </Switch>
