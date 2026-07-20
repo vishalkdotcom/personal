@@ -20,6 +20,14 @@ Read this when changing dependencies, build config, JSX/TS setup, or deploy wiri
 - Cloudflare Pages static output: `dist/` (`wrangler.toml` `pages_build_output_dir`).
 - Contact form (`POST /api/contact` → Resend) is planned later — not in the scaffold yet.
 
+## Testing
+
+- Vitest Browser Mode (Playwright **Chromium** only) for App Shell / theme UI seams; Node project for the FOUC `index.html` structural contract.
+- Filename suffixes: `*.browser.test.ts(x)` → browser project; `*.node.test.ts` → node project.
+- Solid render: keep `@solidjs/testing-library`, bridge with `page.elementLocator` — do not adopt `vitest-browser-solid`.
+- Dropped: `jsdom`, `@testing-library/jest-dom` (matchers/interactions come from Vitest Browser Mode).
+- Chromium binaries: `bun run test:install` (`playwright install chromium`); not on `prepare` / every `bun install`. Quality CI installs with `--with-deps` and caches `~/.cache/ms-playwright`.
+
 ## Capabilities (not a file tree)
 
 - Modes: Work, About, Resume, Contact (URL grammar lives in the router / `src/app.tsx` — explore there).
