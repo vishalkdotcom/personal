@@ -39,7 +39,6 @@ export type WorkFolder = {
 };
 
 const dossierLive = "Auth-walled · no public URL";
-const publicLive = "Public URL (stub)";
 
 export const WORK_FOLDERS: WorkFolder[] = [
   {
@@ -152,10 +151,19 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "QGenAI",
         badge: "Prototype",
         surface: "public-storefront",
-        live: publicLive,
+        live: "https://qgenai.vercel.app",
         role: "QGenAI · solo build",
-        outcomes: ["QGenAI outcomes (stub)"],
-        stack: ["React", "AI UI"],
+        lede: "AI survey builder prototype — prompt-to-survey UI with multi-type questions, per-question regeneration, and multi-language translation. Public deploy you can open.",
+        outcomes: [
+          "Prompt-to-survey UI with multi-type questions, per-question AI regeneration, and multi-language translation",
+          "Provider-agnostic AI layer (Google GenAI, OpenRouter, LM Studio) with client-side persistence and structured validation",
+        ],
+        stack: ["Next.js 15", "React 19", "Vercel AI SDK", "Zod", "shadcn/ui", "IndexedDB"],
+        media: [
+          { label: "Shot 1 · Builder" },
+          { label: "Shot 2 · Survey" },
+          { label: "Shot 3 · Translate" },
+        ],
       },
     ],
   },
@@ -168,30 +176,57 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "Snap2Paper",
         badge: "Production",
         surface: "public-storefront",
-        live: publicLive,
+        live: "https://mcq.vishalk.com/",
         role: "Snap2Paper · solo build",
-        outcomes: ["Snap2Paper outcomes (stub)"],
-        stack: ["TypeScript", "Canvas"],
+        lede: "AI-powered study sheet digitizer — scan paper questions into editable MCQ study sets with local-only storage. Public tool you can open.",
+        outcomes: [
+          "Gemini vision turns paper study sheets into editable MCQ collections you can review and print",
+          "Client-side print preview and PDF export with local-only data storage",
+        ],
+        stack: ["TypeScript", "Gemini", "html2canvas", "jsPDF"],
+        media: [
+          { label: "Shot 1 · Library" },
+          { label: "Shot 2 · Scan" },
+          { label: "Shot 3 · Print" },
+        ],
       },
       {
         slug: "photogrid",
         title: "PhotoGrid",
         badge: "Production",
         surface: "public-storefront",
-        live: publicLive,
+        live: "https://printgrid.vishalk.com/",
         role: "PhotoGrid · solo build",
-        outcomes: ["PhotoGrid outcomes (stub)"],
-        stack: ["TypeScript", "Images"],
+        lede: "Passport and wallet photo layout tool — arrange uploaded photos onto standard paper sizes with cutting guides. Public tool you can open.",
+        outcomes: [
+          "Layout uploaded photos onto A4 and photo papers for passport, wallet, and stamp sizes",
+          "Client-side print PDF export with live preview, margins, spacing, and optional cutting guides",
+        ],
+        stack: ["TypeScript", "Canvas", "Client-side PDF"],
+        media: [
+          { label: "Shot 1 · Layout" },
+          { label: "Shot 2 · Sizes" },
+          { label: "Shot 3 · Print" },
+        ],
       },
       {
         slug: "pdfgrid",
         title: "PDFGrid",
         badge: "Production",
         surface: "public-storefront",
-        live: publicLive,
+        live: "https://pdfgrid.vishalk.com/",
         role: "PDFGrid · solo build",
-        outcomes: ["PDFGrid outcomes (stub)"],
-        stack: ["TypeScript", "PDF"],
+        lede: "Client-side N-Up PDF compiler — arrange uploaded PDFs into printable grid layouts. Public tool you can open.",
+        outcomes: [
+          "N-Up grid layouts for A4 and Letter with configurable columns, rows, margins, and gaps",
+          "Browser-local PDF compile — upload documents, preview the grid, and generate a print-ready PDF on-device",
+        ],
+        stack: ["TypeScript", "PDF", "Client-side layout"],
+        media: [
+          { label: "Shot 1 · Grid" },
+          { label: "Shot 2 · Preview" },
+          { label: "Shot 3 · Export" },
+        ],
       },
     ],
   },

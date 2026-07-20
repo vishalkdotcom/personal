@@ -24,7 +24,6 @@ describe("App Shell Mode routes (App Shell seam)", () => {
       ["/about", /About Mode/i],
       ["/resume", /Resume Surface/i],
       ["/contact", /Contact Mode/i],
-      ["/work/prototypes/qgenai", /Work Case/i],
     ];
 
     for (const [path, label] of cases) {
@@ -760,13 +759,6 @@ describe("Public Storefront carousel and Preview (App Shell seam)", () => {
       .not.toBeInTheDocument();
   });
 
-  it("keeps Preview disabled when Public Storefront Live is still a stub", async () => {
-    const { screen } = renderAt("/work/prototypes/qgenai");
-    const previewChip = screen.getByRole("button", { name: /^Preview$/i });
-    await expect.element(previewChip).toBeVisible();
-    expect(previewChip.element().hasAttribute("disabled")).toBe(true);
-  });
-
   it("closes Preview without losing the active Work Case", async () => {
     const { history, screen } = renderAt("/work/prototypes/supplychain-plus");
 
@@ -783,4 +775,118 @@ describe("Public Storefront carousel and Preview (App Shell seam)", () => {
       .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
       .toBeVisible();
   });
+});
+
+const qgenaiAndToolsStorefronts = [
+  {
+    path: "/work/prototypes/qgenai",
+    title: /^QGenAI$/i,
+    article: /QGenAI Public Storefront/i,
+    badge: /^Prototype$/i,
+    liveHref: "https://qgenai.vercel.app",
+    liveLabel: /qgenai\.vercel\.app/i,
+    claim: /Prompt-to-survey UI/i,
+    stack: /^Vercel AI SDK$/i,
+    forbidden: [/\(stub\)/i],
+  },
+  {
+    path: "/work/tools/snap2paper",
+    title: /^Snap2Paper$/i,
+    article: /Snap2Paper Public Storefront/i,
+    badge: /^Production$/i,
+    liveHref: "https://mcq.vishalk.com/",
+    liveLabel: /mcq\.vishalk\.com/i,
+    claim: /editable MCQ/i,
+    stack: /^Gemini$/i,
+    forbidden: [/\(stub\)/i],
+  },
+  {
+    path: "/work/tools/photogrid",
+    title: /^PhotoGrid$/i,
+    article: /PhotoGrid Public Storefront/i,
+    badge: /^Production$/i,
+    liveHref: "https://printgrid.vishalk.com/",
+    liveLabel: /printgrid\.vishalk\.com/i,
+    claim: /passport/i,
+    stack: /^Client-side PDF$/i,
+    forbidden: [/\(stub\)/i],
+  },
+  {
+    path: "/work/tools/pdfgrid",
+    title: /^PDFGrid$/i,
+    article: /PDFGrid Public Storefront/i,
+    badge: /^Production$/i,
+    liveHref: "https://pdfgrid.vishalk.com/",
+    liveLabel: /pdfgrid\.vishalk\.com/i,
+    claim: /N-Up/i,
+    stack: /^Client-side layout$/i,
+    forbidden: [/\(stub\)/i],
+  },
+] as const;
+
+describe("Public Storefront QGenAI and Tools (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  for (const storefront of qgenaiAndToolsStorefronts) {
+    it(`deep-links ${storefront.path} as Public Storefront with honest Live URL`, async () => {
+      const { screen } = renderAt(storefront.path);
+      const stage = screen.getByRole("main");
+      const rail = screen.getByRole("complementary", { name: /context rail/i });
+
+      await expect.element(stage.getByRole("heading", { name: storefront.title })).toBeVisible();
+      await expect.element(stage.getByText(storefront.badge)).toBeVisible();
+      await expect.element(stage.getByRole("article", { name: storefront.article })).toBeVisible();
+      await expect.element(stage).not.toHaveTextContent(/Work Case · .* \(stub\)/i);
+
+      const liveLink = rail.getByRole("link", { name: storefront.liveLabel });
+      await expect.element(liveLink).toBeVisible();
+      expect(liveLink.element().getAttribute("href")).toBe(storefront.liveHref);
+    });
+
+    it(`keeps carousel + Preview on for ${storefront.path}`, async () => {
+      const { screen } = renderAt(storefront.path);
+      const stage = screen.getByRole("main");
+      const carousel = stage.getByRole("region", { name: /case media/i });
+
+      await expect.element(carousel).toBeVisible();
+      await expect.element(carousel).toHaveTextContent(/Shot 1/i);
+      await carousel.getByRole("button", { name: /next/i }).click();
+      await expect.element(carousel).toHaveTextContent(/Shot 2/i);
+
+      const previewChip = screen.getByRole("button", { name: /^Preview$/i });
+      await expect.element(previewChip).toBeVisible();
+      expect(previewChip.element().hasAttribute("disabled")).toBe(false);
+
+      await previewChip.click();
+      const dialog = screen.getByRole("dialog", { name: /^Preview$/i });
+      await expect.element(dialog).toBeVisible();
+      await expect.element(dialog).toHaveTextContent(storefront.liveLabel);
+    });
+
+    it(`surfaces Public Claims in center and Context Rail for ${storefront.path}`, async () => {
+      const { screen } = renderAt(storefront.path);
+      const stage = screen.getByRole("main");
+      const rail = screen.getByRole("complementary", { name: /context rail/i });
+
+      await expect.element(stage.getByRole("list", { name: /^Outcomes$/i })).toBeVisible();
+      await expect.element(stage).toHaveTextContent(storefront.claim);
+      await expect.element(rail).toHaveTextContent(storefront.claim);
+      await expect.element(rail.getByText(storefront.stack)).toBeVisible();
+      await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
+      await expect.element(rail.getByText(/^Role$/i)).toBeVisible();
+      await expect.element(rail.getByText(/^Outcomes$/i)).toBeVisible();
+      await expect.element(rail.getByText(/^Stack$/i)).toBeVisible();
+
+      const text = stage.element().textContent ?? "";
+      const outcomesIndex = text.search(storefront.claim);
+      const mediaIndex = text.search(/Shot 1/i);
+      expect(outcomesIndex).toBeGreaterThan(-1);
+      expect(mediaIndex).toBeGreaterThan(outcomesIndex);
+
+      for (const pattern of storefront.forbidden) {
+        await expect.element(stage).not.toHaveTextContent(pattern);
+        await expect.element(rail).not.toHaveTextContent(pattern);
+      }
+    });
+  }
 });
