@@ -23,8 +23,6 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    // Legacy App Shell / theme / FOUC suites stay on disk until later migration
-    // tickets rename them to *.browser.test.* / *.node.test.ts.
     passWithNoTests: true,
     projects: [
       {
