@@ -5,6 +5,9 @@ export const HIRE_SIGNAL_SNOOZE_KEY = "hire-signal-snoozed-until";
 /** 7 days in ms — absolute expiry written to localStorage. */
 export const HIRE_SIGNAL_SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
 
+/** Expanded mobile chip blurb (shell-round-17 D) — under the Open to roles heading. */
+export const HIRE_SIGNAL_CHIP_BLURB = "Senior FE · analytics & reporting UIs · remote or hybrid";
+
 const envRaw = import.meta.env.VITE_HIRE_SIGNAL as string | undefined;
 
 /** Test-only override so App Shell seam tests can flip the flag without rebuild. */

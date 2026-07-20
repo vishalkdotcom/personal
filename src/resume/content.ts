@@ -6,7 +6,7 @@ export const RESUME_PDF_HREF = "/vishal-cv.pdf";
 
 export const RESUME_PDF_TITLE = "Vishal Kumar resume";
 
-/** Same Hire Signal copy as About until the Hire Signal flag ticket. */
+/** Shared Hire Signal Availability body (same as About). */
 export const RESUME_AVAILABILITY = ABOUT_AVAILABILITY;
 
 export type ResumeLink = AboutElsewhereLink;

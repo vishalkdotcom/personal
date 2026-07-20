@@ -1357,6 +1357,7 @@ describe("Hire Signal (App Shell seam)", () => {
     const rail = desktop.screen.getByRole("complementary", { name: /context rail/i });
     await expect.element(rail.getByRole("link", { name: /^Open to roles$/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
+    await expect.element(rail).toHaveTextContent(/Open to roles · Senior Frontend/i);
     cleanup();
 
     await setMobileViewport();
@@ -1364,6 +1365,18 @@ describe("Hire Signal (App Shell seam)", () => {
     await expect
       .element(mobile.screen.getByRole("button", { name: /^Open to roles$/i }))
       .toBeVisible();
+  });
+
+  it("keeps one Availability body on Work and About Hire Signal rails", async () => {
+    setHireSignalEnabledForTests(true);
+    const work = renderAt("/work/prototypes/supplychain-plus");
+    const workRail = work.screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(workRail).toHaveTextContent(/Open to roles · Senior Frontend/i);
+    cleanup();
+
+    const about = renderAt("/about");
+    const aboutRail = about.screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(aboutRail).toHaveTextContent(/Open to roles · Senior Frontend/i);
   });
 
   it("hides both Hire Signal surfaces when the flag is off", async () => {

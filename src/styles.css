@@ -18,6 +18,7 @@
   --color-muted: var(--vk-muted);
   --color-faint: var(--vk-faint);
   --color-accent: var(--vk-accent);
+  --color-ok: var(--vk-ok);
 }
 
 /* data-theme FOUC token bridge — values only; no component/BEM rules */
@@ -33,6 +34,7 @@
   --vk-muted: rgba(26, 28, 30, 0.62);
   --vk-faint: rgba(26, 28, 30, 0.42);
   --vk-accent: #2563a8;
+  --vk-ok: #2f8f4e;
 }
 
 [data-theme="dark"] {
@@ -47,6 +49,7 @@
   --vk-muted: rgba(232, 230, 227, 0.55);
   --vk-faint: rgba(232, 230, 227, 0.36);
   --vk-accent: #6cb6ff;
+  --vk-ok: #5dba7a;
 }
 
 @layer base {
