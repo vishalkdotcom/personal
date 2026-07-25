@@ -58,6 +58,13 @@ export const WORK_FOLDERS: WorkFolder[] = [
           "Reporting artifacts shipped in-product: Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, and top/bottom sites",
         ],
         stack: ["React", "Next.js", "TypeScript", "Metabase Embedding SDK", "Redux Toolkit"],
+        media: [
+          { label: "Shot 1 · Shell" },
+          { label: "Shot 2 · Summary" },
+          { label: "Shot 3 · eNPS" },
+          { label: "Shot 4 · Question results" },
+          { label: "Shot 5 · Overall table" },
+        ],
       },
       {
         slug: "indicator-bank",
@@ -72,6 +79,12 @@ export const WORK_FOLDERS: WorkFolder[] = [
           "Protected Excel import/export with partial-success validation, soft deletion, and idempotent survey association for reusable survey content",
         ],
         stack: ["Django", "Next.js", "React", "TypeScript", "Excel import/export"],
+        media: [
+          { label: "Shot 1 · Indicators" },
+          { label: "Shot 2 · Questions" },
+          { label: "Shot 3 · Answer Sets" },
+          { label: "Shot 4 · Associations" },
+        ],
       },
     ],
   },

@@ -25,8 +25,12 @@ A Work Case with a real public URL and media; Preview and Live are honest and en
 _Avoid_: demo mock, redacted reconstruction
 
 **Internal Dossier**:
-A Work Case for auth-walled or non-public work: outcomes and artifacts without fake screenshots; Preview off; Live states the lack of a public URL.
-_Avoid_: redacted screenshot case, fake UI recreation
+A Work Case for auth-walled or non-public work: outcomes and artifacts; authentic product screenshots when available; approved illustrative mocks only when a Spec explicitly locks them for that case; never unapproved lookalikes or reconstructed client UI; Preview off; omit Live when there is no public URL.
+_Avoid_: redacted screenshot case, fake UI recreation, unapproved mock
+
+**Selected Work**:
+A short About-center strip of a few Work Case peeks with an affordance to the full Work index — not the full index itself.
+_Avoid_: All work on About, featured home
 
 **Production / Prototype**:
 Badges on a Work Case indicating shipped production work versus exploratory/prototype work.
