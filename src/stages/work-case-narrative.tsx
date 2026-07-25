@@ -22,6 +22,15 @@ export const WorkCaseNarrative: Component<WorkCaseNarrativeProps> = (props) => {
   const surfaceLabel = () =>
     props.workCase.surface === "public-storefront" ? "Public Storefront" : "Internal Dossier";
   const slides = () => props.workCase.media ?? [];
+  /** Internal Dossiers omit label-only placeholders; show carousel once slides have src. */
+  const showMedia = () => {
+    const list = slides();
+    if (list.length === 0) return false;
+    if (props.workCase.surface === "internal-dossier") {
+      return list.some((slide) => Boolean(slide.src));
+    }
+    return true;
+  };
 
   return (
     <article aria-label={`${props.workCase.title} ${surfaceLabel()}`}>
@@ -40,7 +49,7 @@ export const WorkCaseNarrative: Component<WorkCaseNarrativeProps> = (props) => {
           )}
         </For>
       </ul>
-      <Show when={slides().length > 0}>
+      <Show when={showMedia()}>
         <MediaCarousel slides={slides()} />
       </Show>
     </article>

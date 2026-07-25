@@ -10,6 +10,9 @@ import {
   setHireSignalEnabledForTests,
 } from "./shell/hire-signal";
 import { THEME_STORAGE_KEY } from "./theme/theme";
+import { workCaseHref } from "./work/inventory";
+
+const SUPPLY_CHAIN_PATH = workCaseHref("prototypes", "supplychain-plus");
 
 function renderAt(path: string) {
   const history = createMemoryHistory();
@@ -102,9 +105,9 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
 
     await screen.getByRole("link", { name: /^Work$/i }).click();
     await expect
-      .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
+      .element(screen.getByRole("main").getByRole("heading", { name: /^All work$/i }))
       .toBeVisible();
-    expect(history.get()).toBe("/");
+    expect(history.get()).toBe("/work");
   });
 
   it("collapses left and Context Rail via header chips; left stays an icon rail", async () => {
@@ -197,36 +200,15 @@ describe("Work inventory and Work tree (App Shell seam)", () => {
     }
   });
 
-  it("shows Production or Prototype badges on locked cases", async () => {
+  it("keeps Production / Prototype badges off left Work tree case rows", async () => {
     const { screen } = renderAt("/");
-    await expect.element(screen.getByRole("navigation", { name: /work tree/i })).toBeVisible();
+    const tree = screen.getByRole("navigation", { name: /work tree/i });
+    await expect.element(tree).toBeVisible();
 
-    await expect
-      .element(screen.getByRole("link", { name: /Engage reporting.*Production/i }))
-      .toBeVisible();
-    await expect
-      .element(screen.getByRole("link", { name: /Indicator Bank.*Production/i }))
-      .toBeVisible();
-    await expect
-      .element(screen.getByRole("link", { name: /Measurement Framework.*Production/i }))
-      .toBeVisible();
-    await expect
-      .element(screen.getByRole("link", { name: /Model Deployment Framework.*Production/i }))
-      .toBeVisible();
-    await expect
-      .element(screen.getByRole("link", { name: /Store Dashboard.*Production/i }))
-      .toBeVisible();
-    await expect
-      .element(screen.getByRole("link", { name: /SupplyChain\+.*Prototype/i }))
-      .toBeVisible();
-    await expect.element(screen.getByRole("link", { name: /QGenAI.*Prototype/i })).toBeVisible();
-    await expect
-      .element(screen.getByRole("link", { name: /Snap2Paper.*Production/i }))
-      .toBeVisible();
-    await expect
-      .element(screen.getByRole("link", { name: /PhotoGrid.*Production/i }))
-      .toBeVisible();
-    await expect.element(screen.getByRole("link", { name: /PDFGrid.*Production/i })).toBeVisible();
+    await expect.element(tree.getByRole("link", { name: /^Engage reporting$/i })).toBeVisible();
+    await expect.element(tree.getByRole("link", { name: /^SupplyChain\+$/i })).toBeVisible();
+    await expect.element(tree.getByText(/^Production$/i)).not.toBeInTheDocument();
+    await expect.element(tree.getByText(/^Prototype$/i)).not.toBeInTheDocument();
   });
 
   it("updates URL and stage when a Work Folder or Work Case is selected", async () => {
@@ -258,7 +240,7 @@ describe("Work inventory and Work tree (App Shell seam)", () => {
     await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
       .toBeVisible();
-    expect(history.get()).toBe("/work/prototypes/supplychain-plus");
+    expect(history.get()).toBe(SUPPLY_CHAIN_PATH);
   });
 
   it("collapses Work Cases under a folder group", async () => {
@@ -343,19 +325,11 @@ describe("Work Folder dense outcome indexes (App Shell seam)", () => {
     await expect.element(main.getByRole("link", { name: /Snap2Paper/i })).toBeVisible();
   });
 
-  it("offers All work in the Work tree and navigates to the Work-root index", async () => {
-    const { history, screen } = renderAt("/");
-
-    await screen
-      .getByRole("navigation", { name: /work tree/i })
-      .getByRole("link", {
-        name: /^All work$/i,
-      })
-      .click();
-    expect(history.get()).toBe("/work");
-    await expect
-      .element(screen.getByRole("main").getByRole("heading", { name: /^All work$/i }))
-      .toBeVisible();
+  it("omits a duplicate All work row from the left Work tree", async () => {
+    const { screen } = renderAt("/");
+    const tree = screen.getByRole("navigation", { name: /work tree/i });
+    await expect.element(tree).toBeVisible();
+    await expect.element(tree.getByRole("link", { name: /^All work$/i })).not.toBeInTheDocument();
   });
 
   it("navigates to the Work Case URL when an index row is selected", async () => {
@@ -376,7 +350,7 @@ describe("Work Context Rail (App Shell seam)", () => {
   afterEach(() => cleanup());
 
   it("shows locked Work Context Rail section order when a Work Case is active", async () => {
-    const { screen } = renderAt("/work/prototypes/supplychain-plus");
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const rail = screen.getByRole("complementary", { name: /context rail/i });
     await expect.element(rail).toBeVisible();
 
@@ -414,7 +388,7 @@ describe("Work Context Rail (App Shell seam)", () => {
     await expect.element(rail).toHaveTextContent(/Auth-walled/i);
 
     await screen.getByRole("link", { name: /SupplyChain\+/i }).click();
-    expect(history.get()).toBe("/work/prototypes/supplychain-plus");
+    expect(history.get()).toBe(SUPPLY_CHAIN_PATH);
     await expect.element(rail).toHaveTextContent(/SupplyChain\+/i);
     await expect.element(rail).toHaveTextContent(/sc-plus\.vercel\.app/i);
     await expect.element(rail).not.toHaveTextContent(/Engage reporting/i);
@@ -638,21 +612,41 @@ describe("Internal Dossier Indicator Bank and Advance Auto Parts (App Shell seam
   }
 });
 
-describe("Featured Public Storefront SupplyChain+ (App Shell seam)", () => {
+describe("About home IA (App Shell seam)", () => {
   afterEach(() => cleanup());
 
-  it("cold-loads / as SupplyChain+ Public Storefront, not About hub", async () => {
+  it("cold-loads / as About Mode", async () => {
     const { screen } = renderAt("/");
     const stage = screen.getByRole("main");
-    await expect.element(stage.getByRole("heading", { name: /^SupplyChain\+$/i })).toBeVisible();
-    await expect.element(stage.getByText(/^Prototype$/i)).toBeVisible();
-    await expect.element(stage).not.toHaveTextContent(/About Mode/i);
-    await expect.element(stage).not.toHaveTextContent(/Featured Public Storefront \(stub\)/i);
-    await expect.element(stage).not.toHaveTextContent(/Vishal Kumar/i);
+    await expect.element(stage.getByRole("heading", { name: /^Vishal Kumar$/i })).toBeVisible();
+    await expect.element(stage.getByText(/^About$/i)).toBeVisible();
+    await expect
+      .element(stage.getByRole("heading", { name: /^SupplyChain\+$/i }))
+      .not.toBeInTheDocument();
   });
 
-  it("keeps center proof-first with outcomes above media", async () => {
+  it("shows the same About surface at /about", async () => {
+    const { screen } = renderAt("/about");
+    const stage = screen.getByRole("main");
+    await expect.element(stage.getByRole("heading", { name: /^Vishal Kumar$/i })).toBeVisible();
+    await expect.element(stage.getByText(/^About$/i)).toBeVisible();
+  });
+
+  it("binds About Context Rail on /", async () => {
     const { screen } = renderAt("/");
+    const rail = screen.getByRole("complementary", { name: /context rail/i });
+    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Facts$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Elsewhere$/i)).toBeVisible();
+    await expect.element(rail).not.toHaveTextContent(/sc-plus\.vercel\.app/i);
+  });
+});
+
+describe("Public Storefront SupplyChain+ (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  it("keeps center proof-first with outcomes above media", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const stage = screen.getByRole("main");
     await expect.element(stage.getByRole("heading", { name: /^SupplyChain\+$/i })).toBeVisible();
 
@@ -664,7 +658,7 @@ describe("Featured Public Storefront SupplyChain+ (App Shell seam)", () => {
   });
 
   it("shows Prototype badge and Live pointing at the honest public URL", async () => {
-    const { screen } = renderAt("/");
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const stage = screen.getByRole("main");
     const rail = screen.getByRole("complementary", { name: /context rail/i });
 
@@ -678,8 +672,8 @@ describe("Featured Public Storefront SupplyChain+ (App Shell seam)", () => {
     ).toBe("https://sc-plus.vercel.app");
   });
 
-  it("binds Context Rail Live/Role/Outcomes/Stack to SupplyChain+ on /", async () => {
-    const { screen } = renderAt("/");
+  it("binds Context Rail Live/Role/Outcomes/Stack to SupplyChain+", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const rail = screen.getByRole("complementary", { name: /context rail/i });
     await expect.element(rail).toBeVisible();
     await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
@@ -692,7 +686,7 @@ describe("Featured Public Storefront SupplyChain+ (App Shell seam)", () => {
   });
 
   it("surfaces only Public Claims in center and rail copy", async () => {
-    const { screen } = renderAt("/");
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const stage = screen.getByRole("main");
     const rail = screen.getByRole("complementary", { name: /context rail/i });
 
@@ -707,7 +701,7 @@ describe("Featured Public Storefront SupplyChain+ (App Shell seam)", () => {
   });
 
   it("deep-links SupplyChain+ with the same proof-first Public Storefront", async () => {
-    const { screen } = renderAt("/work/prototypes/supplychain-plus");
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const stage = screen.getByRole("main");
     await expect.element(stage.getByRole("heading", { name: /^SupplyChain\+$/i })).toBeVisible();
     await expect.element(stage.getByText(/^Prototype$/i)).toBeVisible();
@@ -722,7 +716,7 @@ describe("Public Storefront carousel and Preview (App Shell seam)", () => {
   afterEach(() => cleanup());
 
   it("uses a stage carousel for Public Storefront media by default", async () => {
-    const { screen } = renderAt("/");
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const stage = screen.getByRole("main");
     const carousel = stage.getByRole("region", { name: /case media/i });
 
@@ -735,7 +729,7 @@ describe("Public Storefront carousel and Preview (App Shell seam)", () => {
   });
 
   it("opens a Preview slide-over with Desktop/Mobile frames from the header chip", async () => {
-    const { screen } = renderAt("/");
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
 
     const previewChip = screen.getByRole("button", { name: /^Preview$/i });
     await expect.element(previewChip).toBeVisible();
@@ -765,7 +759,7 @@ describe("Public Storefront carousel and Preview (App Shell seam)", () => {
   });
 
   it("closes Preview without losing the active Work Case", async () => {
-    const { history, screen } = renderAt("/work/prototypes/supplychain-plus");
+    const { history, screen } = renderAt(SUPPLY_CHAIN_PATH);
 
     await screen.getByRole("button", { name: /^Preview$/i }).click();
     const dialog = screen.getByRole("dialog", { name: /^Preview$/i });
@@ -775,7 +769,7 @@ describe("Public Storefront carousel and Preview (App Shell seam)", () => {
     await expect
       .element(screen.getByRole("dialog", { name: /^Preview$/i }))
       .not.toBeInTheDocument();
-    expect(history.get()).toBe("/work/prototypes/supplychain-plus");
+    expect(history.get()).toBe(SUPPLY_CHAIN_PATH);
     await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
       .toBeVisible();
@@ -1278,7 +1272,7 @@ describe("Mobile App Shell (App Shell seam)", () => {
 
   it("opens Context Rail content as a sheet from ···, full-screen when dense", async () => {
     await setMobileViewport();
-    const { screen } = renderAt("/");
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
 
     await screen.getByRole("button", { name: /open context/i }).click();
     const sheet = screen.getByRole("dialog", { name: /context/i });
@@ -1291,7 +1285,7 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect.element(sheet).toHaveTextContent(/sc-plus\.vercel\.app/i);
 
     cleanup();
-    const about = renderAt("/about");
+    const about = renderAt("/");
     await about.screen.getByRole("button", { name: /open context/i }).click();
     const aboutSheet = about.screen.getByRole("dialog", { name: /context/i });
     await expect.element(aboutSheet).toBeVisible();
@@ -1306,9 +1300,15 @@ describe("Mobile App Shell (App Shell seam)", () => {
 
     const crumb = screen.getByRole("navigation", { name: /breadcrumb/i });
     await expect.element(crumb).toBeVisible();
-    await expect.element(crumb).toHaveTextContent(/Prototypes/i);
-    await expect.element(crumb).toHaveTextContent(/SupplyChain\+/i);
-    await expect.element(crumb).toHaveTextContent(/Work/i);
+    await expect.element(crumb).toHaveTextContent(/About/i);
+    await expect.element(crumb).not.toHaveTextContent(/SupplyChain\+/i);
+
+    cleanup();
+    const storefront = renderAt(SUPPLY_CHAIN_PATH);
+    const storefrontCrumb = storefront.screen.getByRole("navigation", { name: /breadcrumb/i });
+    await expect.element(storefrontCrumb).toHaveTextContent(/Prototypes/i);
+    await expect.element(storefrontCrumb).toHaveTextContent(/SupplyChain\+/i);
+    await expect.element(storefrontCrumb).toHaveTextContent(/Work/i);
 
     cleanup();
     const dossier = renderAt("/work/labor-solutions/engage-reporting");
@@ -1319,7 +1319,7 @@ describe("Mobile App Shell (App Shell seam)", () => {
 
   it("opens Public Storefront Preview as a full-screen overlay and keeps Internal Dossier Preview off", async () => {
     await setMobileViewport();
-    const { screen } = renderAt("/");
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
 
     const previewChip = screen.getByRole("button", { name: /^Preview$/i });
     await expect.element(previewChip).toBeVisible();
@@ -1353,7 +1353,7 @@ describe("Hire Signal (App Shell seam)", () => {
 
   it("shows desktop Context Rail hire CTA and mobile Open to roles chip when the flag is on", async () => {
     setHireSignalEnabledForTests(true);
-    const desktop = renderAt("/work/prototypes/supplychain-plus");
+    const desktop = renderAt(SUPPLY_CHAIN_PATH);
     const rail = desktop.screen.getByRole("complementary", { name: /context rail/i });
     await expect.element(rail.getByRole("link", { name: /^Open to roles$/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
@@ -1369,7 +1369,7 @@ describe("Hire Signal (App Shell seam)", () => {
 
   it("keeps one Availability body on Work and About Hire Signal rails", async () => {
     setHireSignalEnabledForTests(true);
-    const work = renderAt("/work/prototypes/supplychain-plus");
+    const work = renderAt(SUPPLY_CHAIN_PATH);
     const workRail = work.screen.getByRole("complementary", { name: /context rail/i });
     await expect.element(workRail).toHaveTextContent(/Open to roles · Senior Frontend/i);
     cleanup();
@@ -1381,7 +1381,7 @@ describe("Hire Signal (App Shell seam)", () => {
 
   it("hides both Hire Signal surfaces when the flag is off", async () => {
     setHireSignalEnabledForTests(false);
-    const desktop = renderAt("/work/prototypes/supplychain-plus");
+    const desktop = renderAt(SUPPLY_CHAIN_PATH);
     const rail = desktop.screen.getByRole("complementary", { name: /context rail/i });
     await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
     await expect

@@ -91,7 +91,7 @@ export const WorkRootIndex: Component = () => (
     <IndexHead
       kicker="Work"
       title="All work"
-      lede="Dense index — outcomes first. Homepage still opens the featured case; this is what you get when you select the Work root."
+      lede="Dense index — outcomes first. Work Mode opens here."
     />
     <div class="grid max-w-[720px] gap-1.5">
       <For each={WORK_FOLDERS}>

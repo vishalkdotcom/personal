@@ -70,7 +70,6 @@ export const ModeNav: Component = () => {
               inactiveClass=""
               aria-label={mode.label}
               title={mode.label}
-              end={mode.href === "/"}
               onClick={(event) => {
                 if (event.defaultPrevented || isModifiedClick(event)) return;
                 event.preventDefault();

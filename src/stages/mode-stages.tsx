@@ -1,12 +1,7 @@
 import type { Component } from "solid-js";
 import { Show } from "solid-js";
 import { useParams } from "@solidjs/router";
-import {
-  getFeaturedWorkCase,
-  getFeaturedWorkFolder,
-  getWorkCase,
-  getWorkFolder,
-} from "../work/inventory";
+import { getWorkCase, getWorkFolder } from "../work/inventory";
 import { StubStage } from "./stub-stage";
 import { WorkCaseNarrative } from "./work-case-narrative";
 import { WorkFolderIndex, WorkRootIndex } from "./work-outcome-index";
@@ -14,10 +9,6 @@ import { WorkFolderIndex, WorkRootIndex } from "./work-outcome-index";
 export { AboutStage } from "./about-stage";
 export { ContactStage } from "./contact-stage";
 export { ResumeStage } from "./resume-stage";
-
-export const FeaturedWorkStage: Component = () => (
-  <WorkCaseNarrative folder={getFeaturedWorkFolder()} workCase={getFeaturedWorkCase()} />
-);
 
 export const WorkRootStage: Component = () => <WorkRootIndex />;
 

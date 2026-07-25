@@ -78,19 +78,18 @@ describe("Document head meta sync (App Shell seam)", () => {
     const { history, screen } = renderAt("/");
 
     await expect
-      .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
-      .toBeVisible();
-    expect(appDocumentTitle()).toBe("SupplyChain+ · Vishal Kumar");
-    expect(canonicalHref()).toBe(`${SITE_ORIGIN}/`);
-
-    await screen.getByRole("link", { name: /^About$/i }).click();
-    await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
-    expect(history.get()).toBe("/about");
     expect(appDocumentTitle()).toBe("About · Vishal Kumar");
-    expect(metaContent('meta[property="og:url"]')).toBe(`${SITE_ORIGIN}/about`);
-    expect(canonicalHref()).toBe(`${SITE_ORIGIN}/about`);
+    expect(canonicalHref()).toBe(`${SITE_ORIGIN}/`);
+
+    await screen.getByRole("link", { name: /^Work$/i }).click();
+    await expect
+      .element(screen.getByRole("main").getByRole("heading", { name: /^All work$/i }))
+      .toBeVisible();
+    expect(history.get()).toBe("/work");
+    expect(appDocumentTitle()).toBe("Work · Vishal Kumar");
+    expect(canonicalHref()).toBe(`${SITE_ORIGIN}/work`);
 
     await screen.getByRole("link", { name: /^Contact$/i }).click();
     await expect

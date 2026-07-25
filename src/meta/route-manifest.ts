@@ -4,13 +4,7 @@
  */
 
 import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH } from "../about/content";
-import {
-  WORK_FOLDERS,
-  getFeaturedWorkCase,
-  workCaseHref,
-  workFolderHref,
-  workRootHref,
-} from "../work/inventory";
+import { WORK_FOLDERS, workCaseHref, workFolderHref, workRootHref } from "../work/inventory";
 import { SITE_NAME, SITE_ORIGIN } from "./site";
 
 export type PageMeta = {
@@ -39,10 +33,8 @@ function page(path: string, titleSegment: string, description: string): PageMeta
   };
 }
 
-const featuredCase = getFeaturedWorkCase();
-
 const MODE_META: PageMeta[] = [
-  page("/", featuredCase.title, featuredCase.lede ?? ABOUT_PITCH),
+  page("/", "About", ABOUT_PITCH),
   page("/about", "About", ABOUT_PITCH),
   page("/resume", "Resume", `Resume Surface — PDF resume for ${ABOUT_NAME}. ${ABOUT_META}.`),
   page("/contact", "Contact", `Contact ${ABOUT_NAME} — send a message via the Contact Mode form.`),
@@ -86,7 +78,7 @@ const FALLBACK_DESCRIPTION = ABOUT_PITCH;
 
 /**
  * Resolve page meta for a pathname (trailing slash normalized).
- * Featured `/` and the SupplyChain+ Work Case path keep distinct canonicals.
+ * About `/` and the SupplyChain+ Work Case path keep distinct canonicals.
  * Unknown paths keep path + canonical honest to the request URL (SPA still mounts home).
  */
 export function pageMetaForPath(pathname: string): PageMeta {

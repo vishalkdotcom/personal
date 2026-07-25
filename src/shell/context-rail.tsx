@@ -3,7 +3,8 @@ import { For, Match, Show, Switch, type Component } from "solid-js";
 import { ABOUT_AVAILABILITY, ABOUT_ELSEWHERE, ABOUT_FACTS } from "../about/content";
 import { CONTACT_AVAILABILITY, CONTACT_QUICK_LINKS } from "../contact/content";
 import { RESUME_LINKS } from "../resume/content";
-import { getActiveWorkCaseFromPath, isHttpLiveUrl, type WorkCase } from "../work/inventory";
+import { getWorkCaseFromPath, isHttpLiveUrl, type WorkCase } from "../work/inventory";
+import { modeForPath } from "./modes";
 import { isHireSignalEnabled } from "./hire-signal";
 
 const sectionHeadingClass = "m-0 text-[11px] font-[650] tracking-[0.06em] text-faint uppercase";
@@ -206,14 +207,15 @@ const ContactContext: Component = () => (
 );
 
 /**
- * Context Rail body: Work Case sections when a case is active (including featured `/`);
- * About Mode Availability → Facts → Elsewhere on `/about`; thin Resume links/hire on
+ * Context Rail body: Work Case sections when a case is active; About Mode
+ * Availability → Facts → Elsewhere on `/` and `/about`; thin Resume links/hire on
  * `/resume`; Contact availability + quick links on `/contact`; otherwise Mode placeholder.
  */
 export const ContextRail: Component = () => {
   const location = useLocation();
   const pathname = () => location.pathname;
-  const activeCase = () => getActiveWorkCaseFromPath(pathname());
+  const activeCase = () => getWorkCaseFromPath(pathname());
+  const modeId = () => modeForPath(pathname())?.id;
 
   return (
     <Switch
@@ -223,13 +225,13 @@ export const ContextRail: Component = () => {
         </p>
       }
     >
-      <Match when={pathname().startsWith("/about")}>
+      <Match when={modeId() === "about"}>
         <AboutContext />
       </Match>
-      <Match when={pathname().startsWith("/resume")}>
+      <Match when={modeId() === "resume"}>
         <ResumeContext />
       </Match>
-      <Match when={pathname().startsWith("/contact")}>
+      <Match when={modeId() === "contact"}>
         <ContactContext />
       </Match>
       <Match when={activeCase()}>{(workCase) => <WorkCaseContext workCase={workCase()} />}</Match>

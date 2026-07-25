@@ -1,6 +1,6 @@
 import { useLocation } from "@solidjs/router";
 import { Show, createEffect, createSignal, type ParentComponent } from "solid-js";
-import { getActiveWorkCaseFromPath, isPreviewEnabledForPath } from "../work/inventory";
+import { getWorkCaseFromPath, isPreviewEnabledForPath } from "../work/inventory";
 import { ContextRail } from "./context-rail";
 import { MOBILE_SHELL_QUERY, createMediaQuery } from "./create-media-query";
 import { LeftChrome } from "./left-chrome";
@@ -22,7 +22,7 @@ const DesktopTriptych: ParentComponent = (props) => {
   const [previewOpen, setPreviewOpen] = createSignal(false);
 
   const previewEnabled = () => isPreviewEnabledForPath(location.pathname);
-  const activeCase = () => getActiveWorkCaseFromPath(location.pathname);
+  const activeCase = () => getWorkCaseFromPath(location.pathname);
 
   createEffect(
     () => location.pathname,

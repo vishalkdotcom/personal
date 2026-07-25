@@ -1,6 +1,6 @@
 import { useLocation } from "@solidjs/router";
 import { Show, createEffect, createSignal, type ParentComponent } from "solid-js";
-import { getActiveWorkCaseFromPath, isPreviewEnabledForPath } from "../work/inventory";
+import { getWorkCaseFromPath, isPreviewEnabledForPath } from "../work/inventory";
 import { ContextRail } from "./context-rail";
 import { shellCrumbForPath } from "./header-crumb";
 import { HireSignalChip } from "./hire-signal-chip";
@@ -23,10 +23,10 @@ export const MobileShell: ParentComponent = (props) => {
   const [previewOpen, setPreviewOpen] = createSignal(false);
 
   const previewEnabled = () => isPreviewEnabledForPath(location.pathname);
-  const activeCase = () => getActiveWorkCaseFromPath(location.pathname);
+  const activeCase = () => getWorkCaseFromPath(location.pathname);
   const crumb = () => shellCrumbForPath(location.pathname);
   /** Work Case context is dense — full-screen sheet. Mode rails stay bottom sheets. */
-  const sheetDense = () => getActiveWorkCaseFromPath(location.pathname) !== undefined;
+  const sheetDense = () => getWorkCaseFromPath(location.pathname) !== undefined;
 
   const closeOverlays = () => {
     setDrawerOpen(false);

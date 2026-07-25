@@ -266,39 +266,11 @@ export function getWorkCase(folderSlug: string, caseSlug: string): WorkCase | un
   return getWorkFolder(folderSlug)?.cases.find((entry) => entry.slug === caseSlug);
 }
 
-/** Featured Public Storefront on `/` — SupplyChain+. */
-export const FEATURED_WORK = {
-  folderSlug: "prototypes",
-  caseSlug: "supplychain-plus",
-} as const;
-
-export function getFeaturedWorkCase(): WorkCase {
-  const workCase = getWorkCase(FEATURED_WORK.folderSlug, FEATURED_WORK.caseSlug);
-  if (!workCase) {
-    throw new Error("Featured Work Case SupplyChain+ missing from inventory");
-  }
-  return workCase;
-}
-
-export function getFeaturedWorkFolder(): WorkFolder {
-  const folder = getWorkFolder(FEATURED_WORK.folderSlug);
-  if (!folder) {
-    throw new Error("Featured Work Folder Prototypes missing from inventory");
-  }
-  return folder;
-}
-
 /** Resolve the active Work Case from a pathname (`/work/<folder>/<case>`). */
 export function getWorkCaseFromPath(pathname: string): WorkCase | undefined {
   const match = pathname.match(/^\/work\/([^/]+)\/([^/]+)\/?$/);
   if (!match) return undefined;
   return getWorkCase(match[1], match[2]);
-}
-
-/** Active Work Case for stage + Context Rail, including featured `/`. */
-export function getActiveWorkCaseFromPath(pathname: string): WorkCase | undefined {
-  if (pathname === "/" || pathname === "") return getFeaturedWorkCase();
-  return getWorkCaseFromPath(pathname);
 }
 
 export function isHttpLiveUrl(live: string): boolean {
@@ -310,6 +282,6 @@ export function isHttpLiveUrl(live: string): boolean {
  * Stub Live lines and Internal Dossiers stay disabled.
  */
 export function isPreviewEnabledForPath(pathname: string): boolean {
-  const workCase = getActiveWorkCaseFromPath(pathname);
+  const workCase = getWorkCaseFromPath(pathname);
   return workCase?.surface === "public-storefront" && isHttpLiveUrl(workCase.live);
 }

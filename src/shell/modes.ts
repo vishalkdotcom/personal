@@ -12,14 +12,14 @@ export const MODES: ModeDef[] = [
   {
     id: "work",
     label: "Work",
-    href: "/",
-    matches: (pathname) => pathname === "/" || pathname.startsWith("/work"),
+    href: "/work",
+    matches: (pathname) => pathname === "/work" || pathname.startsWith("/work/"),
   },
   {
     id: "about",
     label: "About",
     href: "/about",
-    matches: (pathname) => pathname.startsWith("/about"),
+    matches: (pathname) => pathname === "/" || pathname === "" || pathname.startsWith("/about"),
   },
   {
     id: "resume",
@@ -35,7 +35,10 @@ export const MODES: ModeDef[] = [
   },
 ];
 
+export function modeForPath(pathname: string): ModeDef | undefined {
+  return MODES.find((entry) => entry.matches(pathname));
+}
+
 export function modeTitleForPath(pathname: string): string {
-  const mode = MODES.find((entry) => entry.matches(pathname));
-  return mode?.label ?? "Work";
+  return modeForPath(pathname)?.label ?? "Work";
 }

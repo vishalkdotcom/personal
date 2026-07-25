@@ -1,12 +1,9 @@
 import { A, useLocation, useNavigate } from "@solidjs/router";
 import { For, Show, createSignal, type Component } from "solid-js";
 import {
-  FEATURED_WORK,
   WORK_FOLDERS,
   workCaseHref,
   workFolderHref,
-  workRootHref,
-  type WorkBadge,
   type WorkCase,
   type WorkFolder,
 } from "../work/inventory";
@@ -15,29 +12,12 @@ function isModifiedClick(event: MouseEvent): boolean {
   return event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey;
 }
 
-function badgeClass(badge: WorkBadge): string {
-  if (badge === "Prototype") {
-    return "shrink-0 rounded-full bg-[rgba(232,168,124,0.16)] px-1.5 py-px text-[10px] font-[650] tracking-[0.06em] text-[#e8a87c] uppercase";
-  }
-  return "shrink-0 rounded-full bg-accent/14 px-1.5 py-px text-[10px] font-[650] tracking-[0.06em] text-accent uppercase";
-}
-
 function folderActive(pathname: string, folder: WorkFolder): boolean {
-  if ((pathname === "/" || pathname === "") && folder.slug === FEATURED_WORK.folderSlug) {
-    return true;
-  }
   const base = workFolderHref(folder.slug);
   return pathname === base || pathname.startsWith(`${base}/`);
 }
 
 function caseActive(pathname: string, folderSlug: string, caseSlug: string): boolean {
-  if (
-    (pathname === "/" || pathname === "") &&
-    folderSlug === FEATURED_WORK.folderSlug &&
-    caseSlug === FEATURED_WORK.caseSlug
-  ) {
-    return true;
-  }
   return pathname === workCaseHref(folderSlug, caseSlug);
 }
 
@@ -47,21 +27,11 @@ const folderLinkClass = (active: boolean) =>
     active ? "text-accent" : "text-faint hover:text-fg",
   ].join(" ");
 
-const rootLinkClass = (active: boolean) =>
-  [
-    "mb-1 rounded-md px-2.5 py-1.5 text-[13px]",
-    active ? "bg-bg-active text-fg" : "text-muted hover:bg-bg-hover hover:text-fg",
-  ].join(" ");
-
 const caseLinkClass = (active: boolean) =>
   [
-    "flex items-center justify-between gap-2 rounded-md py-1.5 pr-2.5 pl-7 text-[13px]",
+    "flex items-center gap-2 rounded-md py-1.5 pr-2.5 pl-7 text-[13px]",
     active ? "bg-bg-active text-fg" : "text-muted hover:bg-bg-hover hover:text-fg",
   ].join(" ");
-
-function rootActive(pathname: string): boolean {
-  return pathname === workRootHref() || pathname === `${workRootHref()}/`;
-}
 
 const WorkCaseLink: Component<{ folderSlug: string; workCase: WorkCase }> = (props) => {
   const location = useLocation();
@@ -74,7 +44,7 @@ const WorkCaseLink: Component<{ folderSlug: string; workCase: WorkCase }> = (pro
       class={caseLinkClass(caseActive(location.pathname, props.folderSlug, props.workCase.slug))}
       activeClass=""
       inactiveClass=""
-      aria-label={`${props.workCase.title} ${props.workCase.badge}`}
+      aria-label={props.workCase.title}
       onClick={(event) => {
         if (event.defaultPrevented || isModifiedClick(event)) return;
         event.preventDefault();
@@ -82,7 +52,6 @@ const WorkCaseLink: Component<{ folderSlug: string; workCase: WorkCase }> = (pro
       }}
     >
       <span class="truncate">{props.workCase.title}</span>
-      <span class={badgeClass(props.workCase.badge)}>{props.workCase.badge}</span>
     </A>
   );
 };
@@ -132,29 +101,7 @@ const WorkFolderGroup: Component<{ folder: WorkFolder }> = (props) => {
   );
 };
 
-const WorkRootLink: Component = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const href = workRootHref();
-
-  return (
-    <A
-      href={href}
-      class={rootLinkClass(rootActive(location.pathname))}
-      activeClass=""
-      inactiveClass=""
-      onClick={(event) => {
-        if (event.defaultPrevented || isModifiedClick(event)) return;
-        event.preventDefault();
-        navigate(href);
-      }}
-    >
-      All work
-    </A>
-  );
-};
-
-/** Left chrome Work tree: Work root → Work Folders → Work Cases with Production/Prototype badges. */
+/** Left chrome Work tree: Work Folders → Work Cases (quiet rows; badges live on stage / indexes). */
 export const WorkTree: Component = () => (
   <nav
     class="flex min-h-0 flex-1 flex-col overflow-hidden group-data-[left-collapsed]/shell:hidden"
@@ -162,7 +109,6 @@ export const WorkTree: Component = () => (
   >
     <div class="px-2 pt-1 pb-1.5 text-[11px] font-[550] tracking-[0.02em] text-faint">Work</div>
     <div class="flex min-h-0 flex-1 flex-col gap-px overflow-auto">
-      <WorkRootLink />
       <For each={WORK_FOLDERS}>{(folder) => <WorkFolderGroup folder={folder} />}</For>
     </div>
   </nav>

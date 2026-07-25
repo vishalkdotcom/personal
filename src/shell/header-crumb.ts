@@ -1,4 +1,4 @@
-import { getActiveWorkCaseFromPath, getFeaturedWorkFolder, getWorkFolder } from "../work/inventory";
+import { getWorkCaseFromPath, getWorkFolder } from "../work/inventory";
 import { modeTitleForPath } from "./modes";
 
 export type ShellCrumb = {
@@ -9,7 +9,6 @@ export type ShellCrumb = {
 };
 
 function folderForWorkCasePath(pathname: string) {
-  if (pathname === "/" || pathname === "") return getFeaturedWorkFolder();
   const match = pathname.match(/^\/work\/([^/]+)\//);
   return match ? getWorkFolder(match[1]) : undefined;
 }
@@ -17,7 +16,7 @@ function folderForWorkCasePath(pathname: string) {
 /** Header crumb for mobile wayfinding. */
 export function shellCrumbForPath(pathname: string): ShellCrumb {
   const modeLabel = modeTitleForPath(pathname);
-  const workCase = getActiveWorkCaseFromPath(pathname);
+  const workCase = getWorkCaseFromPath(pathname);
 
   if (workCase) {
     const folder = folderForWorkCasePath(pathname);
