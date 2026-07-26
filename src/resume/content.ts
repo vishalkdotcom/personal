@@ -4,6 +4,9 @@ import { ABOUT_AVAILABILITY, ABOUT_ELSEWHERE, type AboutElsewhereLink } from "..
 
 export const RESUME_PDF_HREF = "/vishal-cv.pdf";
 
+/** Display filename for the shell-owned Resume viewer toolbar. */
+export const RESUME_PDF_FILENAME = RESUME_PDF_HREF.slice(RESUME_PDF_HREF.lastIndexOf("/") + 1);
+
 export const RESUME_PDF_TITLE = "Vishal Kumar resume";
 
 /** Shared Hire Signal Availability body (same as About). */
