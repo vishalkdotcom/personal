@@ -3,6 +3,7 @@ import { createMemoryHistory, MemoryRouter } from "@solidjs/router";
 import { afterEach, describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import { AppShellRoutes } from "../app";
+import { getWorkCase } from "../work/inventory";
 import { SITE_ORIGIN } from "./site";
 
 function renderAt(path: string) {
@@ -68,9 +69,9 @@ describe("Document head meta sync (App Shell seam)", () => {
       .element(caseScreen.getByRole("main").getByRole("heading", { name: /^Engage reporting$/i }))
       .toBeVisible();
     expect(appDocumentTitle()).toBe("Engage reporting · Vishal Kumar");
-    expect(metaContent('meta[name="description"]')).toContain(
-      "Auth-walled Engage questionnaire reporting",
-    );
+    const engageLede = getWorkCase("labor-solutions", "engage-reporting")?.lede;
+    expect(engageLede).toBeTruthy();
+    expect(metaContent('meta[name="description"]')).toBe(engageLede);
     expect(canonicalHref()).toBe(`${SITE_ORIGIN}/work/labor-solutions/engage-reporting`);
   });
 

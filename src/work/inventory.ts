@@ -70,10 +70,10 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "Engage reporting",
         badge: "Production",
         surface: "internal-dossier",
-        role: "Senior Frontend Developer · Labor Solutions · PIC on Engage reporting OKR",
-        lede: "Auth-walled Engage questionnaire reporting — Summary, Categories, and Miscellaneous with Metabase embeds, risk maps, and dashboard/export score parity. No public demo URL.",
+        role: "Senior Frontend · Labor Solutions · Engage reporting",
+        lede: "Engage questionnaire reporting — Summary, Categories, and Miscellaneous with Metabase embeds, risk maps, and one scoring path for dashboards and exports.",
         outcomes: [
-          "Problem → solution: dashboard vs Excel score drift — facility-first vs question-first aggregations diverged; exports aligned to analytics cards as the single scoring authority",
+          "Dashboards and Excel disagreed on scores (facility-first vs question-first). Exports now follow the analytics cards as the single authority.",
           "Reporting artifacts shipped in-product: Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, and top/bottom sites",
         ],
         artifacts: [
@@ -101,8 +101,8 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "Indicator Bank",
         badge: "Production",
         surface: "internal-dossier",
-        role: "Senior Frontend Developer · Labor Solutions · Indicator Bank platform",
-        lede: "Auth-walled multilingual Indicator Bank — reusable questions and answer sets across Django and Next.js with protected Excel import/export and survey association. No public demo URL.",
+        role: "Senior Frontend · Labor Solutions · Indicator Bank",
+        lede: "Multilingual Indicator Bank — reusable questions and answer sets across Django and Next.js with protected Excel import/export and survey association.",
         outcomes: [
           "Built a multilingual Indicator Bank across Django and Next.js — reusable questions/answer sets and four administration surfaces (Indicators, Questions, Answer Sets, Manage Associations)",
           "Protected Excel import/export with partial-success validation, soft deletion, and idempotent survey association for reusable survey content",
@@ -133,10 +133,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Production",
         surface: "internal-dossier",
         role: "Frontend Engineer · Advance Auto Parts · Measurement Framework",
-        lede: "Auth-walled store KPI measurement UI — trends, filters, and drill-downs for operational and leadership stakeholders. No public demo URL.",
+        lede: "Store KPI measurement UI — trends, filters, and drill-downs for operational and leadership stakeholders.",
         outcomes: [
           "Built the store KPI measurement UI (Next.js, Tremor/Nivo, TypeScript, Snowflake) serving operational and leadership stakeholders with trends, filters, and drill-down views",
-          "Interactive monitoring of key metrics and business performance with trend analysis across time intervals",
         ],
         artifacts: [
           {
@@ -153,10 +152,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Production",
         surface: "internal-dossier",
         role: "Frontend Engineer · Advance Auto Parts · Model Deployment Framework",
-        lede: "Auth-walled self-service ML model hosting dashboard — register, version, and deploy models without filing engineering tickets. No public demo URL.",
+        lede: "Self-service ML model hosting dashboard — register, version, and deploy models without filing engineering tickets.",
         outcomes: [
           "Built the self-service ML model hosting dashboard (Next.js, TypeScript, Tailwind) enabling data scientists to register, version, and deploy models without filing engineering tickets",
-          "Responsive platform for testing and deploying machine learning models from any device",
         ],
         artifacts: [
           {
@@ -179,7 +177,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Production",
         surface: "internal-dossier",
         role: "Frontend Engineer · Advance Auto Parts · Store Dashboard",
-        lede: "Auth-walled store-level performance and sales-forecast dashboard — actual vs predicted net sales for planning reviews. No public demo URL.",
+        lede: "Store-level performance and sales-forecast dashboard — actual vs predicted net sales for planning reviews.",
         outcomes: [
           "Delivered store-level performance and sales-forecast views comparing actual vs predicted net sales across store segments for planning reviews",
           "Streamlit + Snowflake SPA for regional leadership and store managers to analyze performance and identify outliers",
@@ -210,9 +208,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         surface: "public-storefront",
         live: "https://sc-plus.vercel.app",
         role: "SupplyChain+ · solo build",
-        lede: "AI supply-chain compliance prototype — explainable supplier-risk scoring, complaint clustering, and audit-oriented evidence export. Public deploy you can open.",
+        lede: "A tool that scores supplier risk, groups complaints, and pulls evidence together for audits.",
         outcomes: [
-          "Portfolio demo of explainable supplier-risk scoring, complaint clustering, and compliance/reporting workflows — not a production launch",
+          "Explainable supplier-risk scoring, complaint clustering, and compliance/reporting workflows with audit-oriented evidence export",
           "Multi-provider LLM tools for summarization, sentiment analysis, and audit-oriented evidence export",
         ],
         stack: ["Next.js 16", "React 19", "PostgreSQL/pgvector", "Drizzle ORM", "Vercel AI SDK"],
@@ -229,7 +227,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         surface: "public-storefront",
         live: "https://qgenai.vercel.app",
         role: "QGenAI · solo build",
-        lede: "AI survey builder prototype — prompt-to-survey UI with multi-type questions, per-question regeneration, and multi-language translation. Public deploy you can open.",
+        lede: "A survey builder that turns a prompt into multi-type questions, with per-question regeneration and multi-language translation.",
         outcomes: [
           "Prompt-to-survey UI with multi-type questions, per-question AI regeneration, and multi-language translation",
           "Provider-agnostic AI layer (Google GenAI, OpenRouter, LM Studio) with client-side persistence and structured validation",
@@ -254,7 +252,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         surface: "public-storefront",
         live: "https://mcq.vishalk.com/",
         role: "Snap2Paper · solo build",
-        lede: "AI-powered study sheet digitizer — scan paper questions into editable MCQ study sets with local-only storage. Public tool you can open.",
+        lede: "A study-sheet digitizer that scans paper questions into editable MCQ study sets with local-only storage.",
         outcomes: [
           "Gemini vision turns paper study sheets into editable MCQ collections you can review and print",
           "Client-side print preview and PDF export with local-only data storage",
@@ -273,7 +271,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         surface: "public-storefront",
         live: "https://printgrid.vishalk.com/",
         role: "PhotoGrid · solo build",
-        lede: "Passport and wallet photo layout tool — arrange uploaded photos onto standard paper sizes with cutting guides. Public tool you can open.",
+        lede: "A passport and wallet photo layout tool — arrange uploaded photos onto standard paper sizes with cutting guides.",
         outcomes: [
           "Layout uploaded photos onto A4 and photo papers for passport, wallet, and stamp sizes",
           "Client-side print PDF export with live preview, margins, spacing, and optional cutting guides",
@@ -292,9 +290,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         surface: "public-storefront",
         live: "https://pdfgrid.vishalk.com/",
         role: "PDFGrid · solo build",
-        lede: "Client-side N-Up PDF compiler — arrange uploaded PDFs into printable grid layouts. Public tool you can open.",
+        lede: "A browser tool that arranges uploaded PDFs into printable grid layouts.",
         outcomes: [
-          "N-Up grid layouts for A4 and Letter with configurable columns, rows, margins, and gaps",
+          "Printable grid layouts for A4 and Letter with configurable columns, rows, margins, and gaps",
           "Browser-local PDF compile — upload documents, preview the grid, and generate a print-ready PDF on-device",
         ],
         stack: ["TypeScript", "PDF", "Client-side layout"],

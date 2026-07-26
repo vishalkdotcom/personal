@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { ABOUT_PITCH } from "../about/content";
-import { WORK_FOLDERS, workCaseHref, workFolderHref, workRootHref } from "../work/inventory";
+import {
+  getWorkCase,
+  WORK_FOLDERS,
+  workCaseHref,
+  workFolderHref,
+  workRootHref,
+} from "../work/inventory";
 import { DEEP_LINK_ROUTES, deepLinkPaths, pageMetaForPath } from "./route-manifest";
 import { SITE_NAME, SITE_ORIGIN } from "./site";
 
@@ -57,10 +63,17 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(folder.description).toBe("Labor Solutions — selected work and outcomes.");
     expect(folder.description).not.toMatch(/Work Folder/i);
 
+    const engageCase = getWorkCase("labor-solutions", "engage-reporting");
+    expect(engageCase?.lede).toBeTruthy();
     const engage = pageMetaForPath("/work/labor-solutions/engage-reporting");
     expect(engage.title).toBe(`Engage reporting · ${SITE_NAME}`);
-    expect(engage.description).toContain("Auth-walled Engage questionnaire reporting");
+    expect(engage.description).toBe(engageCase!.lede);
     expect(engage.canonical).toBe(`${SITE_ORIGIN}/work/labor-solutions/engage-reporting`);
+
+    const supplyCase = getWorkCase("prototypes", "supplychain-plus");
+    expect(supplyCase?.lede).toBeTruthy();
+    const supplyChain = pageMetaForPath("/work/prototypes/supplychain-plus");
+    expect(supplyChain.description).toBe(supplyCase!.lede);
   });
 
   it("stamps `/` as About meta, distinct from the SupplyChain+ Work Case", () => {
