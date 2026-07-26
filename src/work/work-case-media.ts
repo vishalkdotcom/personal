@@ -25,10 +25,16 @@ const pngUrls = {
 
 /** Inventory `src` is relative to `src/images/` (e.g. `work/supplychain-plus/home.png`). */
 export function resolveWorkMediaSrc(inventorySrc: string): string {
-  const key = `../images/${inventorySrc.replace(/^\//, "")}`;
-  const url = pngUrls[key];
+  const url = tryResolveWorkMediaSrc(inventorySrc);
   if (!url) {
+    const key = `../images/${inventorySrc.replace(/^\//, "")}`;
     throw new Error(`Missing Work Case media asset for "${inventorySrc}" (glob key ${key})`);
   }
   return url;
+}
+
+/** Same lookup as `resolveWorkMediaSrc`, but returns `undefined` when the asset is absent. */
+export function tryResolveWorkMediaSrc(inventorySrc: string): string | undefined {
+  const key = `../images/${inventorySrc.replace(/^\//, "")}`;
+  return pngUrls[key];
 }

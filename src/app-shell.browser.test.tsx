@@ -353,6 +353,29 @@ describe("Work Folder dense outcome indexes (App Shell seam)", () => {
     await expect.element(rail.getByRole("link", { name: /^Open to roles$/i })).toBeVisible();
   });
 
+  it("shows media thumbs on All work and Work Folder index rows when cases have media", async () => {
+    const expectRowMediaThumb = async (
+      screen: ReturnType<typeof renderAt>["screen"],
+      name: RegExp,
+    ) => {
+      const row = screen.getByRole("main").getByRole("link", { name });
+      await expect.element(row).toBeVisible();
+      const thumb = row.element().querySelector("img");
+      expect(thumb).toBeTruthy();
+      expect(thumb?.getAttribute("src")).toBeTruthy();
+      expect(thumb?.getAttribute("alt")).toBe("");
+      return row;
+    };
+
+    const { screen: workScreen } = renderAt("/work");
+    await expectRowMediaThumb(workScreen, /SupplyChain\+.*Prototype/i);
+    cleanup();
+
+    const { screen: folderScreen } = renderAt("/work/labor-solutions");
+    const engageRow = await expectRowMediaThumb(folderScreen, /Engage reporting.*Production/i);
+    await expect.element(engageRow.getByText(ENGAGE_CASE.outcomes[0]!)).toBeVisible();
+  });
+
   it("omits a duplicate All work row from the left Work tree", async () => {
     const { screen } = renderAt("/");
     const tree = screen.getByRole("navigation", { name: /work tree/i });
