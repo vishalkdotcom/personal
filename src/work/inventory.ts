@@ -4,10 +4,13 @@ export type WorkBadge = "Production" | "Prototype";
 
 export type WorkSurface = "public-storefront" | "internal-dossier";
 
-/** Stage carousel slide — label required; src optional until screenshot assets land. */
+/**
+ * Stage carousel slide — label + inventory-relative `src` under `src/images/`.
+ * The stage resolves `src` to a Vite URL.
+ */
 export type WorkMediaSlide = {
   label: string;
-  src?: string;
+  src: string;
 };
 
 export type WorkCase = {
@@ -15,8 +18,8 @@ export type WorkCase = {
   title: string;
   badge: WorkBadge;
   surface: WorkSurface;
-  /** Context Rail Live line — honest URL or auth-walled note. */
-  live: string;
+  /** Context Rail Live URL — omit when there is no public HTTP URL. */
+  live?: string;
   /** Context Rail Role stub — richer copy in later case tickets. */
   role: string;
   /** Center + Context Rail Outcomes — Public Claims only when filled. */
@@ -28,7 +31,7 @@ export type WorkCase = {
    * When set, the case narrative ships instead of a stub.
    */
   lede?: string;
-  /** Public Storefront stage carousel slides (placeholders OK). */
+  /** Stage carousel slides — locked cases wire inventory `src` assets. */
   media?: WorkMediaSlide[];
 };
 
@@ -37,8 +40,6 @@ export type WorkFolder = {
   title: string;
   cases: WorkCase[];
 };
-
-const dossierLive = "Auth-walled · no public URL";
 
 export const WORK_FOLDERS: WorkFolder[] = [
   {
@@ -50,7 +51,6 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "Engage reporting",
         badge: "Production",
         surface: "internal-dossier",
-        live: dossierLive,
         role: "Senior Frontend Developer · Labor Solutions · PIC on Engage reporting OKR",
         lede: "Auth-walled Engage questionnaire reporting — Summary, Categories, and Miscellaneous with Metabase embeds, risk maps, and dashboard/export score parity. No public demo URL.",
         outcomes: [
@@ -59,11 +59,11 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["React", "Next.js", "TypeScript", "Metabase Embedding SDK", "Redux Toolkit"],
         media: [
-          { label: "Shot 1 · Shell" },
-          { label: "Shot 2 · Summary" },
-          { label: "Shot 3 · eNPS" },
-          { label: "Shot 4 · Question results" },
-          { label: "Shot 5 · Overall table" },
+          { label: "Shot 1 · Shell", src: "work/engage-reporting/shell.png" },
+          { label: "Shot 2 · Summary", src: "work/engage-reporting/summary.png" },
+          { label: "Shot 3 · eNPS", src: "work/engage-reporting/enps.png" },
+          { label: "Shot 4 · Question results", src: "work/engage-reporting/question-results.png" },
+          { label: "Shot 5 · Overall table", src: "work/engage-reporting/overall-table.png" },
         ],
       },
       {
@@ -71,7 +71,6 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "Indicator Bank",
         badge: "Production",
         surface: "internal-dossier",
-        live: dossierLive,
         role: "Senior Frontend Developer · Labor Solutions · Indicator Bank platform",
         lede: "Auth-walled multilingual Indicator Bank — reusable questions and answer sets across Django and Next.js with protected Excel import/export and survey association. No public demo URL.",
         outcomes: [
@@ -80,10 +79,10 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["Django", "Next.js", "React", "TypeScript", "Excel import/export"],
         media: [
-          { label: "Shot 1 · Indicators" },
-          { label: "Shot 2 · Questions" },
-          { label: "Shot 3 · Answer Sets" },
-          { label: "Shot 4 · Associations" },
+          { label: "Shot 1 · Indicators", src: "work/indicator-bank/indicators.png" },
+          { label: "Shot 2 · Questions", src: "work/indicator-bank/questions.png" },
+          { label: "Shot 3 · Answer Sets", src: "work/indicator-bank/answer-sets.png" },
+          { label: "Shot 4 · Associations", src: "work/indicator-bank/associations.png" },
         ],
       },
     ],
@@ -97,7 +96,6 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "Measurement Framework",
         badge: "Production",
         surface: "internal-dossier",
-        live: dossierLive,
         role: "Frontend Engineer · Advance Auto Parts · Measurement Framework",
         lede: "Auth-walled store KPI measurement UI — trends, filters, and drill-downs for operational and leadership stakeholders. No public demo URL.",
         outcomes: [
@@ -105,13 +103,13 @@ export const WORK_FOLDERS: WorkFolder[] = [
           "Interactive monitoring of key metrics and business performance with trend analysis across time intervals",
         ],
         stack: ["Next.js", "TypeScript", "Tremor", "Nivo", "Snowflake"],
+        media: [{ label: "Shot 1 · Topsheet", src: "projects/aai-mfdb-1.png" }],
       },
       {
         slug: "model-deployment-framework",
         title: "Model Deployment Framework",
         badge: "Production",
         surface: "internal-dossier",
-        live: dossierLive,
         role: "Frontend Engineer · Advance Auto Parts · Model Deployment Framework",
         lede: "Auth-walled self-service ML model hosting dashboard — register, version, and deploy models without filing engineering tickets. No public demo URL.",
         outcomes: [
@@ -119,13 +117,19 @@ export const WORK_FOLDERS: WorkFolder[] = [
           "Responsive platform for testing and deploying machine learning models from any device",
         ],
         stack: ["Next.js", "TypeScript", "Tailwind CSS"],
+        media: [
+          { label: "Shot 1 · Home", src: "projects/aai-mdf-1.png" },
+          { label: "Shot 2 · Services", src: "projects/aai-mdf-2.png" },
+          { label: "Shot 3 · Jobs", src: "projects/aai-mdf-3.png" },
+          { label: "Shot 4 · Notifications", src: "projects/aai-mdf-4.png" },
+          { label: "Shot 5 · API Keys", src: "projects/aai-mdf-5.png" },
+        ],
       },
       {
         slug: "store-dashboard",
         title: "Store Dashboard",
         badge: "Production",
         surface: "internal-dossier",
-        live: dossierLive,
         role: "Frontend Engineer · Advance Auto Parts · Store Dashboard",
         lede: "Auth-walled store-level performance and sales-forecast dashboard — actual vs predicted net sales for planning reviews. No public demo URL.",
         outcomes: [
@@ -133,6 +137,11 @@ export const WORK_FOLDERS: WorkFolder[] = [
           "Streamlit + Snowflake SPA for regional leadership and store managers to analyze performance and identify outliers",
         ],
         stack: ["Streamlit", "Snowflake", "Python"],
+        media: [
+          { label: "Shot 1 · Performance", src: "projects/aai-store-dashboard-1.png" },
+          { label: "Shot 2 · Forecast", src: "projects/aai-store-dashboard-2.png" },
+          { label: "Shot 3 · What-if", src: "projects/aai-store-dashboard-3.png" },
+        ],
       },
     ],
   },
@@ -154,9 +163,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["Next.js 16", "React 19", "PostgreSQL/pgvector", "Drizzle ORM", "Vercel AI SDK"],
         media: [
-          { label: "Shot 1 · Home" },
-          { label: "Shot 2 · Diagnosis" },
-          { label: "Shot 3 · Audit" },
+          { label: "Shot 1 · Home", src: "work/supplychain-plus/home.png" },
+          { label: "Shot 2 · Diagnosis", src: "work/supplychain-plus/diagnosis.png" },
+          { label: "Shot 3 · Audit", src: "work/supplychain-plus/audit.png" },
         ],
       },
       {
@@ -173,9 +182,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["Next.js 15", "React 19", "Vercel AI SDK", "Zod", "shadcn/ui", "IndexedDB"],
         media: [
-          { label: "Shot 1 · Builder" },
-          { label: "Shot 2 · Survey" },
-          { label: "Shot 3 · Translate" },
+          { label: "Shot 1 · Builder", src: "work/qgenai/builder.png" },
+          { label: "Shot 2 · Survey", src: "work/qgenai/survey.png" },
+          { label: "Shot 3 · Translate", src: "work/qgenai/translate.png" },
         ],
       },
     ],
@@ -198,9 +207,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["TypeScript", "Gemini", "html2canvas", "jsPDF"],
         media: [
-          { label: "Shot 1 · Library" },
-          { label: "Shot 2 · Scan" },
-          { label: "Shot 3 · Print" },
+          { label: "Shot 1 · Library", src: "work/snap2paper/library.png" },
+          { label: "Shot 2 · Scan", src: "work/snap2paper/scan.png" },
+          { label: "Shot 3 · Print", src: "work/snap2paper/print.png" },
         ],
       },
       {
@@ -217,9 +226,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["TypeScript", "Canvas", "Client-side PDF"],
         media: [
-          { label: "Shot 1 · Layout" },
-          { label: "Shot 2 · Sizes" },
-          { label: "Shot 3 · Print" },
+          { label: "Shot 1 · Layout", src: "work/photogrid/layout.png" },
+          { label: "Shot 2 · Sizes", src: "work/photogrid/sizes.png" },
+          { label: "Shot 3 · Print", src: "work/photogrid/print.png" },
         ],
       },
       {
@@ -236,9 +245,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["TypeScript", "PDF", "Client-side layout"],
         media: [
-          { label: "Shot 1 · Grid" },
-          { label: "Shot 2 · Preview" },
-          { label: "Shot 3 · Export" },
+          { label: "Shot 1 · Grid", src: "work/pdfgrid/grid.png" },
+          { label: "Shot 2 · Preview", src: "work/pdfgrid/preview.png" },
+          { label: "Shot 3 · Export", src: "work/pdfgrid/export.png" },
         ],
       },
     ],
@@ -273,13 +282,13 @@ export function getWorkCaseFromPath(pathname: string): WorkCase | undefined {
   return getWorkCase(match[1], match[2]);
 }
 
-export function isHttpLiveUrl(live: string): boolean {
-  return /^https?:\/\//i.test(live);
+export function isHttpLiveUrl(live: string | undefined): live is string {
+  return Boolean(live && /^https?:\/\//i.test(live));
 }
 
 /**
  * Desktop Preview header chip — Public Storefront with an honest HTTP Live URL only.
- * Stub Live lines and Internal Dossiers stay disabled.
+ * Missing Live and Internal Dossiers stay disabled.
  */
 export function isPreviewEnabledForPath(pathname: string): boolean {
   const workCase = getWorkCaseFromPath(pathname);

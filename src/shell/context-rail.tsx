@@ -94,21 +94,20 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
   <div class="vk-rail-stack">
     <HireSignalAvailability ctaLabel="Open to roles" />
 
-    <section class="vk-rail-module" aria-labelledby="rail-live">
-      <h2 id="rail-live" class={sectionHeadingClass}>
-        Live
-      </h2>
-      <Show
-        when={isHttpLiveUrl(props.workCase.live)}
-        fallback={<p class={sectionBodyClass}>{props.workCase.live}</p>}
-      >
-        <p class={sectionBodyClass}>
-          <a href={props.workCase.live} class={linkClass} target="_blank" rel="noreferrer">
-            {props.workCase.live.replace(/^https?:\/\//i, "")}
-          </a>
-        </p>
-      </Show>
-    </section>
+    <Show when={isHttpLiveUrl(props.workCase.live) ? props.workCase.live : undefined}>
+      {(live) => (
+        <section class="vk-rail-module" aria-labelledby="rail-live">
+          <h2 id="rail-live" class={sectionHeadingClass}>
+            Live
+          </h2>
+          <p class={sectionBodyClass}>
+            <a href={live()} class={linkClass} target="_blank" rel="noreferrer">
+              {live().replace(/^https?:\/\//i, "")}
+            </a>
+          </p>
+        </section>
+      )}
+    </Show>
 
     <section class="vk-rail-module" aria-labelledby="rail-role">
       <h2 id="rail-role" class={sectionHeadingClass}>

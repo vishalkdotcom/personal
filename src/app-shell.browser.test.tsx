@@ -25,6 +25,19 @@ function renderAt(path: string) {
   return { ...result, history, screen: page.elementLocator(result.baseElement) };
 }
 
+/** Assert Case media carousel shows a wired inventory `<img>` for the first shot. */
+async function expectWiredCaseMedia(
+  stage: ReturnType<typeof renderAt>["screen"],
+  firstShotName: RegExp,
+) {
+  const carousel = stage.getByRole("region", { name: /case media/i });
+  await expect.element(carousel).toBeVisible();
+  const firstShot = carousel.getByRole("img", { name: firstShotName });
+  await expect.element(firstShot).toBeVisible();
+  expect(firstShot.element().getAttribute("src")).toBeTruthy();
+  return carousel;
+}
+
 describe("App Shell Mode routes (App Shell seam)", () => {
   afterEach(() => cleanup());
 
@@ -398,12 +411,14 @@ describe("Work Context Rail (App Shell seam)", () => {
     const rail = screen.getByRole("complementary", { name: /context rail/i });
     await expect.element(rail).toBeVisible();
     await expect.element(rail).toHaveTextContent(/Engage reporting/i);
-    await expect.element(rail).toHaveTextContent(/Auth-walled/i);
+    await expect.element(rail.getByText(/^Live$/i)).not.toBeInTheDocument();
+    await expect.element(rail).toHaveTextContent(/Labor Solutions/i);
 
     await screen.getByRole("link", { name: /SupplyChain\+/i }).click();
     expect(history.get()).toBe(SUPPLY_CHAIN_PATH);
     await expect.element(rail).toHaveTextContent(/SupplyChain\+/i);
     await expect.element(rail).toHaveTextContent(/sc-plus\.vercel\.app/i);
+    await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
     await expect.element(rail).not.toHaveTextContent(/Engage reporting/i);
   });
 
@@ -455,7 +470,7 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(stage).not.toHaveTextContent(/Public Storefront/i);
   });
 
-  it("shows proof-first outcomes and problem→solution artifacts without fake screenshots", async () => {
+  it("shows proof-first outcomes and wired illustrative mock media for Engage", async () => {
     const { screen } = renderAt("/work/labor-solutions/engage-reporting");
     const stage = screen.getByRole("main");
 
@@ -464,14 +479,11 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(stage).toHaveTextContent(/Problem → solution/i);
     await expect.element(stage).toHaveTextContent(/Reporting artifacts shipped in-product/i);
     await expect.element(stage).toHaveTextContent(/dashboard vs Excel score drift/i);
-    await expect
-      .element(stage.getByRole("region", { name: /case media/i }))
-      .not.toBeInTheDocument();
-    await expect.element(stage).not.toHaveTextContent(/Shot \d/i);
+    await expectWiredCaseMedia(stage, /Shot 1 · Shell/i);
     await expect.element(stage).not.toHaveTextContent(/redacted/i);
   });
 
-  it("keeps Preview disabled and Live auth-walled without a public URL", async () => {
+  it("keeps Preview disabled and omits Live without a public URL", async () => {
     const { screen } = renderAt("/work/labor-solutions/engage-reporting");
     const rail = screen.getByRole("complementary", { name: /context rail/i });
 
@@ -482,16 +494,17 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
       .element(screen.getByRole("dialog", { name: /^Preview$/i }))
       .not.toBeInTheDocument();
 
-    await expect.element(rail).toHaveTextContent(/Auth-walled · no public URL/i);
+    await expect.element(rail.getByText(/^Live$/i)).not.toBeInTheDocument();
+    await expect.element(rail).not.toHaveTextContent(/Auth-walled · no public URL/i);
     await expect.element(rail.getByRole("link", { name: /https?:\/\//i })).not.toBeInTheDocument();
   });
 
-  it("binds Context Rail Live/Role/Outcomes/Stack in Work order for Engage", async () => {
+  it("binds Context Rail Role/Outcomes/Stack in Work order for Engage without Live", async () => {
     const { screen } = renderAt("/work/labor-solutions/engage-reporting");
     const rail = screen.getByRole("complementary", { name: /context rail/i });
 
     await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
-    await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Live$/i)).not.toBeInTheDocument();
     await expect.element(rail.getByText(/^Role$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Outcomes$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Stack$/i)).toBeVisible();
@@ -500,7 +513,7 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(rail.getByText(/^Metabase Embedding SDK$/i)).toBeVisible();
 
     const text = rail.element().textContent ?? "";
-    const markers = ["Availability", "Live", "Role", "Outcomes", "Stack", "Get in touch"];
+    const markers = ["Availability", "Role", "Outcomes", "Stack", "Get in touch"];
     let previous = -1;
     for (const marker of markers) {
       const index = text.indexOf(marker);
@@ -535,6 +548,7 @@ const internalDossierCases = [
     folder: /Labor Solutions/i,
     claim: /four administration surfaces/i,
     stack: /^Django$/i,
+    firstShot: /Shot 1 · Indicators/i,
     forbidden: [/OKR at 1\.0/i, /WPM-3219/i, /71\.47/i, /29%→9%/i, /124 PRs/i],
   },
   {
@@ -544,6 +558,7 @@ const internalDossierCases = [
     folder: /Advance Auto Parts/i,
     claim: /store KPI measurement UI/i,
     stack: /^Snowflake$/i,
+    firstShot: /Shot 1 · Topsheet/i,
     forbidden: [/owned the/i, /redacted/i],
   },
   {
@@ -553,6 +568,7 @@ const internalDossierCases = [
     folder: /Advance Auto Parts/i,
     claim: /self-service ML model hosting/i,
     stack: /^Tailwind CSS$/i,
+    firstShot: /Shot 1 · Home/i,
     forbidden: [/owned the/i, /redacted/i],
   },
   {
@@ -562,6 +578,7 @@ const internalDossierCases = [
     folder: /Advance Auto Parts/i,
     claim: /actual vs predicted/i,
     stack: /^Streamlit$/i,
+    firstShot: /Shot 1 · Performance/i,
     forbidden: [/owned the/i, /redacted/i],
   },
 ] as const;
@@ -582,7 +599,7 @@ describe("Internal Dossier Indicator Bank and Advance Auto Parts (App Shell seam
       await expect.element(stage).not.toHaveTextContent(/Public Storefront/i);
     });
 
-    it(`keeps Preview off and Live without a public URL for ${dossier.path}`, async () => {
+    it(`keeps Preview off and omits Live without a public URL for ${dossier.path}`, async () => {
       const { screen } = renderAt(dossier.path);
       const rail = screen.getByRole("complementary", { name: /context rail/i });
 
@@ -593,13 +610,14 @@ describe("Internal Dossier Indicator Bank and Advance Auto Parts (App Shell seam
         .element(screen.getByRole("dialog", { name: /^Preview$/i }))
         .not.toBeInTheDocument();
 
-      await expect.element(rail).toHaveTextContent(/Auth-walled · no public URL/i);
+      await expect.element(rail.getByText(/^Live$/i)).not.toBeInTheDocument();
+      await expect.element(rail).not.toHaveTextContent(/Auth-walled · no public URL/i);
       await expect
         .element(rail.getByRole("link", { name: /https?:\/\//i }))
         .not.toBeInTheDocument();
     });
 
-    it(`shows Public Claims without fake screenshots for ${dossier.path}`, async () => {
+    it(`shows Public Claims with wired media for ${dossier.path}`, async () => {
       const { screen } = renderAt(dossier.path);
       const stage = screen.getByRole("main");
       const rail = screen.getByRole("complementary", { name: /context rail/i });
@@ -609,10 +627,7 @@ describe("Internal Dossier Indicator Bank and Advance Auto Parts (App Shell seam
       await expect.element(stage).toHaveTextContent(dossier.claim);
       await expect.element(rail).toHaveTextContent(dossier.claim);
       await expect.element(rail.getByText(dossier.stack)).toBeVisible();
-      await expect
-        .element(stage.getByRole("region", { name: /case media/i }))
-        .not.toBeInTheDocument();
-      await expect.element(stage).not.toHaveTextContent(/Shot \d/i);
+      await expectWiredCaseMedia(stage, dossier.firstShot);
       await expect.element(stage).not.toHaveTextContent(/redacted/i);
       await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
       await expect.element(rail).not.toHaveTextContent(/\(stub\)/i);
@@ -728,17 +743,17 @@ describe("Public Storefront SupplyChain+ (App Shell seam)", () => {
 describe("Public Storefront carousel and Preview (App Shell seam)", () => {
   afterEach(() => cleanup());
 
-  it("uses a stage carousel for Public Storefront media by default", async () => {
+  it("uses a stage carousel with wired inventory images for Public Storefront media", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const stage = screen.getByRole("main");
-    const carousel = stage.getByRole("region", { name: /case media/i });
+    const carousel = await expectWiredCaseMedia(stage, /Shot 1 · Home/i);
 
-    await expect.element(carousel).toBeVisible();
     await expect.element(carousel).toHaveTextContent(/Shot 1/i);
     await expect.element(stage).not.toHaveTextContent(/media placeholder/i);
 
     await carousel.getByRole("button", { name: /next/i }).click();
     await expect.element(carousel).toHaveTextContent(/Shot 2/i);
+    await expect.element(carousel.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
   });
 
   it("opens a Preview slide-over with Desktop/Mobile frames from the header chip", async () => {
@@ -855,12 +870,11 @@ describe("Public Storefront QGenAI and Tools (App Shell seam)", () => {
       expect(liveLink.element().getAttribute("href")).toBe(storefront.liveHref);
     });
 
-    it(`keeps carousel + Preview on for ${storefront.path}`, async () => {
+    it(`keeps wired carousel + Preview on for ${storefront.path}`, async () => {
       const { screen } = renderAt(storefront.path);
       const stage = screen.getByRole("main");
-      const carousel = stage.getByRole("region", { name: /case media/i });
+      const carousel = await expectWiredCaseMedia(stage, /Shot 1/i);
 
-      await expect.element(carousel).toBeVisible();
       await expect.element(carousel).toHaveTextContent(/Shot 1/i);
       await carousel.getByRole("button", { name: /next/i }).click();
       await expect.element(carousel).toHaveTextContent(/Shot 2/i);

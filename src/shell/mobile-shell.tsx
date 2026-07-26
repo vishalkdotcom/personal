@@ -142,11 +142,15 @@ export const MobileShell: ParentComponent = (props) => {
 
       <Show when={previewOpen() && previewEnabled() ? activeCase() : undefined}>
         {(workCase) => (
-          <PreviewSlideOver
-            live={workCase().live}
-            layout="fullscreen"
-            onClose={() => setPreviewOpen(false)}
-          />
+          <Show when={workCase().live}>
+            {(live) => (
+              <PreviewSlideOver
+                live={live()}
+                layout="fullscreen"
+                onClose={() => setPreviewOpen(false)}
+              />
+            )}
+          </Show>
         )}
       </Show>
     </div>

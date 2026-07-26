@@ -35,7 +35,7 @@ export const PreviewSlideOver: Component<PreviewSlideOverProps> = (props) => {
   const [frame, setFrame] = createSignal<PreviewFrame>("desktop");
   const layout = () => props.layout ?? "slide-over";
   const hostLabel = () =>
-    isHttpLiveUrl(props.live) ? props.live.replace(/^https?:\/\//i, "") : props.live;
+    isHttpLiveUrl(props.live) ? props.live.replace(/^https?:\/\//i, "") : (props.live ?? "");
 
   return (
     <div

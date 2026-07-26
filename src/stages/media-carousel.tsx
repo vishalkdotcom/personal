@@ -1,5 +1,6 @@
 import { For, createSignal, type Component } from "solid-js";
 import type { WorkMediaSlide } from "../work/inventory";
+import { resolveWorkMediaSrc } from "../work/work-case-media";
 
 const slideTone = [
   "bg-[radial-gradient(ellipse_at_20%_20%,rgba(108,182,255,0.22),transparent_50%),linear-gradient(145deg,#2a323c,#1a2028_50%,#2a322c)]",
@@ -12,8 +13,9 @@ type MediaCarouselProps = {
 };
 
 /**
- * Default Public Storefront stage media — labeled slides with prev/next + dots.
- * Exact screenshot assets may stay deferred; labels keep the carousel honest.
+ * Work Case stage media — labeled slides with prev/next + dots.
+ * Locked inventory slides wire `src`; label overlay stays for wayfinding.
+ * Parent should remount this when the Work Case changes so slide index resets.
  */
 export const MediaCarousel: Component<MediaCarouselProps> = (props) => {
   const [index, setIndex] = createSignal(0);
@@ -35,23 +37,24 @@ export const MediaCarousel: Component<MediaCarouselProps> = (props) => {
         style={{ transform: `translateX(-${index() * 100}%)` }}
       >
         <For each={props.slides}>
-          {(slide, slideIndex) => (
-            <div
-              class={`relative grid min-w-full place-items-end justify-items-start p-2.5 ${slideTone[slideIndex() % slideTone.length]}`}
-              aria-hidden={slideIndex() === index() ? undefined : "true"}
-            >
-              {slide.src ? (
+          {(slide, slideIndex) => {
+            const src = resolveWorkMediaSrc(slide.src);
+            return (
+              <div
+                class={`relative grid min-w-full place-items-end justify-items-start p-2.5 ${slideTone[slideIndex() % slideTone.length]}`}
+                aria-hidden={slideIndex() === index() ? undefined : "true"}
+              >
                 <img
-                  src={slide.src}
+                  src={src}
                   alt={slide.label}
                   class="absolute inset-0 h-full w-full object-cover"
                 />
-              ) : null}
-              <span class="relative rounded-md bg-bg-deep/80 px-2 py-1 text-[11px] tracking-[0.06em] text-faint uppercase">
-                {slide.label}
-              </span>
-            </div>
-          )}
+                <span class="relative rounded-md bg-bg-deep/80 px-2 py-1 text-[11px] tracking-[0.06em] text-faint uppercase">
+                  {slide.label}
+                </span>
+              </div>
+            );
+          }}
         </For>
       </div>
 

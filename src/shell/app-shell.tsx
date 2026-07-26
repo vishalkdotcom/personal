@@ -97,7 +97,9 @@ const DesktopTriptych: ParentComponent = (props) => {
           </main>
           <Show when={previewOpen() && previewEnabled() ? activeCase() : undefined}>
             {(workCase) => (
-              <PreviewSlideOver live={workCase().live} onClose={() => setPreviewOpen(false)} />
+              <Show when={workCase().live}>
+                {(live) => <PreviewSlideOver live={live()} onClose={() => setPreviewOpen(false)} />}
+              </Show>
             )}
           </Show>
         </div>
