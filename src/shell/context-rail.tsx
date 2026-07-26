@@ -217,10 +217,17 @@ const ContactContext: Component = () => (
   </div>
 );
 
+/** Work Mode without an active case — hire CTA only; no glossary empty state. */
+const WorkIndexContext: Component = () => (
+  <div class="vk-rail-stack">
+    <HireSignalAvailability ctaLabel="Open to roles" />
+  </div>
+);
+
 /**
- * Context Rail body: Work Case sections when a case is active; About Mode
- * Availability → Facts → Elsewhere on `/` and `/about`; thin Resume links/hire on
- * `/resume`; Contact availability + quick links on `/contact`; otherwise Mode placeholder.
+ * Context Rail body: Work Case sections when a case is active; hire CTA on Work
+ * indexes; About Mode Availability → Facts → Elsewhere on `/` and `/about`; thin
+ * Resume links/hire on `/resume`; Contact availability + quick links on `/contact`.
  */
 export const ContextRail: Component = () => {
   const location = useLocation();
@@ -229,13 +236,7 @@ export const ContextRail: Component = () => {
   const modeId = () => modeForPath(pathname())?.id;
 
   return (
-    <Switch
-      fallback={
-        <p class="m-0 p-2 text-xs leading-[1.45] text-faint">
-          Context follows the active Mode or Work Case.
-        </p>
-      }
-    >
+    <Switch>
       <Match when={modeId() === "about"}>
         <AboutContext />
       </Match>
@@ -246,6 +247,9 @@ export const ContextRail: Component = () => {
         <ContactContext />
       </Match>
       <Match when={activeCase()}>{(workCase) => <WorkCaseContext workCase={workCase()} />}</Match>
+      <Match when={modeId() === "work"}>
+        <WorkIndexContext />
+      </Match>
     </Switch>
   );
 };

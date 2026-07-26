@@ -36,9 +36,13 @@ function page(path: string, titleSegment: string, description: string): PageMeta
 const MODE_META: PageMeta[] = [
   page("/", "About", ABOUT_PITCH),
   page("/about", "About", ABOUT_PITCH),
-  page("/resume", "Resume", `Resume Surface — PDF resume for ${ABOUT_NAME}. ${ABOUT_META}.`),
-  page("/contact", "Contact", `Contact ${ABOUT_NAME} — send a message via the Contact Mode form.`),
-  page(workRootHref(), "Work", "Dense index of Work Folders and Work Cases — outcomes first."),
+  page("/resume", "Resume", `PDF resume for ${ABOUT_NAME} — ${ABOUT_META}.`),
+  page(
+    "/contact",
+    "Contact",
+    `Contact ${ABOUT_NAME} — send a message, or reach out by email or LinkedIn.`,
+  ),
+  page(workRootHref(), "Work", "Selected work — what shipped and what it changed."),
 ];
 
 function folderMeta(): PageMeta[] {
@@ -46,7 +50,7 @@ function folderMeta(): PageMeta[] {
     page(
       workFolderHref(folder.slug),
       folder.title,
-      `${folder.title} — dense Work Folder outcome index.`,
+      `${folder.title} — selected work and outcomes.`,
     ),
   );
 }
@@ -59,7 +63,7 @@ function caseMeta(): PageMeta[] {
         page(
           workCaseHref(folder.slug, workCase.slug),
           workCase.title,
-          workCase.lede ?? `${workCase.title} — Work Case by ${SITE_NAME}.`,
+          workCase.lede ?? `${workCase.title} — selected work by ${SITE_NAME}.`,
         ),
       );
     }

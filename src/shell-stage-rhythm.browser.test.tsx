@@ -40,7 +40,7 @@ describe("Context Rail panels and stage rhythm (App Shell seam)", () => {
 
     for (const path of [SUPPLY_CHAIN_PATH, "/", "/resume", "/contact"] as const) {
       const { screen, unmount } = renderAt(path);
-      const rail = screen.getByRole("complementary", { name: /context rail/i });
+      const rail = screen.getByRole("complementary", { name: /^details$/i });
       await expect.element(rail).toBeVisible();
 
       const modules = railModules(rail.element());

@@ -34,13 +34,28 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
 
     const contact = pageMetaForPath("/contact");
     expect(contact.title).toBe(`Contact · ${SITE_NAME}`);
-    expect(contact.description).toContain("Contact Vishal Kumar");
+    expect(contact.description).toBe(
+      "Contact Vishal Kumar — send a message, or reach out by email or LinkedIn.",
+    );
+    expect(contact.description).not.toMatch(/Contact Mode|form/i);
     expect(contact.canonical).toBe(`${SITE_ORIGIN}/contact`);
 
     const resume = pageMetaForPath("/resume");
     expect(resume.title).toBe(`Resume · ${SITE_NAME}`);
-    expect(resume.description).toContain("Resume Surface");
+    expect(resume.description).toBe(
+      "PDF resume for Vishal Kumar — Senior Frontend Engineer · React / Next.js · Analytics & Reporting UIs.",
+    );
+    expect(resume.description).not.toMatch(/Resume Surface/i);
     expect(resume.canonical).toBe(`${SITE_ORIGIN}/resume`);
+
+    const work = pageMetaForPath(workRootHref());
+    expect(work.title).toBe(`Work · ${SITE_NAME}`);
+    expect(work.description).toBe("Selected work — what shipped and what it changed.");
+    expect(work.description).not.toMatch(/Work Folder|Work Case/i);
+
+    const folder = pageMetaForPath(workFolderHref("labor-solutions"));
+    expect(folder.description).toBe("Labor Solutions — selected work and outcomes.");
+    expect(folder.description).not.toMatch(/Work Folder/i);
 
     const engage = pageMetaForPath("/work/labor-solutions/engage-reporting");
     expect(engage.title).toBe(`Engage reporting · ${SITE_NAME}`);
@@ -62,6 +77,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(supplyChain.title).toBe(`SupplyChain+ · ${SITE_NAME}`);
     expect(supplyChain.canonical).toBe(`${SITE_ORIGIN}/work/prototypes/supplychain-plus`);
     expect(home.description).not.toBe(supplyChain.description);
+    expect(home.description).not.toMatch(/SupplyChain|featured case|Work Case/i);
   });
 
   it("keeps path and canonical honest for unknown deep links", () => {

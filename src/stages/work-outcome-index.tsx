@@ -73,9 +73,9 @@ type WorkFolderIndexProps = {
 export const WorkFolderIndex: Component<WorkFolderIndexProps> = (props) => (
   <article aria-label={`${props.folder.title} outcome index`}>
     <IndexHead
-      kicker="Work Folder"
+      kicker="Work"
       title={props.folder.title}
-      lede="Folder selection shows cases — outcomes first."
+      lede="Cases in this group — what shipped and what changed."
     />
     <IndexList
       folderSlug={props.folder.slug}
@@ -91,7 +91,7 @@ export const WorkRootIndex: Component = () => (
     <IndexHead
       kicker="Work"
       title="All work"
-      lede="Dense index — outcomes first. Work Mode opens here."
+      lede="Here's the work — what shipped and what it changed."
     />
     <div class="grid max-w-[720px] gap-1.5">
       <For each={WORK_FOLDERS}>

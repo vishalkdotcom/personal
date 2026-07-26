@@ -141,7 +141,7 @@ describe("Resume Surface (App Shell seam)", () => {
     await expect.element(screen.getByRole("navigation", { name: /modes/i })).toBeVisible();
     await expect.element(screen.getByRole("main")).toBeVisible();
 
-    const rail = screen.getByRole("complementary", { name: /context rail/i });
+    const rail = screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail).toBeVisible();
     await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();

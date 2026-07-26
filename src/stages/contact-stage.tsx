@@ -89,7 +89,7 @@ export const ContactStage: Component = () => {
       <p class="mb-2 mt-0 text-[11px] tracking-[0.12em] text-faint uppercase">Contact</p>
       <h1 class="vk-stage-title">Get in touch</h1>
       <p class="m-0 mb-5 max-w-[48ch] text-[13px] leading-[1.45] text-muted">
-        Send a message — or use the quick links in the Context Rail.
+        Drop me a note. Email and LinkedIn are also in the side panel.
       </p>
 
       <form class="flex max-w-[36rem] flex-col gap-3.5" onSubmit={onSubmit} novalidate>

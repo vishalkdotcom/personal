@@ -83,8 +83,8 @@ const DesktopTriptych: ParentComponent = (props) => {
               type="button"
               class={shellChipClass}
               aria-pressed={rightCollapsed() ? "true" : "false"}
-              aria-label={rightCollapsed() ? "Expand Context Rail" : "Collapse Context Rail"}
-              title={rightCollapsed() ? "Expand Context Rail" : "Collapse Context Rail"}
+              aria-label={rightCollapsed() ? "Expand details" : "Collapse details"}
+              title={rightCollapsed() ? "Expand details" : "Collapse details"}
               onClick={() => setRightCollapsed((value) => !value)}
             >
               ⌟
@@ -107,7 +107,7 @@ const DesktopTriptych: ParentComponent = (props) => {
 
       <aside
         class="vk-scroll min-w-0 overflow-auto border-l border-border bg-bg-deep p-[12px_10px] transition-[opacity,padding] duration-[160ms] ease-shell group-data-[right-collapsed]/shell:pointer-events-none group-data-[right-collapsed]/shell:overflow-hidden group-data-[right-collapsed]/shell:border-none group-data-[right-collapsed]/shell:p-0 group-data-[right-collapsed]/shell:opacity-0"
-        aria-label="Context Rail"
+        aria-label="Details"
         aria-hidden={rightCollapsed() ? "true" : "false"}
       >
         <ContextRail />
