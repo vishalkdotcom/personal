@@ -92,7 +92,10 @@ export const MobileShell: ParentComponent = (props) => {
         </button>
       </header>
 
-      <main class="vk-scroll min-h-0 min-w-0 flex-1 overflow-auto bg-bg-panel px-4 py-5" id="stage">
+      <main
+        class="vk-scroll vk-stage-mobile min-h-0 min-w-0 flex-1 overflow-auto bg-bg-panel"
+        id="stage"
+      >
         {props.children}
       </main>
 

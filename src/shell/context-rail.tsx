@@ -67,7 +67,7 @@ const RailLinkList: Component<{ links: readonly RailLink[] }> = (props) => (
 /** Shared desktop Hire Signal Availability section (one copy + gated CTA). */
 const HireSignalAvailability: Component<{ ctaLabel: string }> = (props) => (
   <Show when={isHireSignalEnabled()}>
-    <section aria-labelledby="rail-availability">
+    <section class="vk-rail-module" aria-labelledby="rail-availability">
       <h2 id="rail-availability" class={sectionHeadingClass}>
         Availability
       </h2>
@@ -82,19 +82,19 @@ const HireSignalAvailability: Component<{ ctaLabel: string }> = (props) => (
 /** Work Case footer hire CTA — gated with Hire Signal; never snoozed. */
 const HireSignalFooterCta: Component = () => (
   <Show when={isHireSignalEnabled()}>
-    <div class="border-t border-border pt-3">
-      <A href="/contact" class={`${ctaClass} w-full`} aria-label="Get in touch">
+    <section class="vk-rail-module" aria-label="Get in touch">
+      <A href="/contact" class={`${ctaClass} w-full`}>
         Get in touch
       </A>
-    </div>
+    </section>
   </Show>
 );
 
 const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
-  <div class="flex flex-col gap-4 p-2">
+  <div class="vk-rail-stack">
     <HireSignalAvailability ctaLabel="Open to roles" />
 
-    <section aria-labelledby="rail-live">
+    <section class="vk-rail-module" aria-labelledby="rail-live">
       <h2 id="rail-live" class={sectionHeadingClass}>
         Live
       </h2>
@@ -110,14 +110,14 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
       </Show>
     </section>
 
-    <section aria-labelledby="rail-role">
+    <section class="vk-rail-module" aria-labelledby="rail-role">
       <h2 id="rail-role" class={sectionHeadingClass}>
         Role
       </h2>
       <p class={sectionBodyClass}>{props.workCase.role}</p>
     </section>
 
-    <section aria-labelledby="rail-outcomes">
+    <section class="vk-rail-module" aria-labelledby="rail-outcomes">
       <h2 id="rail-outcomes" class={sectionHeadingClass}>
         Outcomes
       </h2>
@@ -126,7 +126,7 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
       </ul>
     </section>
 
-    <section aria-labelledby="rail-stack">
+    <section class="vk-rail-module" aria-labelledby="rail-stack">
       <h2 id="rail-stack" class={sectionHeadingClass}>
         Stack
       </h2>
@@ -145,10 +145,10 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
 
 /** About Mode rail: Availability CTA → Facts → Elsewhere (shell-round-9 A). */
 const AboutContext: Component = () => (
-  <div class="flex flex-col gap-4 p-2">
+  <div class="vk-rail-stack">
     <HireSignalAvailability ctaLabel="Get in touch" />
 
-    <section aria-labelledby="rail-facts">
+    <section class="vk-rail-module" aria-labelledby="rail-facts">
       <h2 id="rail-facts" class={sectionHeadingClass}>
         Facts
       </h2>
@@ -164,7 +164,7 @@ const AboutContext: Component = () => (
       </dl>
     </section>
 
-    <section aria-labelledby="rail-elsewhere">
+    <section class="vk-rail-module" aria-labelledby="rail-elsewhere">
       <h2 id="rail-elsewhere" class={sectionHeadingClass}>
         Elsewhere
       </h2>
@@ -175,10 +175,10 @@ const AboutContext: Component = () => (
 
 /** Resume Mode thin rail: Availability CTA → Links (PDF download + elsewhere). */
 const ResumeContext: Component = () => (
-  <div class="flex flex-col gap-4 p-2">
+  <div class="vk-rail-stack">
     <HireSignalAvailability ctaLabel="Get in touch" />
 
-    <section aria-labelledby="rail-links">
+    <section class="vk-rail-module" aria-labelledby="rail-links">
       <h2 id="rail-links" class={sectionHeadingClass}>
         Links
       </h2>
@@ -189,15 +189,15 @@ const ResumeContext: Component = () => (
 
 /** Contact Mode rail: availability + email / LinkedIn / GitHub / CV (not Hire-Signal-gated). */
 const ContactContext: Component = () => (
-  <div class="flex flex-col gap-4 p-2">
-    <section aria-labelledby="rail-availability">
+  <div class="vk-rail-stack">
+    <section class="vk-rail-module" aria-labelledby="rail-availability">
       <h2 id="rail-availability" class={sectionHeadingClass}>
         Availability
       </h2>
       <p class={sectionBodyClass}>{CONTACT_AVAILABILITY}</p>
     </section>
 
-    <section aria-labelledby="rail-quick-links">
+    <section class="vk-rail-module" aria-labelledby="rail-quick-links">
       <h2 id="rail-quick-links" class={sectionHeadingClass}>
         Quick links
       </h2>

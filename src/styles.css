@@ -103,3 +103,61 @@
   border: 2px solid transparent;
   background-clip: content-box;
 }
+
+/*
+ * Locked shell rhythm / inspector modules (shell-round-4 / 6 / 9).
+ * Authored here so stage padding and rail chrome stay token-backed.
+ */
+.vk-rail-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vk-rail-module {
+  margin: 0;
+  border: 1px solid var(--vk-border);
+  border-radius: 8px;
+  background: var(--vk-bg-panel);
+  padding: 12px;
+}
+
+.vk-stage {
+  padding: 28px 36px 100px;
+}
+
+.vk-stage-mobile {
+  padding: 20px 16px 64px;
+}
+
+/* Full-bleed child (Resume PDF) — margins cancel the parent stage padding tokens. */
+.vk-stage-bleed {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.vk-stage > .vk-stage-bleed {
+  margin: -28px -36px -100px;
+  height: calc(100% + 128px);
+}
+
+.vk-stage-mobile > .vk-stage-bleed {
+  margin: -20px -16px -64px;
+  height: calc(100% + 84px);
+}
+
+.vk-stage-title {
+  margin: 0 0 10px;
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.vk-stage-title-lg {
+  margin-bottom: 12px;
+  font-size: 32px;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}

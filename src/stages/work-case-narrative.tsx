@@ -35,12 +35,14 @@ export const WorkCaseNarrative: Component<WorkCaseNarrativeProps> = (props) => {
   return (
     <article aria-label={`${props.workCase.title} ${surfaceLabel()}`}>
       <span class={badgeClass(props.workCase.badge)}>{props.workCase.badge}</span>
-      <p class="mb-1.5 mt-2 text-[10px] tracking-[0.12em] text-faint uppercase">
+      <p class="mb-2 mt-2 text-[11px] tracking-[0.12em] text-faint uppercase">
         {props.folder.title}
       </p>
-      <h1 class="mb-2 mt-0 text-[22px] font-[650] tracking-[-0.03em]">{props.workCase.title}</h1>
-      <p class="m-0 mb-3.5 max-w-[52ch] text-sm leading-normal text-muted">{props.workCase.lede}</p>
-      <ul class="mb-3.5 grid max-w-[640px] list-none gap-2 p-0" aria-label="Outcomes">
+      <h1 class="vk-stage-title">{props.workCase.title}</h1>
+      <p class="m-0 mb-5 max-w-[52ch] text-[15px] leading-[1.55] text-muted">
+        {props.workCase.lede}
+      </p>
+      <ul class="mb-5 grid max-w-[640px] list-none gap-2 p-0" aria-label="Outcomes">
         <For each={props.workCase.outcomes}>
           {(outcome) => (
             <li class="rounded-lg border border-border bg-bg-deep px-3 py-2.5 text-[12.5px] leading-[1.4] text-muted">

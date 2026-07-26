@@ -92,7 +92,7 @@ const DesktopTriptych: ParentComponent = (props) => {
           </div>
         </header>
         <div class="relative min-h-0 min-w-0 flex-1 overflow-hidden">
-          <main class="vk-scroll h-full min-w-0 overflow-auto bg-bg-panel px-9 py-7" id="stage">
+          <main class="vk-scroll vk-stage h-full min-w-0 overflow-auto bg-bg-panel" id="stage">
             {props.children}
           </main>
           <Show when={previewOpen() && previewEnabled() ? activeCase() : undefined}>

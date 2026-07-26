@@ -1,0 +1,91 @@
+import { cleanup, render } from "@solidjs/testing-library";
+import { createMemoryHistory, MemoryRouter } from "@solidjs/router";
+import { afterEach, describe, expect, it } from "vitest";
+import { page } from "vitest/browser";
+import { AppShellRoutes } from "./app";
+import { setHireSignalEnabledForTests } from "./shell/hire-signal";
+import { workCaseHref } from "./work/inventory";
+
+const SUPPLY_CHAIN_PATH = workCaseHref("prototypes", "supplychain-plus");
+
+function renderAt(path: string) {
+  const history = createMemoryHistory();
+  history.set({ value: path, replace: true, scroll: false });
+  const result = render(() => (
+    <MemoryRouter history={history} root={AppShellRoutes.root}>
+      {AppShellRoutes.routes}
+    </MemoryRouter>
+  ));
+  return { ...result, history, screen: page.elementLocator(result.baseElement) };
+}
+
+function railModules(rail: Element): Element[] {
+  return [...rail.querySelectorAll(":scope > .vk-rail-stack > section.vk-rail-module")];
+}
+
+function stageTitle(stage: Element, name: RegExp): Element {
+  const heading = [...stage.querySelectorAll("h1")].find((el) => name.test(el.textContent ?? ""));
+  expect(heading, `expected stage h1 matching ${name}`).toBeTruthy();
+  return heading!;
+}
+
+describe("Context Rail panels and stage rhythm (App Shell seam)", () => {
+  afterEach(() => {
+    cleanup();
+    setHireSignalEnabledForTests(undefined);
+  });
+
+  it("renders Context Rail sections as bordered discrete modules across Modes and Work Cases", async () => {
+    setHireSignalEnabledForTests(true);
+
+    for (const path of [SUPPLY_CHAIN_PATH, "/", "/resume", "/contact"] as const) {
+      const { screen, unmount } = renderAt(path);
+      const rail = screen.getByRole("complementary", { name: /context rail/i });
+      await expect.element(rail).toBeVisible();
+
+      const modules = railModules(rail.element());
+      expect(modules.length, `expected rail modules on ${path}`).toBeGreaterThanOrEqual(2);
+      for (const mod of modules) {
+        expect(mod.classList.contains("vk-rail-module")).toBe(true);
+      }
+      unmount();
+      cleanup();
+    }
+  });
+
+  it("marks primary About / Work Case / Contact stage headings with locked title scale classes", async () => {
+    {
+      const { screen, unmount } = renderAt("/");
+      const title = stageTitle(screen.getByRole("main").element(), /^Vishal Kumar$/i);
+      expect(title.classList.contains("vk-stage-title")).toBe(true);
+      expect(title.classList.contains("vk-stage-title-lg")).toBe(true);
+      unmount();
+      cleanup();
+    }
+    {
+      const { screen, unmount } = renderAt(SUPPLY_CHAIN_PATH);
+      const title = stageTitle(screen.getByRole("main").element(), /^SupplyChain\+$/i);
+      expect(title.classList.contains("vk-stage-title")).toBe(true);
+      unmount();
+      cleanup();
+    }
+    {
+      const { screen } = renderAt("/contact");
+      const title = stageTitle(screen.getByRole("main").element(), /^Get in touch$/i);
+      expect(title.classList.contains("vk-stage-title")).toBe(true);
+    }
+  });
+
+  it("marks the desktop stage with the generous rhythm surface class", async () => {
+    const { screen } = renderAt("/");
+    expect(screen.getByRole("main").element().classList.contains("vk-stage")).toBe(true);
+  });
+
+  it("bleeds the Resume Surface against the locked stage padding tokens", async () => {
+    const { screen } = renderAt("/resume");
+    const stage = screen.getByRole("main").element();
+    const surface = stage.querySelector(".vk-stage-bleed");
+    expect(surface).toBeTruthy();
+    expect(stage.contains(surface)).toBe(true);
+  });
+});
