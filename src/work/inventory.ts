@@ -13,13 +13,18 @@ export type WorkMediaSlide = {
   src: string;
 };
 
-export type WorkCase = {
+/** Internal Dossier artifact block (problem→fix, what shipped, …). */
+export type WorkArtifact = {
+  title: string;
+  body: string;
+  /** Accent callout body — used for problem→fix tension. */
+  emphasis?: "callout";
+};
+
+type WorkCaseShared = {
   slug: string;
   title: string;
   badge: WorkBadge;
-  surface: WorkSurface;
-  /** Context Rail Live URL — omit when there is no public HTTP URL. */
-  live?: string;
   /** Context Rail Role stub — richer copy in later case tickets. */
   role: string;
   /** Center + Context Rail Outcomes — Public Claims only when filled. */
@@ -34,6 +39,20 @@ export type WorkCase = {
   /** Stage carousel slides — locked cases wire inventory `src` assets. */
   media?: WorkMediaSlide[];
 };
+
+export type PublicStorefrontCase = WorkCaseShared & {
+  surface: "public-storefront";
+  /** Context Rail Live URL — omit when there is no public HTTP URL. */
+  live?: string;
+};
+
+export type InternalDossierCase = WorkCaseShared & {
+  surface: "internal-dossier";
+  /** Artifact blocks under the outcomes list. */
+  artifacts?: WorkArtifact[];
+};
+
+export type WorkCase = PublicStorefrontCase | InternalDossierCase;
 
 export type WorkFolder = {
   slug: string;
@@ -57,6 +76,17 @@ export const WORK_FOLDERS: WorkFolder[] = [
           "Problem → solution: dashboard vs Excel score drift — facility-first vs question-first aggregations diverged; exports aligned to analytics cards as the single scoring authority",
           "Reporting artifacts shipped in-product: Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, and top/bottom sites",
         ],
+        artifacts: [
+          {
+            title: "Problem → fix",
+            emphasis: "callout",
+            body: "Facility-first vs question-first aggregations drifted scores between dashboard and Excel. Analytics cards became the single scoring authority; exports aligned.",
+          },
+          {
+            title: "What shipped",
+            body: "Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, and top/bottom sites.",
+          },
+        ],
         stack: ["React", "Next.js", "TypeScript", "Metabase Embedding SDK", "Redux Toolkit"],
         media: [
           { label: "Shot 1 · Shell", src: "work/engage-reporting/shell.png" },
@@ -76,6 +106,12 @@ export const WORK_FOLDERS: WorkFolder[] = [
         outcomes: [
           "Built a multilingual Indicator Bank across Django and Next.js — reusable questions/answer sets and four administration surfaces (Indicators, Questions, Answer Sets, Manage Associations)",
           "Protected Excel import/export with partial-success validation, soft deletion, and idempotent survey association for reusable survey content",
+        ],
+        artifacts: [
+          {
+            title: "What shipped",
+            body: "Indicators, Questions, Answer Sets, and Manage Associations — with protected Excel import/export and reusable survey content across Django and Next.js.",
+          },
         ],
         stack: ["Django", "Next.js", "React", "TypeScript", "Excel import/export"],
         media: [
@@ -102,6 +138,12 @@ export const WORK_FOLDERS: WorkFolder[] = [
           "Built the store KPI measurement UI (Next.js, Tremor/Nivo, TypeScript, Snowflake) serving operational and leadership stakeholders with trends, filters, and drill-down views",
           "Interactive monitoring of key metrics and business performance with trend analysis across time intervals",
         ],
+        artifacts: [
+          {
+            title: "What shipped",
+            body: "Next.js, Tremor/Nivo, TypeScript, and Snowflake UI serving operational and leadership stakeholders with trends, filters, and drill-down views.",
+          },
+        ],
         stack: ["Next.js", "TypeScript", "Tremor", "Nivo", "Snowflake"],
         media: [{ label: "Shot 1 · Topsheet", src: "projects/aai-mfdb-1.png" }],
       },
@@ -115,6 +157,12 @@ export const WORK_FOLDERS: WorkFolder[] = [
         outcomes: [
           "Built the self-service ML model hosting dashboard (Next.js, TypeScript, Tailwind) enabling data scientists to register, version, and deploy models without filing engineering tickets",
           "Responsive platform for testing and deploying machine learning models from any device",
+        ],
+        artifacts: [
+          {
+            title: "What shipped",
+            body: "Next.js, TypeScript, and Tailwind dashboard for data scientists to register, version, and deploy models.",
+          },
         ],
         stack: ["Next.js", "TypeScript", "Tailwind CSS"],
         media: [
@@ -135,6 +183,12 @@ export const WORK_FOLDERS: WorkFolder[] = [
         outcomes: [
           "Delivered store-level performance and sales-forecast views comparing actual vs predicted net sales across store segments for planning reviews",
           "Streamlit + Snowflake SPA for regional leadership and store managers to analyze performance and identify outliers",
+        ],
+        artifacts: [
+          {
+            title: "What shipped",
+            body: "Streamlit + Snowflake SPA for regional leadership and store managers to analyze performance and identify outliers.",
+          },
         ],
         stack: ["Streamlit", "Snowflake", "Python"],
         media: [
@@ -284,6 +338,19 @@ export function getWorkCaseFromPath(pathname: string): WorkCase | undefined {
 
 export function isHttpLiveUrl(live: string | undefined): live is string {
   return Boolean(live && /^https?:\/\//i.test(live));
+}
+
+/** Live URL when the case is a Public Storefront; Internal Dossiers never expose Live. */
+export function workCaseLiveUrl(workCase: WorkCase): string | undefined {
+  return workCase.surface === "public-storefront" ? workCase.live : undefined;
+}
+
+export function asInternalDossier(workCase: WorkCase): InternalDossierCase | undefined {
+  return workCase.surface === "internal-dossier" ? workCase : undefined;
+}
+
+export function asPublicStorefront(workCase: WorkCase): PublicStorefrontCase | undefined {
+  return workCase.surface === "public-storefront" ? workCase : undefined;
 }
 
 /**

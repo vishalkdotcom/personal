@@ -3,7 +3,12 @@ import { For, Match, Show, Switch, type Component } from "solid-js";
 import { ABOUT_AVAILABILITY, ABOUT_ELSEWHERE, ABOUT_FACTS } from "../about/content";
 import { CONTACT_AVAILABILITY, CONTACT_QUICK_LINKS } from "../contact/content";
 import { RESUME_LINKS } from "../resume/content";
-import { getWorkCaseFromPath, isHttpLiveUrl, type WorkCase } from "../work/inventory";
+import {
+  getWorkCaseFromPath,
+  isHttpLiveUrl,
+  workCaseLiveUrl,
+  type WorkCase,
+} from "../work/inventory";
 import { modeForPath } from "./modes";
 import { isHireSignalEnabled } from "./hire-signal";
 
@@ -90,57 +95,64 @@ const HireSignalFooterCta: Component = () => (
   </Show>
 );
 
-const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => (
-  <div class="vk-rail-stack">
-    <HireSignalAvailability ctaLabel="Open to roles" />
+const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
+  const liveUrl = () => {
+    const url = workCaseLiveUrl(props.workCase);
+    return isHttpLiveUrl(url) ? url : undefined;
+  };
 
-    <Show when={isHttpLiveUrl(props.workCase.live) ? props.workCase.live : undefined}>
-      {(live) => (
-        <section class="vk-rail-module" aria-labelledby="rail-live">
-          <h2 id="rail-live" class={sectionHeadingClass}>
-            Live
-          </h2>
-          <p class={sectionBodyClass}>
-            <a href={live()} class={linkClass} target="_blank" rel="noreferrer">
-              {live().replace(/^https?:\/\//i, "")}
-            </a>
-          </p>
-        </section>
-      )}
-    </Show>
+  return (
+    <div class="vk-rail-stack">
+      <HireSignalAvailability ctaLabel="Open to roles" />
 
-    <section class="vk-rail-module" aria-labelledby="rail-role">
-      <h2 id="rail-role" class={sectionHeadingClass}>
-        Role
-      </h2>
-      <p class={sectionBodyClass}>{props.workCase.role}</p>
-    </section>
+      <Show when={liveUrl()}>
+        {(live) => (
+          <section class="vk-rail-module" aria-labelledby="rail-live">
+            <h2 id="rail-live" class={sectionHeadingClass}>
+              Live
+            </h2>
+            <p class={sectionBodyClass}>
+              <a href={live()} class={linkClass} target="_blank" rel="noreferrer">
+                {live().replace(/^https?:\/\//i, "")}
+              </a>
+            </p>
+          </section>
+        )}
+      </Show>
 
-    <section class="vk-rail-module" aria-labelledby="rail-outcomes">
-      <h2 id="rail-outcomes" class={sectionHeadingClass}>
-        Outcomes
-      </h2>
-      <ul class="m-0 mt-1.5 list-none space-y-1.5 p-0 text-[12.5px] leading-[1.45] text-muted">
-        <For each={props.workCase.outcomes}>{(outcome) => <li>{outcome}</li>}</For>
-      </ul>
-    </section>
+      <section class="vk-rail-module" aria-labelledby="rail-role">
+        <h2 id="rail-role" class={sectionHeadingClass}>
+          Role
+        </h2>
+        <p class={sectionBodyClass}>{props.workCase.role}</p>
+      </section>
 
-    <section class="vk-rail-module" aria-labelledby="rail-stack">
-      <h2 id="rail-stack" class={sectionHeadingClass}>
-        Stack
-      </h2>
-      <ul class="m-0 mt-1.5 flex list-none flex-wrap gap-1.5 p-0">
-        <For each={props.workCase.stack}>
-          {(item) => (
-            <li class="rounded-md bg-bg-active px-1.5 py-0.5 text-[11px] text-muted">{item}</li>
-          )}
-        </For>
-      </ul>
-    </section>
+      <section class="vk-rail-module" aria-labelledby="rail-outcomes">
+        <h2 id="rail-outcomes" class={sectionHeadingClass}>
+          Outcomes
+        </h2>
+        <ul class="m-0 mt-1.5 list-none space-y-1.5 p-0 text-[12.5px] leading-[1.45] text-muted">
+          <For each={props.workCase.outcomes}>{(outcome) => <li>{outcome}</li>}</For>
+        </ul>
+      </section>
 
-    <HireSignalFooterCta />
-  </div>
-);
+      <section class="vk-rail-module" aria-labelledby="rail-stack">
+        <h2 id="rail-stack" class={sectionHeadingClass}>
+          Stack
+        </h2>
+        <ul class="m-0 mt-1.5 flex list-none flex-wrap gap-1.5 p-0">
+          <For each={props.workCase.stack}>
+            {(item) => (
+              <li class="rounded-md bg-bg-active px-1.5 py-0.5 text-[11px] text-muted">{item}</li>
+            )}
+          </For>
+        </ul>
+      </section>
+
+      <HireSignalFooterCta />
+    </div>
+  );
+};
 
 /** About Mode rail: Availability CTA → Facts → Elsewhere (shell-round-9 A). */
 const AboutContext: Component = () => (

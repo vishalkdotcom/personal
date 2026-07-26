@@ -1,7 +1,13 @@
 import type { Component } from "solid-js";
-import { Show } from "solid-js";
+import { Match, Show, Switch } from "solid-js";
 import { useParams } from "@solidjs/router";
-import { getWorkCase, getWorkFolder } from "../work/inventory";
+import {
+  asInternalDossier,
+  asPublicStorefront,
+  getWorkCase,
+  getWorkFolder,
+} from "../work/inventory";
+import { InternalDossierStage } from "./internal-dossier-stage";
 import { StubStage } from "./stub-stage";
 import { WorkCaseNarrative } from "./work-case-narrative";
 import { WorkFolderIndex, WorkRootIndex } from "./work-outcome-index";
@@ -51,7 +57,16 @@ export const WorkCaseStage: Component = () => {
         />
       }
     >
-      {(entry) => <WorkCaseNarrative folder={entry().folder} workCase={entry().workCase} />}
+      {(entry) => (
+        <Switch>
+          <Match when={asInternalDossier(entry().workCase)}>
+            {(dossier) => <InternalDossierStage folder={entry().folder} workCase={dossier()} />}
+          </Match>
+          <Match when={asPublicStorefront(entry().workCase)}>
+            {(storefront) => <WorkCaseNarrative folder={entry().folder} workCase={storefront()} />}
+          </Match>
+        </Switch>
+      )}
     </Show>
   );
 };

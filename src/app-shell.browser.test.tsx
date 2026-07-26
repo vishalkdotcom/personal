@@ -470,16 +470,30 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(stage).not.toHaveTextContent(/Public Storefront/i);
   });
 
-  it("shows proof-first outcomes and wired illustrative mock media for Engage", async () => {
+  it("shows dossier composition with proof-first outcomes above wired media for Engage", async () => {
     const { screen } = renderAt("/work/labor-solutions/engage-reporting");
     const stage = screen.getByRole("main");
 
     await expect.element(stage).toHaveTextContent(/no public demo URL/i);
+    await expect.element(stage.getByRole("note")).toHaveTextContent(/Internal \/ auth-walled/i);
     await expect.element(stage.getByRole("list", { name: /^Outcomes$/i })).toBeVisible();
+    await expect.element(stage.getByRole("region", { name: /^Artifacts$/i })).toBeVisible();
+    await expect.element(stage).toHaveTextContent(/Problem → fix/i);
+    await expect.element(stage).toHaveTextContent(/What shipped/i);
     await expect.element(stage).toHaveTextContent(/Problem → solution/i);
     await expect.element(stage).toHaveTextContent(/Reporting artifacts shipped in-product/i);
     await expect.element(stage).toHaveTextContent(/dashboard vs Excel score drift/i);
-    await expectWiredCaseMedia(stage, /Shot 1 · Shell/i);
+    await expect.element(stage).not.toHaveTextContent(/43 tracked tickets/i);
+
+    const outcomes = stage.getByRole("list", { name: /^Outcomes$/i }).element();
+    const artifacts = stage.getByRole("region", { name: /^Artifacts$/i }).element();
+    const carousel = await expectWiredCaseMedia(stage, /Shot 1 · Shell/i);
+    expect(
+      outcomes.compareDocumentPosition(artifacts) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      artifacts.compareDocumentPosition(carousel.element()) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
     await expect.element(stage).not.toHaveTextContent(/redacted/i);
   });
 
@@ -617,17 +631,29 @@ describe("Internal Dossier Indicator Bank and Advance Auto Parts (App Shell seam
         .not.toBeInTheDocument();
     });
 
-    it(`shows Public Claims with wired media for ${dossier.path}`, async () => {
+    it(`shows dossier composition with Public Claims and wired media for ${dossier.path}`, async () => {
       const { screen } = renderAt(dossier.path);
       const stage = screen.getByRole("main");
       const rail = screen.getByRole("complementary", { name: /context rail/i });
 
       await expect.element(stage).toHaveTextContent(/no public demo URL/i);
+      await expect.element(stage.getByRole("note")).toHaveTextContent(/Internal \/ auth-walled/i);
       await expect.element(stage.getByRole("list", { name: /^Outcomes$/i })).toBeVisible();
+      await expect.element(stage.getByRole("region", { name: /^Artifacts$/i })).toBeVisible();
+      await expect.element(stage).toHaveTextContent(/What shipped/i);
       await expect.element(stage).toHaveTextContent(dossier.claim);
       await expect.element(rail).toHaveTextContent(dossier.claim);
       await expect.element(rail.getByText(dossier.stack)).toBeVisible();
-      await expectWiredCaseMedia(stage, dossier.firstShot);
+
+      const outcomes = stage.getByRole("list", { name: /^Outcomes$/i }).element();
+      const artifacts = stage.getByRole("region", { name: /^Artifacts$/i }).element();
+      const carousel = await expectWiredCaseMedia(stage, dossier.firstShot);
+      expect(
+        outcomes.compareDocumentPosition(artifacts) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+      expect(
+        artifacts.compareDocumentPosition(carousel.element()) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
       await expect.element(stage).not.toHaveTextContent(/redacted/i);
       await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
       await expect.element(rail).not.toHaveTextContent(/\(stub\)/i);

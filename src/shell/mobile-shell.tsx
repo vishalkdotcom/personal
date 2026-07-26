@@ -1,6 +1,6 @@
 import { useLocation } from "@solidjs/router";
 import { Show, createEffect, createSignal, type ParentComponent } from "solid-js";
-import { getWorkCaseFromPath, isPreviewEnabledForPath } from "../work/inventory";
+import { getWorkCaseFromPath, isPreviewEnabledForPath, workCaseLiveUrl } from "../work/inventory";
 import { ContextRail } from "./context-rail";
 import { shellCrumbForPath } from "./header-crumb";
 import { HireSignalChip } from "./hire-signal-chip";
@@ -142,7 +142,7 @@ export const MobileShell: ParentComponent = (props) => {
 
       <Show when={previewOpen() && previewEnabled() ? activeCase() : undefined}>
         {(workCase) => (
-          <Show when={workCase().live}>
+          <Show when={workCaseLiveUrl(workCase())}>
             {(live) => (
               <PreviewSlideOver
                 live={live()}
