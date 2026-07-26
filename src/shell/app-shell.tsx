@@ -92,7 +92,7 @@ const DesktopTriptych: ParentComponent = (props) => {
           </div>
         </header>
         <div class="relative min-h-0 min-w-0 flex-1 overflow-hidden">
-          <main class="h-full min-w-0 overflow-auto bg-bg-panel px-9 py-7" id="stage">
+          <main class="vk-scroll h-full min-w-0 overflow-auto bg-bg-panel px-9 py-7" id="stage">
             {props.children}
           </main>
           <Show when={previewOpen() && previewEnabled() ? activeCase() : undefined}>
@@ -104,7 +104,7 @@ const DesktopTriptych: ParentComponent = (props) => {
       </div>
 
       <aside
-        class="min-w-0 overflow-auto border-l border-border bg-bg-deep p-[12px_10px] transition-[opacity,padding] duration-[160ms] ease-shell group-data-[right-collapsed]/shell:pointer-events-none group-data-[right-collapsed]/shell:overflow-hidden group-data-[right-collapsed]/shell:border-none group-data-[right-collapsed]/shell:p-0 group-data-[right-collapsed]/shell:opacity-0"
+        class="vk-scroll min-w-0 overflow-auto border-l border-border bg-bg-deep p-[12px_10px] transition-[opacity,padding] duration-[160ms] ease-shell group-data-[right-collapsed]/shell:pointer-events-none group-data-[right-collapsed]/shell:overflow-hidden group-data-[right-collapsed]/shell:border-none group-data-[right-collapsed]/shell:p-0 group-data-[right-collapsed]/shell:opacity-0"
         aria-label="Context Rail"
         aria-hidden={rightCollapsed() ? "true" : "false"}
       >

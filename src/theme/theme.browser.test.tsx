@@ -5,7 +5,6 @@ import { ThemeControl } from "./theme-control";
 import {
   THEME_STORAGE_KEY,
   applyResolvedTheme,
-  cycleThemePreference,
   readThemePreference,
   resolveTheme,
   writeThemePreference,
@@ -52,13 +51,7 @@ describe("theme preference (App Shell seam)", () => {
     expect(document.documentElement.dataset.theme).toBe("dark");
   });
 
-  it("cycles brand-row control system → light → dark → system", () => {
-    expect(cycleThemePreference("system")).toBe("light");
-    expect(cycleThemePreference("light")).toBe("dark");
-    expect(cycleThemePreference("dark")).toBe("system");
-  });
-
-  it("exposes brand-row theme control that cycles and persists preference", async () => {
+  it("exposes brand-row theme menu with System / Light / Dark choices that persist", async () => {
     const { baseElement } = render(() => <ThemeControl />);
     const screen = page.elementLocator(baseElement);
 
@@ -67,16 +60,28 @@ describe("theme preference (App Shell seam)", () => {
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull();
 
     await control.click();
+    const group = screen.getByRole("radiogroup", { name: /^Theme$/i });
+    await expect.element(group).toBeVisible();
+    await expect.element(group.getByRole("radio", { name: /^System$/i })).toBeVisible();
+    await expect.element(group.getByRole("radio", { name: /^Light$/i })).toBeVisible();
+    await expect.element(group.getByRole("radio", { name: /^Dark$/i })).toBeVisible();
+
+    await group.getByRole("radio", { name: /^Light$/i }).click();
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");
     expect(document.documentElement.dataset.theme).toBe("light");
     await expect.element(screen.getByRole("button", { name: /Theme: Light/i })).toBeVisible();
+    await expect
+      .element(screen.getByRole("radiogroup", { name: /^Theme$/i }))
+      .not.toBeInTheDocument();
 
-    await control.click();
+    await screen.getByRole("button", { name: /Theme: Light/i }).click();
+    await screen.getByRole("radio", { name: /^Dark$/i }).click();
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("dark");
     expect(document.documentElement.dataset.theme).toBe("dark");
     await expect.element(screen.getByRole("button", { name: /Theme: Dark/i })).toBeVisible();
 
-    await control.click();
+    await screen.getByRole("button", { name: /Theme: Dark/i }).click();
+    await screen.getByRole("radio", { name: /^System$/i }).click();
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("system");
     await expect.element(screen.getByRole("button", { name: /Theme: System/i })).toBeVisible();
   });

@@ -35,28 +35,41 @@ describe("App Shell Mode routes (App Shell seam)", () => {
       .toBeVisible();
   });
 
-  it("exposes brand-row theme control that cycles and persists preference", async () => {
+  it("exposes brand-row theme menu with System / Light / Dark choices", async () => {
     localStorage.clear();
     document.documentElement.removeAttribute("data-theme");
     const { screen } = renderAt("/");
 
     const control = screen.getByRole("button", { name: /theme/i });
     await expect.element(control).toBeVisible();
-    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull();
 
     await control.click();
+    const group = screen.getByRole("radiogroup", { name: /^Theme$/i });
+    await expect.element(group.getByRole("radio", { name: /^System$/i })).toBeVisible();
+    await expect.element(group.getByRole("radio", { name: /^Light$/i })).toBeVisible();
+    await expect.element(group.getByRole("radio", { name: /^Dark$/i })).toBeVisible();
+
+    await group.getByRole("radio", { name: /^Light$/i }).click();
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");
     expect(document.documentElement.dataset.theme).toBe("light");
     await expect.element(screen.getByRole("button", { name: /Theme: Light/i })).toBeVisible();
+  });
 
-    await control.click();
-    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("dark");
-    expect(document.documentElement.dataset.theme).toBe("dark");
-    await expect.element(screen.getByRole("button", { name: /Theme: Dark/i })).toBeVisible();
+  it("applies theme-token scroll surfaces on desktop stage, Context Rail, and Work tree", async () => {
+    const { screen } = renderAt("/");
+    const stage = screen.getByRole("main");
+    const rail = screen.getByRole("complementary", { name: /Context Rail/i });
+    const workTree = screen.getByRole("navigation", { name: /Work tree/i });
 
-    await control.click();
-    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("system");
-    await expect.element(screen.getByRole("button", { name: /Theme: System/i })).toBeVisible();
+    await expect.element(stage).toBeVisible();
+    await expect.element(rail).toBeVisible();
+
+    const workTreeScroll = workTree.element().querySelector(".vk-scroll");
+    expect(workTreeScroll).toBeTruthy();
+
+    for (const el of [stage.element(), rail.element(), workTreeScroll as HTMLElement]) {
+      expect(el.classList.contains("vk-scroll")).toBe(true);
+    }
   });
 });
 
@@ -1268,6 +1281,26 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
+  });
+
+  it("applies theme-token scroll surfaces on mobile stage, drawer, and Context sheet", async () => {
+    await setMobileViewport();
+    const { screen } = renderAt("/");
+
+    const stage = screen.getByRole("main");
+    await expect.element(stage).toBeVisible();
+    expect(stage.element().classList.contains("vk-scroll")).toBe(true);
+
+    await screen.getByRole("button", { name: /open navigation/i }).click();
+    const drawer = screen.getByRole("dialog", { name: /navigation/i });
+    await expect.element(drawer).toBeVisible();
+    expect(drawer.element().classList.contains("vk-scroll")).toBe(true);
+
+    await screen.getByRole("button", { name: /dismiss overlay/i }).click();
+    await screen.getByRole("button", { name: /open context/i }).click();
+    const sheet = screen.getByRole("dialog", { name: /^Context$/i });
+    await expect.element(sheet).toBeVisible();
+    expect(sheet.element().classList.contains("vk-scroll")).toBe(true);
   });
 
   it("opens Context Rail content as a sheet from ···, full-screen when dense", async () => {

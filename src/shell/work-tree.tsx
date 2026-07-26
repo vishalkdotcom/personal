@@ -108,7 +108,7 @@ export const WorkTree: Component = () => (
     aria-label="Work tree"
   >
     <div class="px-2 pt-1 pb-1.5 text-[11px] font-[550] tracking-[0.02em] text-faint">Work</div>
-    <div class="flex min-h-0 flex-1 flex-col gap-px overflow-auto">
+    <div class="vk-scroll flex min-h-0 flex-1 flex-col gap-px overflow-auto">
       <For each={WORK_FOLDERS}>{(folder) => <WorkFolderGroup folder={folder} />}</For>
     </div>
   </nav>

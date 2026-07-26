@@ -92,7 +92,7 @@ export const MobileShell: ParentComponent = (props) => {
         </button>
       </header>
 
-      <main class="min-h-0 min-w-0 flex-1 overflow-auto bg-bg-panel px-4 py-5" id="stage">
+      <main class="vk-scroll min-h-0 min-w-0 flex-1 overflow-auto bg-bg-panel px-4 py-5" id="stage">
         {props.children}
       </main>
 
@@ -109,7 +109,7 @@ export const MobileShell: ParentComponent = (props) => {
 
       <Show when={drawerOpen()}>
         <aside
-          class="absolute top-0 bottom-0 left-0 z-40 flex w-[min(82%,300px)] flex-col overflow-auto border-r border-border bg-bg-deep p-[12px_8px]"
+          class="vk-scroll absolute top-0 bottom-0 left-0 z-40 flex w-[min(82%,300px)] flex-col overflow-auto border-r border-border bg-bg-deep p-[12px_8px]"
           role="dialog"
           aria-modal="true"
           aria-label="Navigation"
@@ -122,8 +122,8 @@ export const MobileShell: ParentComponent = (props) => {
         <aside
           class={
             sheetDense()
-              ? "absolute inset-0 z-40 overflow-auto border-t border-border bg-bg-deep p-[12px_10px]"
-              : "absolute right-0 bottom-0 left-0 z-40 max-h-[62%] overflow-auto rounded-t-2xl border-t border-border bg-bg-deep p-[12px_10px_20px]"
+              ? "vk-scroll absolute inset-0 z-40 overflow-auto border-t border-border bg-bg-deep p-[12px_10px]"
+              : "vk-scroll absolute right-0 bottom-0 left-0 z-40 max-h-[62%] overflow-auto rounded-t-2xl border-t border-border bg-bg-deep p-[12px_10px_20px]"
           }
           role="dialog"
           aria-modal="true"
