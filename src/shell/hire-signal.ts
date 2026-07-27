@@ -6,7 +6,7 @@ export const HIRE_SIGNAL_SNOOZE_KEY = "hire-signal-snoozed-until";
 export const HIRE_SIGNAL_SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
 
 /** Expanded mobile chip blurb (shell-round-17 D) — under the Open to roles heading. */
-export const HIRE_SIGNAL_CHIP_BLURB = "Senior FE · analytics & reporting UIs · remote or hybrid";
+export const HIRE_SIGNAL_CHIP_BLURB = "Senior FE · complex product UI · remote";
 
 const envRaw = import.meta.env.VITE_HIRE_SIGNAL as string | undefined;
 

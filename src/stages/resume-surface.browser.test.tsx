@@ -128,7 +128,7 @@ describe("Resume Surface (App Shell seam)", () => {
     await expect
       .element(
         stage.getByText(
-          /7\+ years on data-heavy reporting UIs for remote US\/APAC teams — 13\+ years total/i,
+          /7\+ years on complex React\/Next product UI — reporting, forms, and platform/i,
         ),
       )
       .not.toBeInTheDocument();
