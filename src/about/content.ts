@@ -23,10 +23,11 @@ export type AboutSelectedWorkPeek = {
 
 export const ABOUT_NAME = "Vishal Kumar";
 
-export const ABOUT_META = "Senior Frontend Engineer · React / Next.js · Analytics & Reporting UIs";
+export const ABOUT_META =
+  "Senior Frontend Engineer · React / Next.js · Complex product UI (reporting, forms, platform)";
 
 export const ABOUT_PITCH =
-  "7+ years on data-heavy reporting UIs for remote US/APAC teams — 13+ years total. Specialized in embedded BI, complex filters, and dashboard/export consistency.";
+  "7+ years building complex React/Next.js product UI for remote teams — 13+ years total. Reporting surfaces, form/admin workflows, and platform cleanup. AI-native delivery; all output reviewed, tested, and owned.";
 
 export const ABOUT_SKILLS = [
   "Next.js",
@@ -59,13 +60,12 @@ export const ABOUT_SELECTED_WORK: readonly AboutSelectedWorkPeek[] = [
   },
 ];
 
-export const ABOUT_AVAILABILITY =
-  "Open to roles · Senior Frontend · reporting UIs · remote or hybrid";
+export const ABOUT_AVAILABILITY = "Open to roles · Senior Frontend · complex product UI · remote";
 
 export const ABOUT_FACTS: AboutFact[] = [
   { label: "Based", value: "Punjab · remote" },
   { label: "Experience", value: "13+ yrs" },
-  { label: "Focus", value: "Reporting UIs" },
+  { label: "Focus", value: "Complex product UI" },
 ];
 
 export const ABOUT_ELSEWHERE: AboutElsewhereLink[] = [
