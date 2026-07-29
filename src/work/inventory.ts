@@ -21,6 +21,12 @@ export type WorkArtifact = {
   emphasis?: "callout";
 };
 
+/** Outcome lead-label + claim text — Public Claims only when filled. */
+export type WorkOutcome = {
+  label: string;
+  text: string;
+};
+
 type WorkCaseShared = {
   slug: string;
   title: string;
@@ -28,7 +34,7 @@ type WorkCaseShared = {
   /** Context Rail Role stub — richer copy in later case tickets. */
   role: string;
   /** Center + Context Rail Outcomes — Public Claims only when filled. */
-  outcomes: string[];
+  outcomes: WorkOutcome[];
   /** Context Rail Stack — always shown expanded. */
   stack: string[];
   /**
@@ -73,8 +79,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "Senior Frontend · Labor Solutions · Engage reporting",
         lede: "Engage questionnaire reporting — Summary, Categories, and Miscellaneous with Metabase embeds, risk maps, and one scoring path for dashboards and exports.",
         outcomes: [
-          "Dashboards and Excel disagreed on scores (facility-first vs question-first). Exports now follow the analytics cards as the single authority.",
-          "Reporting artifacts shipped in-product: Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, and top/bottom sites",
+          {
+            label: "Parity",
+            text: "Dashboards and Excel disagreed on scores (facility-first vs question-first). Exports now follow the analytics cards as the single authority.",
+          },
+          {
+            label: "Depth",
+            text: "Reporting artifacts shipped in-product: Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, and top/bottom sites",
+          },
         ],
         artifacts: [
           {
@@ -104,8 +116,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "Senior Frontend · Labor Solutions · Indicator Bank",
         lede: "Multilingual Indicator Bank — reusable questions and answer sets across Django and Next.js with protected Excel import/export and survey association.",
         outcomes: [
-          "Built a multilingual Indicator Bank across Django and Next.js — reusable questions/answer sets and four administration surfaces (Indicators, Questions, Answer Sets, Manage Associations)",
-          "Protected Excel import/export with partial-success validation, soft deletion, and idempotent survey association for reusable survey content",
+          {
+            label: "Surface",
+            text: "Built a multilingual Indicator Bank across Django and Next.js — reusable questions/answer sets and four administration surfaces (Indicators, Questions, Answer Sets, Manage Associations)",
+          },
+          {
+            label: "Integrity",
+            text: "Protected Excel import/export with partial-success validation, soft deletion, and idempotent survey association for reusable survey content",
+          },
         ],
         artifacts: [
           {
@@ -135,7 +153,10 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "Frontend Engineer · Advance Auto Parts · Measurement Framework",
         lede: "Store KPI measurement UI — trends, filters, and drill-downs for operational and leadership stakeholders.",
         outcomes: [
-          "Built the store KPI measurement UI (Next.js, Tremor/Nivo, TypeScript, Snowflake) serving operational and leadership stakeholders with trends, filters, and drill-down views",
+          {
+            label: "UI",
+            text: "Built the store KPI measurement UI (Next.js, Tremor/Nivo, TypeScript, Snowflake) serving operational and leadership stakeholders with trends, filters, and drill-down views",
+          },
         ],
         artifacts: [
           {
@@ -154,7 +175,10 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "Frontend Engineer · Advance Auto Parts · Model Deployment Framework",
         lede: "Self-service ML model hosting dashboard — register, version, and deploy models without filing engineering tickets.",
         outcomes: [
-          "Built the self-service ML model hosting dashboard (Next.js, TypeScript, Tailwind) enabling data scientists to register, version, and deploy models without filing engineering tickets",
+          {
+            label: "Self-serve",
+            text: "Built the self-service ML model hosting dashboard (Next.js, TypeScript, Tailwind) enabling data scientists to register, version, and deploy models without filing engineering tickets",
+          },
         ],
         artifacts: [
           {
@@ -179,8 +203,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "Frontend Engineer · Advance Auto Parts · Store Dashboard",
         lede: "Store-level performance and sales-forecast dashboard — actual vs predicted net sales for planning reviews.",
         outcomes: [
-          "Delivered store-level performance and sales-forecast views comparing actual vs predicted net sales across store segments for planning reviews",
-          "Streamlit + Snowflake SPA for regional leadership and store managers to analyze performance and identify outliers",
+          {
+            label: "Views",
+            text: "Delivered store-level performance and sales-forecast views comparing actual vs predicted net sales across store segments for planning reviews",
+          },
+          {
+            label: "Reach",
+            text: "Streamlit + Snowflake SPA for regional leadership and store managers to analyze performance and identify outliers",
+          },
         ],
         artifacts: [
           {
@@ -210,8 +240,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "SupplyChain+ · solo build",
         lede: "A tool that scores supplier risk, groups complaints, and pulls evidence together for audits.",
         outcomes: [
-          "Explainable supplier-risk scoring, complaint clustering, and compliance/reporting workflows with audit-oriented evidence export",
-          "Multi-provider LLM tools for summarization, sentiment analysis, and audit-oriented evidence export",
+          {
+            label: "Craft",
+            text: "Explainable supplier-risk scoring, complaint clustering, and compliance/reporting workflows with audit-oriented evidence export",
+          },
+          {
+            label: "AI",
+            text: "Multi-provider LLM tools for summarization, sentiment analysis, and audit-oriented evidence export",
+          },
         ],
         stack: ["Next.js 16", "React 19", "PostgreSQL/pgvector", "Drizzle ORM", "Vercel AI SDK"],
         media: [
@@ -229,8 +265,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "QGenAI · solo build",
         lede: "A survey builder that turns a prompt into multi-type questions, with per-question regeneration and multi-language translation.",
         outcomes: [
-          "Prompt-to-survey UI with multi-type questions, per-question AI regeneration, and multi-language translation",
-          "Provider-agnostic AI layer (Google GenAI, OpenRouter, LM Studio) with client-side persistence and structured validation",
+          {
+            label: "Builder",
+            text: "Prompt-to-survey UI with multi-type questions, per-question AI regeneration, and multi-language translation",
+          },
+          {
+            label: "AI",
+            text: "Provider-agnostic AI layer (Google GenAI, OpenRouter, LM Studio) with client-side persistence and structured validation",
+          },
         ],
         stack: ["Next.js 15", "React 19", "Vercel AI SDK", "Zod", "shadcn/ui", "IndexedDB"],
         media: [
@@ -254,8 +296,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "Snap2Paper · solo build",
         lede: "A study-sheet digitizer that scans paper questions into editable MCQ study sets with local-only storage.",
         outcomes: [
-          "Gemini vision turns paper study sheets into editable MCQ collections you can review and print",
-          "Client-side print preview and PDF export with local-only data storage",
+          {
+            label: "Scan",
+            text: "Gemini vision turns paper study sheets into editable MCQ collections you can review and print",
+          },
+          {
+            label: "Print",
+            text: "Client-side print preview and PDF export with local-only data storage",
+          },
         ],
         stack: ["TypeScript", "Gemini", "html2canvas", "jsPDF"],
         media: [
@@ -273,8 +321,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "PhotoGrid · solo build",
         lede: "A passport and wallet photo layout tool — arrange uploaded photos onto standard paper sizes with cutting guides.",
         outcomes: [
-          "Layout uploaded photos onto A4 and photo papers for passport, wallet, and stamp sizes",
-          "Client-side print PDF export with live preview, margins, spacing, and optional cutting guides",
+          {
+            label: "Layout",
+            text: "Layout uploaded photos onto A4 and photo papers for passport, wallet, and stamp sizes",
+          },
+          {
+            label: "Print",
+            text: "Client-side print PDF export with live preview, margins, spacing, and optional cutting guides",
+          },
         ],
         stack: ["TypeScript", "Canvas", "Client-side PDF"],
         media: [
@@ -292,8 +346,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
         role: "PDFGrid · solo build",
         lede: "A browser tool that arranges uploaded PDFs into printable grid layouts.",
         outcomes: [
-          "Printable grid layouts for A4 and Letter with configurable columns, rows, margins, and gaps",
-          "Browser-local PDF compile — upload documents, preview the grid, and generate a print-ready PDF on-device",
+          {
+            label: "Layout",
+            text: "Printable grid layouts for A4 and Letter with configurable columns, rows, margins, and gaps",
+          },
+          {
+            label: "Compile",
+            text: "Browser-local PDF compile — upload documents, preview the grid, and generate a print-ready PDF on-device",
+          },
         ],
         stack: ["TypeScript", "PDF", "Client-side layout"],
         media: [

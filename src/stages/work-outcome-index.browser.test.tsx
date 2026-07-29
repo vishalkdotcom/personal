@@ -15,7 +15,7 @@ const GLYPH_FOLDER: WorkFolder = {
       badge: "Production",
       surface: "internal-dossier",
       role: "Fixture · no media",
-      outcomes: ["First outcome blurb for the glyph row."],
+      outcomes: [{ label: "Blurb", text: "First outcome blurb for the glyph row." }],
       stack: ["TypeScript"],
     },
     {
@@ -24,7 +24,7 @@ const GLYPH_FOLDER: WorkFolder = {
       badge: "Prototype",
       surface: "public-storefront",
       role: "Fixture · missing asset",
-      outcomes: ["Blurb when inventory src cannot resolve."],
+      outcomes: [{ label: "Fallback", text: "Blurb when inventory src cannot resolve." }],
       stack: ["TypeScript"],
       media: [{ label: "Missing shot", src: "work/does-not-exist/missing.png" }],
     },

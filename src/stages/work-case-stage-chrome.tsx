@@ -1,5 +1,6 @@
 import { For, type Component, type ParentComponent } from "solid-js";
-import type { WorkBadge, WorkCase, WorkFolder } from "../work/inventory";
+import type { WorkBadge, WorkCase, WorkFolder, WorkOutcome } from "../work/inventory";
+import { OutcomeLeadLabel } from "../work/outcome-lead-label";
 
 export function workCaseBadgeClass(badge: WorkBadge): string {
   if (badge === "Prototype") {
@@ -28,7 +29,7 @@ export const WorkCaseHeader: Component<WorkCaseHeaderProps> = (props) => (
 );
 
 type WorkOutcomesListProps = {
-  outcomes: string[];
+  outcomes: WorkOutcome[];
 };
 
 /** Proof-first Outcomes list shared by Public Storefront and Internal Dossier stages. */
@@ -37,7 +38,8 @@ export const WorkOutcomesList: Component<WorkOutcomesListProps> = (props) => (
     <For each={props.outcomes}>
       {(outcome) => (
         <li class="rounded-lg border border-border bg-bg-deep px-3 py-2.5 text-[12.5px] leading-[1.4] text-muted">
-          {outcome}
+          <OutcomeLeadLabel label={outcome.label} />
+          {outcome.text}
         </li>
       )}
     </For>

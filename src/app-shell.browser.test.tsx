@@ -303,8 +303,8 @@ describe("Work Folder dense outcome indexes (App Shell seam)", () => {
     await expect.element(main.getByRole("list", { name: /outcome index/i })).toBeVisible();
     await expect.element(main.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
     await expect.element(main.getByRole("link", { name: /Indicator Bank/i })).toBeVisible();
-    await expect.element(main.getByText(ENGAGE_CASE.outcomes[0]!)).toBeVisible();
-    await expect.element(main.getByText(INDICATOR_BANK_CASE.outcomes[0]!)).toBeVisible();
+    await expect.element(main.getByText(ENGAGE_CASE.outcomes[0]!.text)).toBeVisible();
+    await expect.element(main.getByText(INDICATOR_BANK_CASE.outcomes[0]!.text)).toBeVisible();
     await expect
       .element(main.getByRole("link", { name: /Engage reporting.*Production/i }))
       .toBeVisible();
@@ -379,7 +379,7 @@ describe("Work Folder dense outcome indexes (App Shell seam)", () => {
 
     const { screen: folderScreen } = renderAt("/work/labor-solutions");
     const engageRow = await expectRowMediaThumb(folderScreen, /Engage reporting.*Production/i);
-    await expect.element(engageRow.getByText(ENGAGE_CASE.outcomes[0]!)).toBeVisible();
+    await expect.element(engageRow.getByText(ENGAGE_CASE.outcomes[0]!.text)).toBeVisible();
   });
 
   it("omits a duplicate All work row from the left Work tree", async () => {
@@ -507,8 +507,8 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(stage.getByRole("region", { name: /^Artifacts$/i })).toBeVisible();
     await expect.element(stage).toHaveTextContent(/Problem → fix/i);
     await expect.element(stage).toHaveTextContent(/What shipped/i);
-    await expect.element(stage).toHaveTextContent(ENGAGE_CASE.outcomes[1]!);
-    await expect.element(stage).toHaveTextContent(ENGAGE_CASE.outcomes[0]!);
+    await expect.element(stage).toHaveTextContent(ENGAGE_CASE.outcomes[1]!.text);
+    await expect.element(stage).toHaveTextContent(ENGAGE_CASE.outcomes[0]!.text);
     await expect.element(stage).not.toHaveTextContent(/43 tracked tickets/i);
 
     const outcomes = stage.getByRole("list", { name: /^Outcomes$/i }).element();
@@ -550,7 +550,7 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(rail.getByText(/^Outcomes$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Stack$/i)).toBeVisible();
     await expect.element(rail).toHaveTextContent(ENGAGE_CASE.role);
-    await expect.element(rail).toHaveTextContent(ENGAGE_CASE.outcomes[1]!);
+    await expect.element(rail).toHaveTextContent(ENGAGE_CASE.outcomes[1]!.text);
     await expect.element(rail.getByText(/^Metabase Embedding SDK$/i)).toBeVisible();
 
     const text = rail.element().textContent ?? "";
@@ -568,8 +568,8 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     const stage = screen.getByRole("main");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
 
-    await expect.element(stage).toHaveTextContent(ENGAGE_CASE.outcomes[0]!);
-    await expect.element(rail).toHaveTextContent(ENGAGE_CASE.outcomes[0]!);
+    await expect.element(stage).toHaveTextContent(ENGAGE_CASE.outcomes[0]!.text);
+    await expect.element(rail).toHaveTextContent(ENGAGE_CASE.outcomes[0]!.text);
     await expect.element(stage).not.toHaveTextContent(/71\.47/i);
     await expect.element(rail).not.toHaveTextContent(/71\.47/i);
     await expect.element(stage).not.toHaveTextContent(/29%→9%/i);
@@ -579,6 +579,25 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
     await expect.element(rail).not.toHaveTextContent(/\(stub\)/i);
   });
+
+  it("accents Outcome lead-labels before claim text on stage and Context Rail", async () => {
+    const { screen } = renderAt("/work/labor-solutions/engage-reporting");
+    const stage = screen.getByRole("main");
+    const rail = screen.getByRole("complementary", { name: /^details$/i });
+    const [parity, depth] = ENGAGE_CASE.outcomes;
+
+    const stageOutcomes = stage.getByRole("list", { name: /^Outcomes$/i });
+    await expect.element(stageOutcomes.getByText(parity!.label, { exact: true })).toBeVisible();
+    await expect.element(stageOutcomes.getByText(parity!.text)).toBeVisible();
+    await expect.element(stageOutcomes.getByText(depth!.label, { exact: true })).toBeVisible();
+    await expect.element(stageOutcomes.getByText(depth!.text)).toBeVisible();
+
+    const railOutcomes = rail.getByRole("list", { name: /^Outcomes$/i });
+    await expect.element(railOutcomes.getByText(parity!.label, { exact: true })).toBeVisible();
+    await expect.element(railOutcomes.getByText(parity!.text)).toBeVisible();
+    await expect.element(railOutcomes.getByText(depth!.label, { exact: true })).toBeVisible();
+    await expect.element(railOutcomes.getByText(depth!.text)).toBeVisible();
+  });
 });
 
 const internalDossierCases = [
@@ -587,7 +606,7 @@ const internalDossierCases = [
     title: /^Indicator Bank$/i,
     article: /Indicator Bank Internal Dossier/i,
     folder: /Labor Solutions/i,
-    claim: INDICATOR_BANK_CASE.outcomes[0]!,
+    claim: INDICATOR_BANK_CASE.outcomes[0]!.text,
     stack: /^Django$/i,
     firstShot: /Shot 1 · Indicators/i,
     forbidden: [/OKR at 1\.0/i, /WPM-3219/i, /71\.47/i, /29%→9%/i, /124 PRs/i],
@@ -733,10 +752,29 @@ describe("Public Storefront SupplyChain+ (App Shell seam)", () => {
     await expect.element(stage).toHaveTextContent(SUPPLY_CHAIN_CASE.lede!);
 
     const text = stage.element().textContent ?? "";
-    const outcomesIndex = text.indexOf(SUPPLY_CHAIN_CASE.outcomes[0]!);
+    const outcomesIndex = text.indexOf(SUPPLY_CHAIN_CASE.outcomes[0]!.text);
     const mediaIndex = text.search(/Shot 1/i);
     expect(outcomesIndex).toBeGreaterThan(-1);
     expect(mediaIndex).toBeGreaterThan(outcomesIndex);
+  });
+
+  it("accents Outcome lead-labels before claim text on stage and Context Rail", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const stage = screen.getByRole("main");
+    const rail = screen.getByRole("complementary", { name: /^details$/i });
+    const [craft, ai] = SUPPLY_CHAIN_CASE.outcomes;
+
+    const stageOutcomes = stage.getByRole("list", { name: /^Outcomes$/i });
+    await expect.element(stageOutcomes.getByText(craft!.label, { exact: true })).toBeVisible();
+    await expect.element(stageOutcomes.getByText(craft!.text)).toBeVisible();
+    await expect.element(stageOutcomes.getByText(ai!.label, { exact: true })).toBeVisible();
+    await expect.element(stageOutcomes.getByText(ai!.text)).toBeVisible();
+
+    const railOutcomes = rail.getByRole("list", { name: /^Outcomes$/i });
+    await expect.element(railOutcomes.getByText(craft!.label, { exact: true })).toBeVisible();
+    await expect.element(railOutcomes.getByText(craft!.text)).toBeVisible();
+    await expect.element(railOutcomes.getByText(ai!.label, { exact: true })).toBeVisible();
+    await expect.element(railOutcomes.getByText(ai!.text)).toBeVisible();
   });
 
   it("shows Prototype badge and primary Open live with muted host", async () => {
@@ -773,8 +811,8 @@ describe("Public Storefront SupplyChain+ (App Shell seam)", () => {
     const stage = screen.getByRole("main");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
 
-    await expect.element(stage).toHaveTextContent(SUPPLY_CHAIN_CASE.outcomes[0]!);
-    await expect.element(rail).toHaveTextContent(SUPPLY_CHAIN_CASE.outcomes[0]!);
+    await expect.element(stage).toHaveTextContent(SUPPLY_CHAIN_CASE.outcomes[0]!.text);
+    await expect.element(rail).toHaveTextContent(SUPPLY_CHAIN_CASE.outcomes[0]!.text);
     await expect.element(stage).not.toHaveTextContent(/206 authored commits/i);
     await expect.element(rail).not.toHaveTextContent(/206 authored commits/i);
     await expect.element(stage).not.toHaveTextContent(/300 factories/i);

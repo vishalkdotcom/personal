@@ -56,7 +56,7 @@ const IndexThumb: Component<{ workCase: WorkCase }> = (props) => {
 const IndexRow: Component<{ folderSlug: string; workCase: WorkCase }> = (props) => {
   const navigate = useNavigate();
   const href = () => workCaseHref(props.folderSlug, props.workCase.slug);
-  const blurb = () => props.workCase.outcomes[0] ?? "";
+  const blurb = () => props.workCase.outcomes[0]?.text ?? "";
 
   return (
     <A

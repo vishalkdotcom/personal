@@ -9,6 +9,7 @@ import {
   workCaseLiveUrl,
   type WorkCase,
 } from "../work/inventory";
+import { OutcomeLeadLabel } from "../work/outcome-lead-label";
 import { modeForPath } from "./modes";
 import { isHireSignalEnabled } from "./hire-signal";
 
@@ -142,8 +143,18 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
         <h2 id="rail-outcomes" class={sectionHeadingClass}>
           Outcomes
         </h2>
-        <ul class="m-0 mt-1.5 list-none space-y-1.5 p-0 text-[12.5px] leading-[1.45] text-muted">
-          <For each={props.workCase.outcomes}>{(outcome) => <li>{outcome}</li>}</For>
+        <ul
+          class="m-0 mt-1.5 list-none space-y-1.5 p-0 text-[12.5px] leading-[1.45] text-muted"
+          aria-label="Outcomes"
+        >
+          <For each={props.workCase.outcomes}>
+            {(outcome) => (
+              <li>
+                <OutcomeLeadLabel label={outcome.label} />
+                {outcome.text}
+              </li>
+            )}
+          </For>
         </ul>
       </section>
 
