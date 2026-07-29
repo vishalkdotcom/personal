@@ -42,7 +42,7 @@ const LeftChromeFoot: Component<{ collapsed: boolean }> = (props) => (
     aria-label="Identity"
     class={[
       "mt-auto flex shrink-0 items-center border-t border-border pt-3",
-      props.collapsed ? "justify-center px-0" : "gap-2.5 px-2",
+      props.collapsed ? "-mx-1.5 justify-center px-0" : "-mx-2 gap-2.5 px-4",
     ].join(" ")}
   >
     <LeftChromeAvatar />
