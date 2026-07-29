@@ -11,6 +11,7 @@ import {
 } from "./shell/hire-signal";
 import { THEME_STORAGE_KEY } from "./theme/theme";
 import { getWorkCase, workCaseHref } from "./work/inventory";
+import { WORK_MEDIA_CAROUSEL_SIZES } from "./work/work-case-media";
 
 const SUPPLY_CHAIN_PATH = workCaseHref("prototypes", "supplychain-plus");
 const SUPPLY_CHAIN_CASE = getWorkCase("prototypes", "supplychain-plus")!;
@@ -923,6 +924,31 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
       .element(screen.getByRole("dialog", { name: /media viewer/i }))
       .not.toBeInTheDocument();
   });
+
+  it("wires responsive WebP srcset/sizes and lazy-loads non-active slides", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const active = carousel.getByRole("img", { name: /Shot 1 · Home/i }).element();
+    const inactive = [...carousel.element().querySelectorAll("img")].find((img) =>
+      /Shot 2 · Diagnosis/i.test(img.getAttribute("alt") ?? ""),
+    );
+    expect(inactive).toBeTruthy();
+
+    expect(active.getAttribute("srcset")).toMatch(/800w/);
+    expect(active.getAttribute("srcset")).toMatch(/1600w/);
+    expect(active.getAttribute("srcset")).toMatch(/2400w/);
+    expect(active.getAttribute("src")).toMatch(/home-800w\.webp/);
+    expect(active.getAttribute("sizes")).toBe(WORK_MEDIA_CAROUSEL_SIZES);
+    expect(active.getAttribute("loading")).toBe("eager");
+    expect(inactive!.getAttribute("loading")).toBe("lazy");
+    expect(inactive!.getAttribute("decoding")).toBe("async");
+
+    // Desktop Triptych: layout width should track the locked ~680px `sizes` desktop branch.
+    expect(window.matchMedia("(max-width: 767px)").matches).toBe(false);
+    expect(active.clientWidth).toBeGreaterThan(500);
+    expect(active.clientWidth).toBeLessThan(800);
+    await expect.poll(() => (active as HTMLImageElement).currentSrc).toMatch(/home-\d+w\.webp/);
+  });
 });
 
 const qgenaiAndToolsStorefronts = [
@@ -1456,6 +1482,20 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect
       .element(dossier.screen.getByRole("dialog", { name: /^Preview$/i }))
       .not.toBeInTheDocument();
+  });
+
+  it("sizes the stage carousel near full mobile width at ~390px", async () => {
+    await setMobileViewport();
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const active = carousel.getByRole("img", { name: /Shot 1 · Home/i }).element();
+
+    expect(active.getAttribute("sizes")).toBe(WORK_MEDIA_CAROUSEL_SIZES);
+    expect(window.matchMedia("(max-width: 767px)").matches).toBe(true);
+    // Mobile stage padding is 16px each side — layout should track the mobile `sizes` branch.
+    expect(active.clientWidth).toBeGreaterThan(280);
+    expect(active.clientWidth).toBeLessThan(390);
+    await expect.poll(() => (active as HTMLImageElement).currentSrc).toMatch(/home-\d+w\.webp/);
   });
 
   it("opens the shared fullscreen media viewer from a stage slide on mobile", async () => {

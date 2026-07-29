@@ -1,7 +1,8 @@
 import { onSettled, type Component } from "solid-js";
+import { resolveWorkMedia, WORK_MEDIA_VIEWER_SIZES } from "../work/work-case-media";
 
 type MediaViewerProps = {
-  src: string;
+  inventorySrc: string;
   label: string;
   onClose: () => void;
 };
@@ -12,6 +13,7 @@ type MediaViewerProps = {
  */
 export const MediaViewer: Component<MediaViewerProps> = (props) => {
   let closeEl: HTMLButtonElement | undefined;
+  const media = () => resolveWorkMedia(props.inventorySrc);
 
   onSettled(() => {
     closeEl?.focus();
@@ -49,7 +51,9 @@ export const MediaViewer: Component<MediaViewerProps> = (props) => {
 
       <div class="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-bg-deep p-4">
         <img
-          src={props.src}
+          src={media().src}
+          srcset={media().srcSet}
+          sizes={WORK_MEDIA_VIEWER_SIZES}
           alt={props.label}
           class="max-h-full max-w-full object-contain"
           decoding="async"

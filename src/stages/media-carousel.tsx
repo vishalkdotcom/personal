@@ -1,6 +1,6 @@
 import { For, Show, createSignal, type Accessor, type Component } from "solid-js";
 import type { WorkMediaSlide } from "../work/inventory";
-import { resolveWorkMediaSrc } from "../work/work-case-media";
+import { resolveWorkMedia, WORK_MEDIA_CAROUSEL_SIZES } from "../work/work-case-media";
 import { MediaViewer } from "./media-viewer";
 
 type MediaCarouselProps = {
@@ -12,7 +12,7 @@ const CaseMediaSlide: Component<{
   slideIndex: Accessor<number>;
   activeIndex: Accessor<number>;
 }> = (props) => {
-  const src = resolveWorkMediaSrc(props.slide.src);
+  const media = resolveWorkMedia(props.slide.src);
   const isActive = () => props.slideIndex() === props.activeIndex();
 
   return (
@@ -22,9 +22,13 @@ const CaseMediaSlide: Component<{
       aria-hidden={isActive() ? undefined : "true"}
     >
       <img
-        src={src}
+        src={media.src}
+        srcset={media.srcSet}
+        sizes={WORK_MEDIA_CAROUSEL_SIZES}
         alt={props.slide.label}
         class="absolute inset-0 h-full w-full object-contain"
+        loading={isActive() ? "eager" : "lazy"}
+        decoding={isActive() ? "auto" : "async"}
       />
       <span class="pointer-events-none relative rounded-md bg-bg-deep/80 px-2 py-1 text-[11px] tracking-[0.06em] text-faint uppercase">
         {props.slide.label}
@@ -141,11 +145,7 @@ export const MediaCarousel: Component<MediaCarouselProps> = (props) => {
 
       <Show when={viewerOpen() ? activeSlide() : undefined}>
         {(slide) => (
-          <MediaViewer
-            src={resolveWorkMediaSrc(slide().src)}
-            label={slide().label}
-            onClose={closeViewer}
-          />
+          <MediaViewer inventorySrc={slide().src} label={slide().label} onClose={closeViewer} />
         )}
       </Show>
     </>
