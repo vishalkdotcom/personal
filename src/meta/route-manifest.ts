@@ -1,10 +1,10 @@
 /**
- * Finite deep-link route manifest for Modes, Work Folder indexes, and Work Cases.
+ * Finite deep-link route manifest for Modes, Work root, and Work Cases.
  * Shared by build-time meta shells and client `@solidjs/meta` head sync.
  */
 
 import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH } from "../about/content";
-import { WORK_FOLDERS, workCaseHref, workFolderHref, workRootHref } from "../work/inventory";
+import { WORK_FOLDERS, workCaseHref, workRootHref } from "../work/inventory";
 import { SITE_NAME, SITE_ORIGIN } from "./site";
 
 export type PageMeta = {
@@ -45,16 +45,6 @@ const MODE_META: PageMeta[] = [
   page(workRootHref(), "Work", "Selected work — what shipped and what it changed."),
 ];
 
-function folderMeta(): PageMeta[] {
-  return WORK_FOLDERS.map((folder) =>
-    page(
-      workFolderHref(folder.slug),
-      folder.title,
-      `${folder.title} — selected work and outcomes.`,
-    ),
-  );
-}
-
 function caseMeta(): PageMeta[] {
   const pages: PageMeta[] = [];
   for (const folder of WORK_FOLDERS) {
@@ -72,7 +62,7 @@ function caseMeta(): PageMeta[] {
 }
 
 /** Ordered deep-link set emitted as build-time HTML shells. */
-export const DEEP_LINK_ROUTES: PageMeta[] = [...MODE_META, ...folderMeta(), ...caseMeta()];
+export const DEEP_LINK_ROUTES: PageMeta[] = [...MODE_META, ...caseMeta()];
 
 const byPath = new Map(DEEP_LINK_ROUTES.map((entry) => [entry.path, entry]));
 

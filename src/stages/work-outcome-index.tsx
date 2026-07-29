@@ -81,11 +81,14 @@ const IndexRow: Component<{ folderSlug: string; workCase: WorkCase }> = (props) 
   );
 };
 
-const IndexList: Component<{
+type WorkOutcomeIndexListProps = {
   folderSlug: string;
   cases: WorkCase[];
   "aria-label"?: string;
-}> = (props) => (
+};
+
+/** Dense outcome rows for one Work Folder group (All work index). */
+export const WorkOutcomeIndexList: Component<WorkOutcomeIndexListProps> = (props) => (
   <ul class="m-0 grid max-w-[720px] list-none gap-1.5 p-0" aria-label={props["aria-label"]}>
     <For each={props.cases}>
       {(workCase) => (
@@ -111,24 +114,11 @@ const IndexHead: Component<IndexHeadProps> = (props) => (
   </header>
 );
 
-type WorkFolderIndexProps = {
-  folder: WorkFolder;
-};
-
-/** Dense outcome list for one Work Folder — prototype SoT employer/index composition. */
-export const WorkFolderIndex: Component<WorkFolderIndexProps> = (props) => (
-  <article aria-label={`${props.folder.title} outcome index`}>
-    <IndexHead
-      kicker="Work"
-      title={props.folder.title}
-      lede="Cases in this group — what shipped and what changed."
-    />
-    <IndexList
-      folderSlug={props.folder.slug}
-      cases={props.folder.cases}
-      aria-label="Outcome index"
-    />
-  </article>
+const FolderGroupHead: Component<{ folder: WorkFolder }> = (props) => (
+  <div class="px-1 pt-3.5 pb-1.5">
+    <div class="text-[11px] tracking-[0.08em] text-faint uppercase">{props.folder.title}</div>
+    <p class="m-0 mt-1 text-[12.5px] leading-[1.4] text-muted">{props.folder.framing}</p>
+  </div>
 );
 
 /** Work-root dense outcome list across all Work Folders. */
@@ -143,10 +133,8 @@ export const WorkRootIndex: Component = () => (
       <For each={WORK_FOLDERS}>
         {(folder) => (
           <section aria-label={folder.title}>
-            <div class="px-1 pt-3.5 pb-1.5 text-[11px] tracking-[0.08em] text-faint uppercase">
-              {folder.title}
-            </div>
-            <IndexList
+            <FolderGroupHead folder={folder} />
+            <WorkOutcomeIndexList
               folderSlug={folder.slug}
               cases={folder.cases}
               aria-label={`${folder.title} outcome index`}

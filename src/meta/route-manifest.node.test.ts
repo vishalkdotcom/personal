@@ -1,17 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { ABOUT_PITCH } from "../about/content";
-import {
-  getWorkCase,
-  WORK_FOLDERS,
-  workCaseHref,
-  workFolderHref,
-  workRootHref,
-} from "../work/inventory";
+import { getWorkCase, WORK_FOLDERS, workCaseHref, workRootHref } from "../work/inventory";
 import { DEEP_LINK_ROUTES, deepLinkPaths, pageMetaForPath } from "./route-manifest";
 import { SITE_NAME, SITE_ORIGIN } from "./site";
 
 describe("Deep-link route manifest (build + App Shell meta seam)", () => {
-  it("covers Modes + Work root + locked Work Folder indexes + Work Cases", () => {
+  it("covers Modes + Work root + Work Cases, without Work Folder index paths", () => {
     const paths = deepLinkPaths();
 
     expect(paths).toContain("/");
@@ -21,7 +15,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(paths).toContain(workRootHref());
 
     for (const folder of WORK_FOLDERS) {
-      expect(paths).toContain(workFolderHref(folder.slug));
+      expect(paths).not.toContain(`/work/${folder.slug}`);
       for (const workCase of folder.cases) {
         expect(paths).toContain(workCaseHref(folder.slug, workCase.slug));
       }
@@ -59,9 +53,12 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(work.description).toBe("Selected work — what shipped and what it changed.");
     expect(work.description).not.toMatch(/Work Folder|Work Case/i);
 
-    const folder = pageMetaForPath(workFolderHref("labor-solutions"));
-    expect(folder.description).toBe("Labor Solutions — selected work and outcomes.");
-    expect(folder.description).not.toMatch(/Work Folder/i);
+    const folderOnly = pageMetaForPath("/work/labor-solutions");
+    expect(folderOnly.path).toBe("/work/labor-solutions");
+    expect(folderOnly.canonical).toBe(`${SITE_ORIGIN}/work/labor-solutions`);
+    expect(folderOnly.title).toBe(SITE_NAME);
+    expect(folderOnly.description).toBe(ABOUT_PITCH);
+    expect(folderOnly.description).not.toBe("Labor Solutions — selected work and outcomes.");
 
     const engageCase = getWorkCase("labor-solutions", "engage-reporting");
     expect(engageCase?.lede).toBeTruthy();

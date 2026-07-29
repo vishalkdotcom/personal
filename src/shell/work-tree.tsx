@@ -1,30 +1,24 @@
 import { A, useLocation, useNavigate } from "@solidjs/router";
-import { For, Show, createSignal, type Component } from "solid-js";
-import {
-  WORK_FOLDERS,
-  workCaseHref,
-  workFolderHref,
-  type WorkCase,
-  type WorkFolder,
-} from "../work/inventory";
+import { For, type Component } from "solid-js";
+import { WORK_FOLDERS, workCaseHref, type WorkCase, type WorkFolder } from "../work/inventory";
 
 function isModifiedClick(event: MouseEvent): boolean {
   return event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey;
 }
 
-function folderActive(pathname: string, folder: WorkFolder): boolean {
-  const base = workFolderHref(folder.slug);
-  return pathname === base || pathname.startsWith(`${base}/`);
+/** Active-child section tint — true when a Work Case under this folder is open. */
+function folderSectionActive(pathname: string, folder: WorkFolder): boolean {
+  return pathname.startsWith(`/work/${folder.slug}/`);
 }
 
 function caseActive(pathname: string, folderSlug: string, caseSlug: string): boolean {
   return pathname === workCaseHref(folderSlug, caseSlug);
 }
 
-const folderLinkClass = (active: boolean) =>
+const folderLabelClass = (active: boolean) =>
   [
     "min-w-0 flex-1 truncate text-left text-[11px] font-[550] tracking-[0.02em]",
-    active ? "text-accent" : "text-faint hover:text-fg",
+    active ? "text-accent" : "text-faint",
   ].join(" ");
 
 const caseLinkClass = (active: boolean) =>
@@ -32,6 +26,18 @@ const caseLinkClass = (active: boolean) =>
     "flex items-center gap-2 rounded-md py-1.5 pr-2.5 pl-7 text-[13px]",
     active ? "bg-bg-active text-fg" : "text-muted hover:bg-bg-hover hover:text-fg",
   ].join(" ");
+
+const FolderIcon: Component = () => (
+  <svg
+    class="size-3 shrink-0"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    aria-hidden="true"
+  >
+    <path d="M3 7h6l2 2h10v10H3z" stroke-width="1.5" stroke-linejoin="round" />
+  </svg>
+);
 
 const WorkCaseLink: Component<{ folderSlug: string; workCase: WorkCase }> = (props) => {
   const location = useLocation();
@@ -58,50 +64,24 @@ const WorkCaseLink: Component<{ folderSlug: string; workCase: WorkCase }> = (pro
 
 const WorkFolderGroup: Component<{ folder: WorkFolder }> = (props) => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const [collapsed, setCollapsed] = createSignal(false);
-  const folderHref = () => workFolderHref(props.folder.slug);
+  const active = () => folderSectionActive(location.pathname, props.folder);
 
   return (
     <div>
-      <div class="flex items-center gap-0.5 px-1.5 py-1">
-        <button
-          type="button"
-          class="grid size-5 shrink-0 place-items-center rounded text-faint hover:bg-bg-hover hover:text-fg"
-          aria-expanded={collapsed() ? "false" : "true"}
-          aria-label={
-            collapsed() ? `Expand ${props.folder.title}` : `Collapse ${props.folder.title}`
-          }
-          onClick={() => setCollapsed((value) => !value)}
-        >
-          <span class="text-[10px] leading-none" aria-hidden="true">
-            {collapsed() ? "▸" : "▾"}
-          </span>
-        </button>
-        <A
-          href={folderHref()}
-          class={folderLinkClass(folderActive(location.pathname, props.folder))}
-          activeClass=""
-          inactiveClass=""
-          onClick={(event) => {
-            if (event.defaultPrevented || isModifiedClick(event)) return;
-            event.preventDefault();
-            navigate(folderHref());
-          }}
-        >
-          {props.folder.title}
-        </A>
+      <div class="flex items-center gap-1.5 px-1.5 py-1">
+        <span class={active() ? "text-accent" : "text-faint"}>
+          <FolderIcon />
+        </span>
+        <span class={folderLabelClass(active())}>{props.folder.title}</span>
       </div>
-      <Show when={!collapsed()}>
-        <For each={props.folder.cases}>
-          {(workCase) => <WorkCaseLink folderSlug={props.folder.slug} workCase={workCase} />}
-        </For>
-      </Show>
+      <For each={props.folder.cases}>
+        {(workCase) => <WorkCaseLink folderSlug={props.folder.slug} workCase={workCase} />}
+      </For>
     </div>
   );
 };
 
-/** Left chrome Work tree: Work Folders → Work Cases (quiet rows; badges live on stage / indexes). */
+/** Left chrome Work tree: always-expanded Work Folders → Work Cases (quiet rows). */
 export const WorkTree: Component = () => (
   <nav
     class="flex min-h-0 flex-1 flex-col overflow-hidden group-data-[left-collapsed]/shell:hidden"

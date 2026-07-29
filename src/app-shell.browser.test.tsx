@@ -167,6 +167,28 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(screen.getByRole("button", { name: /collapse details/i })).toBeVisible();
   });
 
+  it("shows Mode title only in the desktop header (no folder/case crumb trail)", async () => {
+    const { screen } = renderAt("/");
+    await expect
+      .element(screen.getByRole("banner").getByRole("heading", { name: /^About$/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("navigation", { name: /breadcrumb/i }))
+      .not.toBeInTheDocument();
+
+    cleanup();
+    const storefront = renderAt(SUPPLY_CHAIN_PATH);
+    await expect
+      .element(storefront.screen.getByRole("banner").getByRole("heading", { name: /^Work$/i }))
+      .toBeVisible();
+    await expect
+      .element(storefront.screen.getByRole("banner"))
+      .not.toHaveTextContent(/Prototypes/i);
+    await expect
+      .element(storefront.screen.getByRole("banner"))
+      .not.toHaveTextContent(/SupplyChain\+/i);
+  });
+
   it("omits chat/IDE product chrome labels", async () => {
     const { screen } = renderAt("/");
     await expect.element(screen.getByRole("navigation", { name: /modes/i })).toBeVisible();
@@ -233,112 +255,79 @@ describe("Work inventory and Work tree (App Shell seam)", () => {
     await expect.element(tree.getByText(/^Prototype$/i)).not.toBeInTheDocument();
   });
 
-  it("updates URL and stage when a Work Folder or Work Case is selected", async () => {
+  it("updates URL and stage when a Work Case is selected; folder rows are not links", async () => {
     const { history, screen } = renderAt("/");
+    const tree = screen.getByRole("navigation", { name: /work tree/i });
 
-    await screen.getByRole("link", { name: /^Labor Solutions$/i }).click();
     await expect
-      .element(screen.getByRole("main").getByRole("heading", { name: /^Labor Solutions$/i }))
-      .toBeVisible();
-    expect(history.get()).toBe("/work/labor-solutions");
+      .element(tree.getByRole("link", { name: /^Labor Solutions$/i }))
+      .not.toBeInTheDocument();
+    await expect.element(tree.getByText(/^Labor Solutions$/i)).toBeVisible();
 
-    await screen
-      .getByRole("navigation", { name: /work tree/i })
-      .getByRole("link", {
-        name: /Engage reporting/i,
-      })
-      .click();
+    await tree.getByRole("link", { name: /Engage reporting/i }).click();
     await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^Engage reporting$/i }))
       .toBeVisible();
     expect(history.get()).toBe("/work/labor-solutions/engage-reporting");
 
-    await screen
-      .getByRole("navigation", { name: /work tree/i })
-      .getByRole("link", {
-        name: /SupplyChain\+/i,
-      })
-      .click();
+    await tree.getByRole("link", { name: /SupplyChain\+/i }).click();
     await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
       .toBeVisible();
     expect(history.get()).toBe(SUPPLY_CHAIN_PATH);
   });
 
-  it("collapses Work Cases under a folder group", async () => {
+  it("keeps Work Folder rows always expanded with folder SVG and no caret controls", async () => {
     const { screen } = renderAt("/");
     const tree = screen.getByRole("navigation", { name: /work tree/i });
     await expect.element(tree).toBeVisible();
 
     await expect.element(tree.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
-
-    await screen.getByRole("button", { name: /collapse Labor Solutions/i }).click();
+    await expect.element(tree.getByRole("link", { name: /Indicator Bank/i })).toBeVisible();
+    await expect
+      .element(screen.getByRole("button", { name: /collapse Labor Solutions/i }))
+      .not.toBeInTheDocument();
     await expect
       .element(screen.getByRole("button", { name: /expand Labor Solutions/i }))
-      .toBeVisible();
-    await expect
-      .element(tree.getByRole("link", { name: /Engage reporting/i }))
       .not.toBeInTheDocument();
-    await expect
-      .element(tree.getByRole("link", { name: /Indicator Bank/i }))
-      .not.toBeInTheDocument();
-    await expect.element(tree.getByRole("link", { name: /^Labor Solutions$/i })).toBeVisible();
 
-    await screen.getByRole("button", { name: /expand Labor Solutions/i }).click();
-    await expect.element(tree.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
+    const laborLabel = tree.getByText(/^Labor Solutions$/i).element();
+    expect(laborLabel.closest("div")?.querySelector("svg")).toBeTruthy();
   });
 });
 
-describe("Work Folder dense outcome indexes (App Shell seam)", () => {
+describe("Work dense outcome index (App Shell seam)", () => {
   afterEach(() => cleanup());
 
-  it("shows a dense outcome list for a Work Folder URL", async () => {
+  it("does not render a Work Folder index surface at /work/<folder-slug>", async () => {
     const { screen } = renderAt("/work/labor-solutions");
     const main = screen.getByRole("main");
 
-    await expect.element(main.getByRole("heading", { name: /^Labor Solutions$/i })).toBeVisible();
+    await expect
+      .element(main.getByRole("heading", { name: /^Labor Solutions$/i }))
+      .not.toBeInTheDocument();
     await expect
       .element(main.getByText(/Cases in this group — what shipped and what changed\./i))
-      .toBeVisible();
-    await expect.element(main.getByRole("list", { name: /outcome index/i })).toBeVisible();
-    await expect.element(main.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
-    await expect.element(main.getByRole("link", { name: /Indicator Bank/i })).toBeVisible();
-    await expect.element(main.getByText(ENGAGE_CASE.outcomes[0]!.text)).toBeVisible();
-    await expect.element(main.getByText(INDICATOR_BANK_CASE.outcomes[0]!.text)).toBeVisible();
+      .not.toBeInTheDocument();
     await expect
-      .element(main.getByRole("link", { name: /Engage reporting.*Production/i }))
-      .toBeVisible();
+      .element(main.getByRole("list", { name: /outcome index/i }))
+      .not.toBeInTheDocument();
     await expect
-      .element(main.getByRole("link", { name: /Indicator Bank.*Production/i }))
-      .toBeVisible();
+      .element(main.getByRole("link", { name: /Engage reporting/i }))
+      .not.toBeInTheDocument();
     await expect
       .element(screen.getByText(/Work Folder · Labor Solutions \(stub\)/i))
       .not.toBeInTheDocument();
   });
 
-  it("shows a dense outcome list for Advance Auto Parts Internal Dossiers", async () => {
-    const { screen } = renderAt("/work/advance-auto-parts");
-    const main = screen.getByRole("main");
-
+  it("still deep-links Work Cases under a folder slug", async () => {
+    const { screen } = renderAt("/work/labor-solutions/engage-reporting");
     await expect
-      .element(main.getByRole("heading", { name: /^Advance Auto Parts$/i }))
-      .toBeVisible();
-    await expect.element(main.getByRole("list", { name: /outcome index/i })).toBeVisible();
-    await expect.element(main.getByText(/store KPI measurement UI/i)).toBeVisible();
-    await expect.element(main.getByText(/self-service ML model hosting/i)).toBeVisible();
-    await expect.element(main.getByText(/actual vs predicted/i)).toBeVisible();
-    await expect
-      .element(main.getByRole("link", { name: /Measurement Framework.*Production/i }))
-      .toBeVisible();
-    await expect
-      .element(main.getByRole("link", { name: /Model Deployment Framework.*Production/i }))
-      .toBeVisible();
-    await expect
-      .element(main.getByRole("link", { name: /Store Dashboard.*Production/i }))
+      .element(screen.getByRole("main").getByRole("heading", { name: /^Engage reporting$/i }))
       .toBeVisible();
   });
 
-  it("shows a Work-root dense outcome list grouped by Work Folder", async () => {
+  it("shows a Work-root dense outcome list grouped by Work Folder with framing lines", async () => {
     const { screen } = renderAt("/work");
     const main = screen.getByRole("main");
 
@@ -347,39 +336,37 @@ describe("Work Folder dense outcome indexes (App Shell seam)", () => {
       .element(main.getByText(/Here's the work — what shipped and what it changed\./i))
       .toBeVisible();
     await expect.element(main.getByText(/^Labor Solutions$/i)).toBeVisible();
+    await expect
+      .element(main.getByText(/Labor Solutions · Senior Frontend · reporting & survey product UI/i))
+      .toBeVisible();
+    await expect
+      .element(main.getByText(/Advance Auto Parts · Frontend Engineer · store KPI & ML ops/i))
+      .toBeVisible();
+    await expect.element(main.getByText(/Prototypes · Solo · public demos/i)).toBeVisible();
+    await expect.element(main.getByText(/Tools · Solo · browser-local utilities/i)).toBeVisible();
     await expect.element(main.getByText(/^Prototypes$/i)).toBeVisible();
     await expect.element(main.getByText(/^Tools$/i)).toBeVisible();
     await expect.element(main.getByRole("link", { name: /SupplyChain\+/i })).toBeVisible();
     await expect.element(main.getByRole("link", { name: /Snap2Paper/i })).toBeVisible();
+    await expect.element(main.getByText(/store KPI measurement UI/i)).toBeVisible();
+    await expect.element(main.getByText(ENGAGE_CASE.outcomes[0]!.text)).toBeVisible();
+    await expect.element(main.getByText(INDICATOR_BANK_CASE.outcomes[0]!.text)).toBeVisible();
     const rail = screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail).not.toHaveTextContent(/Context follows the active Mode/i);
     await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
   });
 
-  it("shows media thumbs on All work and Work Folder index rows when cases have media", async () => {
-    const expectRowMediaThumb = async (
-      screen: ReturnType<typeof renderAt>["screen"],
-      name: RegExp,
-    ) => {
-      const row = screen.getByRole("main").getByRole("link", { name });
-      await expect.element(row).toBeVisible();
-      const thumb = row.element().querySelector("img");
-      expect(thumb).toBeTruthy();
-      expect(thumb?.getAttribute("src")).toBeTruthy();
-      expect(thumb?.getAttribute("alt")).toBe("");
-      expect(thumb?.classList.contains("object-cover")).toBe(true);
-      expect(thumb?.classList.contains("object-left-top")).toBe(true);
-      return row;
-    };
-
-    const { screen: workScreen } = renderAt("/work");
-    await expectRowMediaThumb(workScreen, /SupplyChain\+.*Prototype/i);
-    cleanup();
-
-    const { screen: folderScreen } = renderAt("/work/labor-solutions");
-    const engageRow = await expectRowMediaThumb(folderScreen, /Engage reporting.*Production/i);
-    await expect.element(engageRow.getByText(ENGAGE_CASE.outcomes[0]!.text)).toBeVisible();
+  it("shows media thumbs on All work index rows when cases have media", async () => {
+    const { screen } = renderAt("/work");
+    const row = screen.getByRole("main").getByRole("link", { name: /SupplyChain\+.*Prototype/i });
+    await expect.element(row).toBeVisible();
+    const thumb = row.element().querySelector("img");
+    expect(thumb).toBeTruthy();
+    expect(thumb?.getAttribute("src")).toBeTruthy();
+    expect(thumb?.getAttribute("alt")).toBe("");
+    expect(thumb?.classList.contains("object-cover")).toBe(true);
+    expect(thumb?.classList.contains("object-left-top")).toBe(true);
   });
 
   it("omits a duplicate All work row from the left Work tree", async () => {
@@ -389,8 +376,8 @@ describe("Work Folder dense outcome indexes (App Shell seam)", () => {
     await expect.element(tree.getByRole("link", { name: /^All work$/i })).not.toBeInTheDocument();
   });
 
-  it("navigates to the Work Case URL when an index row is selected", async () => {
-    const { history, screen } = renderAt("/work/labor-solutions");
+  it("navigates to the Work Case URL when an All work index row is selected", async () => {
+    const { history, screen } = renderAt("/work");
 
     await screen
       .getByRole("main")
@@ -1388,27 +1375,41 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect.element(aboutSheet.getByText(/^Facts$/i)).toBeVisible();
   });
 
-  it("shows a header crumb for wayfinding", async () => {
+  it("shows Mode title only in the mobile header (no folder/case crumb trail)", async () => {
     await setMobileViewport();
     const { screen } = renderAt("/");
 
-    const crumb = screen.getByRole("navigation", { name: /breadcrumb/i });
-    await expect.element(crumb).toBeVisible();
-    await expect.element(crumb).toHaveTextContent(/About/i);
-    await expect.element(crumb).not.toHaveTextContent(/SupplyChain\+/i);
+    await expect
+      .element(screen.getByRole("banner").getByRole("heading", { name: /^About$/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("navigation", { name: /breadcrumb/i }))
+      .not.toBeInTheDocument();
+    await expect.element(screen.getByRole("banner")).not.toHaveTextContent(/SupplyChain\+/i);
 
     cleanup();
     const storefront = renderAt(SUPPLY_CHAIN_PATH);
-    const storefrontCrumb = storefront.screen.getByRole("navigation", { name: /breadcrumb/i });
-    await expect.element(storefrontCrumb).toHaveTextContent(/Prototypes/i);
-    await expect.element(storefrontCrumb).toHaveTextContent(/SupplyChain\+/i);
-    await expect.element(storefrontCrumb).toHaveTextContent(/Work/i);
+    await expect
+      .element(storefront.screen.getByRole("banner").getByRole("heading", { name: /^Work$/i }))
+      .toBeVisible();
+    await expect
+      .element(storefront.screen.getByRole("banner"))
+      .not.toHaveTextContent(/Prototypes/i);
+    await expect
+      .element(storefront.screen.getByRole("banner"))
+      .not.toHaveTextContent(/SupplyChain\+/i);
 
     cleanup();
     const dossier = renderAt("/work/labor-solutions/engage-reporting");
-    const dossierCrumb = dossier.screen.getByRole("navigation", { name: /breadcrumb/i });
-    await expect.element(dossierCrumb).toHaveTextContent(/Labor Solutions/i);
-    await expect.element(dossierCrumb).toHaveTextContent(/Engage reporting/i);
+    await expect
+      .element(dossier.screen.getByRole("banner").getByRole("heading", { name: /^Work$/i }))
+      .toBeVisible();
+    await expect
+      .element(dossier.screen.getByRole("banner"))
+      .not.toHaveTextContent(/Labor Solutions/i);
+    await expect
+      .element(dossier.screen.getByRole("banner"))
+      .not.toHaveTextContent(/Engage reporting/i);
   });
 
   it("has no Preview entry point on mobile Public Storefront or Internal Dossier", async () => {

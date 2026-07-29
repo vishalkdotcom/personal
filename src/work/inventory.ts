@@ -63,6 +63,8 @@ export type WorkCase = PublicStorefrontCase | InternalDossierCase;
 export type WorkFolder = {
   slug: string;
   title: string;
+  /** Claim-safe employer · role · context line for `/work` group headers. */
+  framing: string;
   cases: WorkCase[];
 };
 
@@ -70,6 +72,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
   {
     slug: "labor-solutions",
     title: "Labor Solutions",
+    framing: "Labor Solutions · Senior Frontend · reporting & survey product UI",
     cases: [
       {
         slug: "engage-reporting",
@@ -144,6 +147,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
   {
     slug: "advance-auto-parts",
     title: "Advance Auto Parts",
+    framing: "Advance Auto Parts · Frontend Engineer · store KPI & ML ops",
     cases: [
       {
         slug: "measurement-framework",
@@ -230,6 +234,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
   {
     slug: "prototypes",
     title: "Prototypes",
+    framing: "Prototypes · Solo · public demos",
     cases: [
       {
         slug: "supplychain-plus",
@@ -286,6 +291,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
   {
     slug: "tools",
     title: "Tools",
+    framing: "Tools · Solo · browser-local utilities",
     cases: [
       {
         slug: "snap2paper",
@@ -369,10 +375,6 @@ export const WORK_FOLDERS: WorkFolder[] = [
 /** Work-root dense outcome index (All work). */
 export function workRootHref(): string {
   return "/work";
-}
-
-export function workFolderHref(folderSlug: string): string {
-  return `/work/${folderSlug}`;
 }
 
 export function workCaseHref(folderSlug: string, caseSlug: string): string {

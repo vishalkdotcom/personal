@@ -10,29 +10,13 @@ import {
 import { InternalDossierStage } from "./internal-dossier-stage";
 import { StubStage } from "./stub-stage";
 import { WorkCaseNarrative } from "./work-case-narrative";
-import { WorkFolderIndex, WorkRootIndex } from "./work-outcome-index";
+import { WorkRootIndex } from "./work-outcome-index";
 
 export { AboutStage } from "./about-stage";
 export { ContactStage } from "./contact-stage";
 export { ResumeStage } from "./resume-stage";
 
 export const WorkRootStage: Component = () => <WorkRootIndex />;
-
-export const WorkFolderStage: Component = () => {
-  const params = useParams<{ folderSlug: string }>();
-  const folder = () => getWorkFolder(params.folderSlug);
-
-  return (
-    <Show
-      when={folder()}
-      fallback={
-        <StubStage label={`Work Folder · ${params.folderSlug}`} detail="Unknown Work Folder." />
-      }
-    >
-      {(active) => <WorkFolderIndex folder={active()} />}
-    </Show>
-  );
-};
 
 export const WorkCaseStage: Component = () => {
   const params = useParams<{ folderSlug: string; caseSlug: string }>();

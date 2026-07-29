@@ -2,23 +2,22 @@ import { useLocation } from "@solidjs/router";
 import { Show, createEffect, createSignal, type ParentComponent } from "solid-js";
 import { getWorkCaseFromPath } from "../work/inventory";
 import { ContextRail } from "./context-rail";
-import { shellCrumbForPath } from "./header-crumb";
 import { HireSignalChip } from "./hire-signal-chip";
 import { LeftChrome } from "./left-chrome";
+import { modeTitleForPath } from "./modes";
 
 const iconButtonClass =
   "grid size-[34px] shrink-0 place-items-center rounded-lg border border-border text-muted hover:bg-bg-hover hover:text-fg";
 
 /**
  * Mobile App Shell: single-column stage, ☰ IA drawer, ··· context sheet.
- * Live opens externally from the Context Rail (no in-shell Preview).
+ * Header: Mode title only (Live opens externally from the Context Rail).
  */
 export const MobileShell: ParentComponent = (props) => {
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = createSignal(false);
   const [sheetOpen, setSheetOpen] = createSignal(false);
 
-  const crumb = () => shellCrumbForPath(location.pathname);
   /** Work Case context is dense — full-screen sheet. Mode rails stay bottom sheets. */
   const sheetDense = () => getWorkCaseFromPath(location.pathname) !== undefined;
 
@@ -49,12 +48,9 @@ export const MobileShell: ParentComponent = (props) => {
         >
           ☰
         </button>
-        <nav class="min-w-0 flex-1" aria-label="Breadcrumb">
-          <div class="truncate text-xs font-semibold">{crumb().trail}</div>
-          <Show when={crumb().modeLabel !== crumb().trail}>
-            <div class="mt-0.5 text-[10px] text-faint">{crumb().modeLabel}</div>
-          </Show>
-        </nav>
+        <h1 class="m-0 min-w-0 flex-1 truncate text-xs font-semibold">
+          {modeTitleForPath(location.pathname)}
+        </h1>
         <button
           type="button"
           class={iconButtonClass}

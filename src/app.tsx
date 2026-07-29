@@ -8,7 +8,6 @@ import {
   ContactStage,
   ResumeStage,
   WorkCaseStage,
-  WorkFolderStage,
   WorkRootStage,
 } from "./stages/mode-stages";
 
@@ -28,7 +27,6 @@ export const AppShellRoutes = {
       <Route path="/resume" component={ResumeStage} />
       <Route path="/contact" component={ContactStage} />
       <Route path="/work" component={WorkRootStage} />
-      <Route path="/work/:folderSlug" component={WorkFolderStage} />
       <Route path="/work/:folderSlug/:caseSlug" component={WorkCaseStage} />
     </>
   ),
