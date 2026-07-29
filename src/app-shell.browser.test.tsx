@@ -517,18 +517,19 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(stage).not.toHaveTextContent(/redacted/i);
   });
 
-  it("keeps Preview disabled and omits Live without a public URL", async () => {
+  it("omits Live and Preview without a public URL", async () => {
     const { screen } = renderAt("/work/labor-solutions/engage-reporting");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
 
-    const previewChip = screen.getByRole("button", { name: /^Preview$/i });
-    await expect.element(previewChip).toBeVisible();
-    expect(previewChip.element().hasAttribute("disabled")).toBe(true);
+    await expect
+      .element(screen.getByRole("button", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
     await expect
       .element(screen.getByRole("dialog", { name: /^Preview$/i }))
       .not.toBeInTheDocument();
 
     await expect.element(rail.getByText(/^Live$/i)).not.toBeInTheDocument();
+    await expect.element(rail.getByRole("link", { name: /open live/i })).not.toBeInTheDocument();
     await expect.element(rail).not.toHaveTextContent(/Auth-walled · no public URL/i);
     await expect.element(rail.getByRole("link", { name: /https?:\/\//i })).not.toBeInTheDocument();
   });
@@ -633,18 +634,19 @@ describe("Internal Dossier Indicator Bank and Advance Auto Parts (App Shell seam
       await expect.element(stage).not.toHaveTextContent(/Public Storefront/i);
     });
 
-    it(`keeps Preview off and omits Live without a public URL for ${dossier.path}`, async () => {
+    it(`omits Live and Preview without a public URL for ${dossier.path}`, async () => {
       const { screen } = renderAt(dossier.path);
       const rail = screen.getByRole("complementary", { name: /^details$/i });
 
-      const previewChip = screen.getByRole("button", { name: /^Preview$/i });
-      await expect.element(previewChip).toBeVisible();
-      expect(previewChip.element().hasAttribute("disabled")).toBe(true);
+      await expect
+        .element(screen.getByRole("button", { name: /^Preview$/i }))
+        .not.toBeInTheDocument();
       await expect
         .element(screen.getByRole("dialog", { name: /^Preview$/i }))
         .not.toBeInTheDocument();
 
       await expect.element(rail.getByText(/^Live$/i)).not.toBeInTheDocument();
+      await expect.element(rail.getByRole("link", { name: /open live/i })).not.toBeInTheDocument();
       await expect.element(rail).not.toHaveTextContent(/Auth-walled · no public URL/i);
       await expect
         .element(rail.getByRole("link", { name: /https?:\/\//i }))
@@ -731,19 +733,20 @@ describe("Public Storefront SupplyChain+ (App Shell seam)", () => {
     expect(mediaIndex).toBeGreaterThan(outcomesIndex);
   });
 
-  it("shows Prototype badge and Live pointing at the honest public URL", async () => {
+  it("shows Prototype badge and primary Open live with muted host", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const stage = screen.getByRole("main");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
 
     await expect.element(stage.getByText(/^Prototype$/i)).toBeVisible();
-    await expect.element(rail.getByRole("link", { name: /sc-plus\.vercel\.app/i })).toBeVisible();
-    expect(
-      rail
-        .getByRole("link", { name: /sc-plus\.vercel\.app/i })
-        .element()
-        .getAttribute("href"),
-    ).toBe("https://sc-plus.vercel.app");
+    const openLive = rail.getByRole("link", { name: /open live/i });
+    await expect.element(openLive).toBeVisible();
+    expect(openLive.element().getAttribute("href")).toBe("https://sc-plus.vercel.app");
+    expect(openLive.element().getAttribute("target")).toBe("_blank");
+    await expect.element(rail).toHaveTextContent(/sc-plus\.vercel\.app/i);
+    await expect
+      .element(rail.getByRole("link", { name: /^sc-plus\.vercel\.app$/i }))
+      .not.toBeInTheDocument();
   });
 
   it("binds Context Rail Live/Role/Outcomes/Stack to SupplyChain+", async () => {
@@ -786,7 +789,7 @@ describe("Public Storefront SupplyChain+ (App Shell seam)", () => {
   });
 });
 
-describe("Public Storefront carousel and Preview (App Shell seam)", () => {
+describe("Public Storefront carousel and Live (App Shell seam)", () => {
   afterEach(() => cleanup());
 
   it("uses a stage carousel with wired inventory images for Public Storefront media", async () => {
@@ -802,51 +805,23 @@ describe("Public Storefront carousel and Preview (App Shell seam)", () => {
     await expect.element(carousel.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
   });
 
-  it("opens a Preview slide-over with Desktop/Mobile frames from the header chip", async () => {
-    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-
-    const previewChip = screen.getByRole("button", { name: /^Preview$/i });
-    await expect.element(previewChip).toBeVisible();
-    expect(previewChip.element().hasAttribute("disabled")).toBe(false);
-
-    await previewChip.click();
-    const dialog = screen.getByRole("dialog", { name: /^Preview$/i });
-    await expect.element(dialog).toBeVisible();
-    await expect.element(dialog.getByRole("button", { name: /^Desktop$/i })).toBeVisible();
-    await expect.element(dialog.getByRole("button", { name: /^Mobile$/i })).toBeVisible();
-    await expect.element(dialog).toHaveTextContent(/sc-plus\.vercel\.app/i);
-
-    await dialog.getByRole("button", { name: /^Mobile$/i }).click();
-    await expect.element(dialog).toHaveTextContent(/mobile/i);
-  });
-
-  it("keeps Preview disabled on Internal Dossier Work Cases", async () => {
-    const { screen } = renderAt("/work/labor-solutions/engage-reporting");
-
-    const previewChip = screen.getByRole("button", { name: /^Preview$/i });
-    await expect.element(previewChip).toBeVisible();
-    expect(previewChip.element().hasAttribute("disabled")).toBe(true);
-
+  it("has no Preview chip or Preview overlay on Public Storefront or Internal Dossier", async () => {
+    const storefront = renderAt(SUPPLY_CHAIN_PATH);
     await expect
-      .element(screen.getByRole("dialog", { name: /^Preview$/i }))
+      .element(storefront.screen.getByRole("button", { name: /^Preview$/i }))
       .not.toBeInTheDocument();
-  });
-
-  it("closes Preview without losing the active Work Case", async () => {
-    const { history, screen } = renderAt(SUPPLY_CHAIN_PATH);
-
-    await screen.getByRole("button", { name: /^Preview$/i }).click();
-    const dialog = screen.getByRole("dialog", { name: /^Preview$/i });
-    await expect.element(dialog).toBeVisible();
-
-    await dialog.getByRole("button", { name: /close preview/i }).click();
     await expect
-      .element(screen.getByRole("dialog", { name: /^Preview$/i }))
+      .element(storefront.screen.getByRole("dialog", { name: /^Preview$/i }))
       .not.toBeInTheDocument();
-    expect(history.get()).toBe(SUPPLY_CHAIN_PATH);
+
+    cleanup();
+    const dossier = renderAt("/work/labor-solutions/engage-reporting");
     await expect
-      .element(screen.getByRole("main").getByRole("heading", { name: /^SupplyChain\+$/i }))
-      .toBeVisible();
+      .element(dossier.screen.getByRole("button", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
+    await expect
+      .element(dossier.screen.getByRole("dialog", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
   });
 });
 
@@ -911,12 +886,17 @@ describe("Public Storefront QGenAI and Tools (App Shell seam)", () => {
       await expect.element(stage.getByRole("article", { name: storefront.article })).toBeVisible();
       await expect.element(stage).not.toHaveTextContent(/Work Case · .* \(stub\)/i);
 
-      const liveLink = rail.getByRole("link", { name: storefront.liveLabel });
-      await expect.element(liveLink).toBeVisible();
-      expect(liveLink.element().getAttribute("href")).toBe(storefront.liveHref);
+      const openLive = rail.getByRole("link", { name: /open live/i });
+      await expect.element(openLive).toBeVisible();
+      expect(openLive.element().getAttribute("href")).toBe(storefront.liveHref);
+      expect(openLive.element().getAttribute("target")).toBe("_blank");
+      await expect.element(rail).toHaveTextContent(storefront.liveLabel);
+      await expect
+        .element(screen.getByRole("button", { name: /^Preview$/i }))
+        .not.toBeInTheDocument();
     });
 
-    it(`keeps wired carousel + Preview on for ${storefront.path}`, async () => {
+    it(`keeps wired carousel without Preview for ${storefront.path}`, async () => {
       const { screen } = renderAt(storefront.path);
       const stage = screen.getByRole("main");
       const carousel = await expectWiredCaseMedia(stage, /Shot 1/i);
@@ -925,14 +905,12 @@ describe("Public Storefront QGenAI and Tools (App Shell seam)", () => {
       await carousel.getByRole("button", { name: /next/i }).click();
       await expect.element(carousel).toHaveTextContent(/Shot 2/i);
 
-      const previewChip = screen.getByRole("button", { name: /^Preview$/i });
-      await expect.element(previewChip).toBeVisible();
-      expect(previewChip.element().hasAttribute("disabled")).toBe(false);
-
-      await previewChip.click();
-      const dialog = screen.getByRole("dialog", { name: /^Preview$/i });
-      await expect.element(dialog).toBeVisible();
-      await expect.element(dialog).toHaveTextContent(storefront.liveLabel);
+      await expect
+        .element(screen.getByRole("button", { name: /^Preview$/i }))
+        .not.toBeInTheDocument();
+      await expect
+        .element(screen.getByRole("dialog", { name: /^Preview$/i }))
+        .not.toBeInTheDocument();
     });
 
     it(`surfaces Public Claims in center and Context Rail for ${storefront.path}`, async () => {
@@ -1301,6 +1279,7 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect.element(sheet).toBeVisible();
     expect(sheet.element().getAttribute("data-dense")).toBe("");
     await expect.element(sheet.getByText(/^Live$/i)).toBeVisible();
+    await expect.element(sheet.getByRole("link", { name: /open live/i })).toBeVisible();
     await expect.element(sheet.getByText(/^Role$/i)).toBeVisible();
     await expect.element(sheet.getByText(/^Outcomes$/i)).toBeVisible();
     await expect.element(sheet.getByText(/^Stack$/i)).toBeVisible();
@@ -1339,26 +1318,22 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect.element(dossierCrumb).toHaveTextContent(/Engage reporting/i);
   });
 
-  it("opens Public Storefront Preview as a full-screen overlay and keeps Internal Dossier Preview off", async () => {
+  it("has no Preview entry point on mobile Public Storefront or Internal Dossier", async () => {
     await setMobileViewport();
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
 
-    const previewChip = screen.getByRole("button", { name: /^Preview$/i });
-    await expect.element(previewChip).toBeVisible();
-    expect(previewChip.element().hasAttribute("disabled")).toBe(false);
-
-    await previewChip.click();
-    const dialog = screen.getByRole("dialog", { name: /^Preview$/i });
-    await expect.element(dialog).toBeVisible();
-    expect(dialog.element().getAttribute("data-preview-layout")).toBe("fullscreen");
-    await expect.element(dialog.getByRole("button", { name: /^Desktop$/i })).toBeVisible();
-    await expect.element(dialog.getByRole("button", { name: /^Mobile$/i })).toBeVisible();
+    await expect
+      .element(screen.getByRole("button", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
+    await expect
+      .element(screen.getByRole("dialog", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
 
     cleanup();
     const dossier = renderAt("/work/labor-solutions/engage-reporting");
-    const dossierPreview = dossier.screen.getByRole("button", { name: /^Preview$/i });
-    await expect.element(dossierPreview).toBeVisible();
-    expect(dossierPreview.element().hasAttribute("disabled")).toBe(true);
+    await expect
+      .element(dossier.screen.getByRole("button", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
     await expect
       .element(dossier.screen.getByRole("dialog", { name: /^Preview$/i }))
       .not.toBeInTheDocument();

@@ -111,10 +111,11 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
             <h2 id="rail-live" class={sectionHeadingClass}>
               Live
             </h2>
-            <p class={sectionBodyClass}>
-              <a href={live()} class={linkClass} target="_blank" rel="noreferrer">
-                {live().replace(/^https?:\/\//i, "")}
-              </a>
+            <a href={live()} class={`${ctaClass} mt-2`} target="_blank" rel="noreferrer">
+              Open live ↗
+            </a>
+            <p class="m-0 mt-1.5 text-[12px] leading-[1.45] text-faint">
+              {live().replace(/^https?:\/\//i, "")}
             </p>
           </section>
         )}

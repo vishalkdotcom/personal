@@ -1,29 +1,23 @@
 import { useLocation } from "@solidjs/router";
 import { Show, createEffect, createSignal, type ParentComponent } from "solid-js";
-import { getWorkCaseFromPath, isPreviewEnabledForPath, workCaseLiveUrl } from "../work/inventory";
+import { getWorkCaseFromPath } from "../work/inventory";
 import { ContextRail } from "./context-rail";
 import { shellCrumbForPath } from "./header-crumb";
 import { HireSignalChip } from "./hire-signal-chip";
 import { LeftChrome } from "./left-chrome";
-import { PreviewSlideOver } from "./preview-slide-over";
 
 const iconButtonClass =
-  "grid size-[34px] shrink-0 place-items-center rounded-lg border border-border text-muted hover:bg-bg-hover hover:text-fg disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-muted";
-
-const iconButtonAccentClass =
-  "grid size-[34px] shrink-0 place-items-center rounded-lg border border-transparent bg-accent/14 text-accent hover:bg-accent/22 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-accent/14";
+  "grid size-[34px] shrink-0 place-items-center rounded-lg border border-border text-muted hover:bg-bg-hover hover:text-fg";
 
 /**
- * Mobile App Shell: single-column stage, ☰ IA drawer, ··· context sheet, full-screen Preview.
+ * Mobile App Shell: single-column stage, ☰ IA drawer, ··· context sheet.
+ * Live opens externally from the Context Rail (no in-shell Preview).
  */
 export const MobileShell: ParentComponent = (props) => {
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = createSignal(false);
   const [sheetOpen, setSheetOpen] = createSignal(false);
-  const [previewOpen, setPreviewOpen] = createSignal(false);
 
-  const previewEnabled = () => isPreviewEnabledForPath(location.pathname);
-  const activeCase = () => getWorkCaseFromPath(location.pathname);
   const crumb = () => shellCrumbForPath(location.pathname);
   /** Work Case context is dense — full-screen sheet. Mode rails stay bottom sheets. */
   const sheetDense = () => getWorkCaseFromPath(location.pathname) !== undefined;
@@ -31,7 +25,6 @@ export const MobileShell: ParentComponent = (props) => {
   const closeOverlays = () => {
     setDrawerOpen(false);
     setSheetOpen(false);
-    setPreviewOpen(false);
   };
 
   createEffect(
@@ -62,21 +55,6 @@ export const MobileShell: ParentComponent = (props) => {
             <div class="mt-0.5 text-[10px] text-faint">{crumb().modeLabel}</div>
           </Show>
         </nav>
-        <button
-          type="button"
-          class={previewEnabled() ? iconButtonAccentClass : iconButtonClass}
-          aria-label="Preview"
-          aria-pressed={previewOpen() ? "true" : "false"}
-          disabled={!previewEnabled()}
-          title={previewEnabled() ? "Preview" : "No public preview"}
-          onClick={() => {
-            if (!previewEnabled()) return;
-            closeOverlays();
-            setPreviewOpen(true);
-          }}
-        >
-          ▣
-        </button>
         <button
           type="button"
           class={iconButtonClass}
@@ -138,20 +116,6 @@ export const MobileShell: ParentComponent = (props) => {
           </Show>
           <ContextRail />
         </aside>
-      </Show>
-
-      <Show when={previewOpen() && previewEnabled() ? activeCase() : undefined}>
-        {(workCase) => (
-          <Show when={workCaseLiveUrl(workCase())}>
-            {(live) => (
-              <PreviewSlideOver
-                live={live()}
-                layout="fullscreen"
-                onClose={() => setPreviewOpen(false)}
-              />
-            )}
-          </Show>
-        )}
       </Show>
     </div>
   );

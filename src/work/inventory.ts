@@ -350,12 +350,3 @@ export function asInternalDossier(workCase: WorkCase): InternalDossierCase | und
 export function asPublicStorefront(workCase: WorkCase): PublicStorefrontCase | undefined {
   return workCase.surface === "public-storefront" ? workCase : undefined;
 }
-
-/**
- * Desktop Preview header chip — Public Storefront with an honest HTTP Live URL only.
- * Missing Live and Internal Dossiers stay disabled.
- */
-export function isPreviewEnabledForPath(pathname: string): boolean {
-  const workCase = getWorkCaseFromPath(pathname);
-  return workCase?.surface === "public-storefront" && isHttpLiveUrl(workCase.live);
-}

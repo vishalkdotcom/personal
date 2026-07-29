@@ -1,35 +1,22 @@
 import { useLocation } from "@solidjs/router";
-import { Show, createEffect, createSignal, type ParentComponent } from "solid-js";
-import { getWorkCaseFromPath, isPreviewEnabledForPath, workCaseLiveUrl } from "../work/inventory";
+import { Show, createSignal, type ParentComponent } from "solid-js";
 import { ContextRail } from "./context-rail";
 import { MOBILE_SHELL_QUERY, createMediaQuery } from "./create-media-query";
 import { LeftChrome } from "./left-chrome";
 import { MobileShell } from "./mobile-shell";
 import { modeTitleForPath } from "./modes";
-import { PreviewSlideOver } from "./preview-slide-over";
 
 const shellChipClass =
-  "rounded-md border border-border bg-bg-deep px-2.5 py-[5px] text-xs leading-none text-muted hover:bg-bg-hover hover:text-fg aria-pressed:bg-bg-active aria-pressed:text-fg disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-bg-deep disabled:hover:text-muted";
+  "rounded-md border border-border bg-bg-deep px-2.5 py-[5px] text-xs leading-none text-muted hover:bg-bg-hover hover:text-fg aria-pressed:bg-bg-active aria-pressed:text-fg";
 
 /**
  * Desktop Triptych Dock: left IA · center stage · Context Rail.
- * Header hybrid A: Preview (Public Storefront only) + pane collapse chips.
+ * Header: Mode title + pane collapse chips (Live lives in the Context Rail).
  */
 const DesktopTriptych: ParentComponent = (props) => {
   const location = useLocation();
   const [leftCollapsed, setLeftCollapsed] = createSignal(false);
   const [rightCollapsed, setRightCollapsed] = createSignal(false);
-  const [previewOpen, setPreviewOpen] = createSignal(false);
-
-  const previewEnabled = () => isPreviewEnabledForPath(location.pathname);
-  const activeCase = () => getWorkCaseFromPath(location.pathname);
-
-  createEffect(
-    () => location.pathname,
-    () => {
-      setPreviewOpen(false);
-    },
-  );
 
   const gridColumns = () =>
     [leftCollapsed() ? "48px" : "252px", "minmax(0, 1fr)", rightCollapsed() ? "0fr" : "288px"].join(
@@ -42,7 +29,6 @@ const DesktopTriptych: ParentComponent = (props) => {
       style={{ "grid-template-columns": gridColumns() }}
       data-left-collapsed={leftCollapsed() ? "" : undefined}
       data-right-collapsed={rightCollapsed() ? "" : undefined}
-      data-preview-open={previewOpen() ? "" : undefined}
       data-shell="desktop"
     >
       <aside
@@ -56,19 +42,6 @@ const DesktopTriptych: ParentComponent = (props) => {
         <header class="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-2.5">
           <h1 class="m-0 text-[13.5px] font-semibold">{modeTitleForPath(location.pathname)}</h1>
           <div class="flex items-center gap-1.5">
-            <button
-              type="button"
-              class={shellChipClass}
-              aria-pressed={previewOpen() ? "true" : "false"}
-              disabled={!previewEnabled()}
-              title={previewEnabled() ? "Preview" : "No public preview"}
-              onClick={() => {
-                if (!previewEnabled()) return;
-                setPreviewOpen((value) => !value);
-              }}
-            >
-              Preview
-            </button>
             <button
               type="button"
               class={shellChipClass}
@@ -95,13 +68,6 @@ const DesktopTriptych: ParentComponent = (props) => {
           <main class="vk-scroll vk-stage h-full min-w-0 overflow-auto bg-bg-panel" id="stage">
             {props.children}
           </main>
-          <Show when={previewOpen() && previewEnabled() ? activeCase() : undefined}>
-            {(workCase) => (
-              <Show when={workCaseLiveUrl(workCase())}>
-                {(live) => <PreviewSlideOver live={live()} onClose={() => setPreviewOpen(false)} />}
-              </Show>
-            )}
-          </Show>
         </div>
       </div>
 
