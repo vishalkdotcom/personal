@@ -2,30 +2,41 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-describe("App Shell stage rhythm and rail modules (style contract)", () => {
-  const css = () => readFileSync(resolve(process.cwd(), "src/styles.css"), "utf8");
+function read(rel: string): string {
+  return readFileSync(resolve(process.cwd(), rel), "utf8");
+}
 
-  it("defines bordered Context Rail module chrome", () => {
-    const source = css();
-    expect(source).toMatch(/\.vk-rail-module\s*\{[^}]*border:\s*1px\s+solid\s+var\(--vk-border\)/s);
-    expect(source).toMatch(/\.vk-rail-module\s*\{[^}]*border-radius:\s*8px/s);
-    expect(source).toMatch(/\.vk-rail-module\s*\{[^}]*padding:\s*12px/s);
+describe("App Shell stage rhythm and rail modules (component / utility contract)", () => {
+  it("authors bordered Context Rail modules as Tailwind utilities on RailModule", () => {
+    const source = read("src/shell/rail-module.tsx");
+    expect(source).toContain("border-border");
+    expect(source).toContain("rounded-lg");
+    expect(source).toContain("bg-bg-panel");
+    expect(source).toContain("p-3");
+    expect(source).toContain('data-rail-module=""');
   });
 
-  it("defines locked ~28–32px stage titles and generous stage padding", () => {
-    const source = css();
-    expect(source).toMatch(/\.vk-stage\s*\{[^}]*padding:\s*28px\s+36px\s+100px/s);
-    expect(source).toMatch(/\.vk-stage-title\s*\{[^}]*font-size:\s*28px/s);
-    expect(source).toMatch(/\.vk-stage-title-lg\s*\{[^}]*font-size:\s*32px/s);
+  it("authors locked ~28–32px stage titles and generous stage padding as utilities", () => {
+    const title = read("src/shell/stage-title.tsx");
+    const shell = read("src/shell/stage-shell.tsx");
+    expect(title).toContain("text-[28px]");
+    expect(title).toContain("text-[32px]");
+    expect(shell).toContain("p-[28px_36px_100px]");
+    expect(shell).toContain("p-[20px_16px_64px]");
   });
 
-  it("defines Resume bleed margins that cancel desktop and mobile stage padding", () => {
-    const source = css();
-    expect(source).toMatch(
-      /\.vk-stage\s*>\s*\.vk-stage-bleed\s*\{[^}]*margin:\s*-28px\s+-36px\s+-100px/s,
-    );
-    expect(source).toMatch(
-      /\.vk-stage-mobile\s*>\s*\.vk-stage-bleed\s*\{[^}]*margin:\s*-20px\s+-16px\s+-64px/s,
-    );
+  it("authors Resume bleed margins that cancel desktop and mobile stage padding", () => {
+    const shell = read("src/shell/stage-shell.tsx");
+    expect(shell).toContain("in-[[data-stage=desktop]]:m-[-28px_-36px_-100px]");
+    expect(shell).toContain("in-[[data-stage=mobile]]:m-[-20px_-16px_-64px]");
+  });
+
+  it("keeps presentational vk-* globals out of styles.css except the scrollbar exception", () => {
+    const css = read("src/styles.css");
+    expect(css).toMatch(/\.vk-scroll\s*\{/);
+    expect(css).not.toMatch(/\.vk-rail-module\s*\{/);
+    expect(css).not.toMatch(/\.vk-stage\s*\{/);
+    expect(css).not.toMatch(/\.vk-stage-title\s*\{/);
+    expect(css).not.toMatch(/\.vk-resume-viewer\s*\{/);
   });
 });

@@ -44,8 +44,8 @@ export default defineConfig({
     passWithNoTests: true,
     projects: [
       {
-        // Vitest projects do not inherit root Vite config — restate Solid wiring.
-        plugins: [solid()],
+        // Vitest projects do not inherit root Vite config — restate Solid + Tailwind wiring.
+        plugins: [solid(), tailwindcss()],
         resolve: {
           dedupe: [...solidDedupe],
         },

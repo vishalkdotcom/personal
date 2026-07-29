@@ -1,4 +1,5 @@
 import { For, Show, type Component, type ParentComponent } from "solid-js";
+import { StageTitle } from "../shell/stage-title";
 import type {
   WorkArtifact,
   WorkBadge,
@@ -34,7 +35,7 @@ export const WorkCaseHeader: Component<WorkCaseHeaderProps> = (props) => (
   <>
     <span class={workCaseBadgeClass(props.workCase.badge)}>{props.workCase.badge}</span>
     <p class="mb-2 mt-2 text-[11px] tracking-[0.12em] text-faint uppercase">{props.folder.title}</p>
-    <h1 class="vk-stage-title">{props.workCase.title}</h1>
+    <StageTitle>{props.workCase.title}</StageTitle>
     <p
       class={
         props.ledeClass ??

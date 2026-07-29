@@ -22,6 +22,8 @@
   --color-ok: var(--vk-ok);
   --color-warn: var(--vk-warn);
   --color-warn-soft: var(--vk-warn-soft);
+  --color-resume-well: var(--vk-resume-well, var(--vk-bg-hover));
+  --shadow-resume: 0 16px 48px var(--vk-resume-shadow);
 }
 
 /* data-theme FOUC token bridge — values only; no component/BEM rules */
@@ -88,6 +90,7 @@
 /*
  * App Shell scroll chrome — webkit scrollbar pseudos cannot be authored as
  * Tailwind utilities on the pane; keep this next to the FOUC token bridge.
+ * Sole presentational `vk-*` exception (ADR-0001 / residual-restore ticket 10).
  */
 .vk-scroll {
   scrollbar-width: thin;
@@ -114,112 +117,4 @@
   background-color: var(--vk-bg-hover);
   border: 2px solid transparent;
   background-clip: content-box;
-}
-
-/*
- * Locked shell rhythm / inspector modules (shell-round-4 / 6 / 9).
- * Authored here so stage padding and rail chrome stay token-backed.
- */
-.vk-rail-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.vk-rail-module {
-  margin: 0;
-  border: 1px solid var(--vk-border);
-  border-radius: 8px;
-  background: var(--vk-bg-panel);
-  padding: 12px;
-}
-
-.vk-stage {
-  padding: 28px 36px 100px;
-}
-
-.vk-stage-mobile {
-  padding: 20px 16px 64px;
-}
-
-/* Full-bleed child (Resume PDF) — margins cancel the parent stage padding tokens. */
-.vk-stage-bleed {
-  display: flex;
-  min-height: 0;
-  flex-direction: column;
-}
-
-.vk-stage > .vk-stage-bleed {
-  margin: -28px -36px -100px;
-  height: calc(100% + 128px);
-}
-
-.vk-stage-mobile > .vk-stage-bleed {
-  margin: -20px -16px -64px;
-  height: calc(100% + 84px);
-}
-
-/* Framed Resume PDF viewer surround (shell-round-7 B). */
-.vk-resume-viewer {
-  display: flex;
-  min-height: 0;
-  flex: 1;
-  flex-direction: column;
-  overflow: auto;
-  background: var(--vk-resume-well, var(--vk-bg-hover));
-  border-top: 1px solid var(--vk-border);
-}
-
-.vk-resume-toolbar {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  border-bottom: 1px solid var(--vk-border);
-  background: var(--vk-bg-deep);
-  padding: 8px 12px;
-}
-
-.vk-resume-filename {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--vk-muted);
-}
-
-.vk-resume-frame {
-  display: flex;
-  width: min(720px, calc(100% - 32px));
-  min-height: 480px;
-  flex: 1 1 auto;
-  flex-direction: column;
-  margin: 16px auto;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--vk-bg-panel);
-  box-shadow: 0 16px 48px var(--vk-resume-shadow);
-}
-
-.vk-resume-embed {
-  width: 100%;
-  min-height: 0;
-  flex: 1;
-  height: 100%;
-  border: 0;
-  background: var(--vk-bg-panel);
-}
-
-.vk-stage-title {
-  margin: 0 0 10px;
-  font-size: 28px;
-  font-weight: 650;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-}
-
-.vk-stage-title-lg {
-  margin-bottom: 12px;
-  font-size: 32px;
-  letter-spacing: -0.035em;
-  line-height: 1.1;
 }

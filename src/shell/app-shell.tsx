@@ -5,6 +5,8 @@ import { MOBILE_SHELL_QUERY, createMediaQuery } from "./create-media-query";
 import { LeftChrome } from "./left-chrome";
 import { MobileShell } from "./mobile-shell";
 import { modeTitleForPath } from "./modes";
+import { SCROLL_PANE_CLASS } from "./scroll-pane";
+import { StageShell } from "./stage-shell";
 
 const shellChipClass =
   "rounded-md border border-border bg-bg-deep px-2.5 py-[5px] text-xs leading-none text-muted hover:bg-bg-hover hover:text-fg aria-pressed:bg-bg-active aria-pressed:text-fg";
@@ -65,14 +67,14 @@ const DesktopTriptych: ParentComponent = (props) => {
           </div>
         </header>
         <div class="relative min-h-0 min-w-0 flex-1 overflow-hidden">
-          <main class="vk-scroll vk-stage h-full min-w-0 overflow-auto bg-bg-panel" id="stage">
+          <StageShell density="desktop" class="h-full min-w-0 overflow-auto bg-bg-panel">
             {props.children}
-          </main>
+          </StageShell>
         </div>
       </div>
 
       <aside
-        class="vk-scroll min-w-0 overflow-auto border-l border-border bg-bg-deep p-[12px_10px] transition-[opacity,padding] duration-[160ms] ease-shell group-data-[right-collapsed]/shell:pointer-events-none group-data-[right-collapsed]/shell:overflow-hidden group-data-[right-collapsed]/shell:border-none group-data-[right-collapsed]/shell:p-0 group-data-[right-collapsed]/shell:opacity-0"
+        class={`${SCROLL_PANE_CLASS} min-w-0 overflow-auto border-l border-border bg-bg-deep p-[12px_10px] transition-[opacity,padding] duration-[160ms] ease-shell group-data-[right-collapsed]/shell:pointer-events-none group-data-[right-collapsed]/shell:overflow-hidden group-data-[right-collapsed]/shell:border-none group-data-[right-collapsed]/shell:p-0 group-data-[right-collapsed]/shell:opacity-0`}
         aria-label="Details"
         aria-hidden={rightCollapsed() ? "true" : "false"}
       >

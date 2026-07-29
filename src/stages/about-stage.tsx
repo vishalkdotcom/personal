@@ -7,6 +7,7 @@ import {
   ABOUT_SELECTED_WORK,
   ABOUT_SKILLS,
 } from "../about/content";
+import { StageTitle } from "../shell/stage-title";
 import { getWorkCase, getWorkFolder, workCaseHref, workRootHref } from "../work/inventory";
 
 /** Soft-panel thumb plates from about-densify-locked (decorative, not case masters). */
@@ -70,7 +71,7 @@ const SelectedWorkPeek: Component<{ view: SelectedWorkView }> = (props) => (
 export const AboutStage: Component = () => (
   <article aria-label="About">
     <p class="mb-2 mt-0 text-[11px] tracking-[0.12em] text-faint uppercase">About</p>
-    <h1 class="vk-stage-title vk-stage-title-lg">{ABOUT_NAME}</h1>
+    <StageTitle size="lg">{ABOUT_NAME}</StageTitle>
     <p class="m-0 mb-5.5 text-[13px] leading-normal text-muted">{ABOUT_META}</p>
     <p class="m-0 mb-[18px] max-w-[48ch] text-base leading-[1.55] text-muted">{ABOUT_PITCH}</p>
     <ul

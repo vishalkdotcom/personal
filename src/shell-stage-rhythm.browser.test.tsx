@@ -3,7 +3,10 @@ import { createMemoryHistory, MemoryRouter } from "@solidjs/router";
 import { afterEach, describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
 import { AppShellRoutes } from "./app";
+import { RAIL_MODULE_CLASS } from "./shell/rail-module";
 import { setHireSignalEnabledForTests } from "./shell/hire-signal";
+import { STAGE_SHELL_DESKTOP_CLASS } from "./shell/stage-shell";
+import { STAGE_TITLE_CLASS, STAGE_TITLE_LG_CLASS } from "./shell/stage-title";
 import { workCaseHref } from "./work/inventory";
 
 const SUPPLY_CHAIN_PATH = workCaseHref("prototypes", "supplychain-plus");
@@ -20,13 +23,17 @@ function renderAt(path: string) {
 }
 
 function railModules(rail: Element): Element[] {
-  return [...rail.querySelectorAll(":scope > .vk-rail-stack > section.vk-rail-module")];
+  return [...rail.querySelectorAll(":scope > [data-rail-stack] > section[data-rail-module]")];
 }
 
 function stageTitle(stage: Element, name: RegExp): Element {
   const heading = [...stage.querySelectorAll("h1")].find((el) => name.test(el.textContent ?? ""));
   expect(heading, `expected stage h1 matching ${name}`).toBeTruthy();
   return heading!;
+}
+
+function hasAllClasses(el: Element, classString: string): boolean {
+  return classString.split(/\s+/).every((token) => el.classList.contains(token));
 }
 
 describe("Context Rail panels and stage rhythm (App Shell seam)", () => {
@@ -46,7 +53,7 @@ describe("Context Rail panels and stage rhythm (App Shell seam)", () => {
       await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
       const hire = rail.element().querySelector("#rail-hire-signal")?.closest("section");
       expect(hire, `expected soft Hire Signal panel on ${path}`).toBeTruthy();
-      expect(hire!.classList.contains("vk-rail-module")).toBe(false);
+      expect(hire!.hasAttribute("data-rail-module")).toBe(false);
       expect(hire!.className).toMatch(/bg-accent-soft/);
 
       const modules = railModules(rail.element());
@@ -54,7 +61,7 @@ describe("Context Rail panels and stage rhythm (App Shell seam)", () => {
       const minModules = path === "/resume" || path === "/contact" ? 1 : 2;
       expect(modules.length, `expected rail modules on ${path}`).toBeGreaterThanOrEqual(minModules);
       for (const mod of modules) {
-        expect(mod.classList.contains("vk-rail-module")).toBe(true);
+        expect(hasAllClasses(mod, RAIL_MODULE_CLASS)).toBe(true);
       }
       unmount();
       cleanup();
@@ -65,35 +72,38 @@ describe("Context Rail panels and stage rhythm (App Shell seam)", () => {
     {
       const { screen, unmount } = renderAt("/");
       const title = stageTitle(screen.getByRole("main").element(), /^Vishal Kumar$/i);
-      expect(title.classList.contains("vk-stage-title")).toBe(true);
-      expect(title.classList.contains("vk-stage-title-lg")).toBe(true);
+      expect(hasAllClasses(title, STAGE_TITLE_CLASS)).toBe(true);
+      expect(hasAllClasses(title, STAGE_TITLE_LG_CLASS)).toBe(true);
       unmount();
       cleanup();
     }
     {
       const { screen, unmount } = renderAt(SUPPLY_CHAIN_PATH);
       const title = stageTitle(screen.getByRole("main").element(), /^SupplyChain\+$/i);
-      expect(title.classList.contains("vk-stage-title")).toBe(true);
+      expect(hasAllClasses(title, STAGE_TITLE_CLASS)).toBe(true);
       unmount();
       cleanup();
     }
     {
       const { screen } = renderAt("/contact");
       const title = stageTitle(screen.getByRole("main").element(), /^Get in touch$/i);
-      expect(title.classList.contains("vk-stage-title")).toBe(true);
+      expect(hasAllClasses(title, STAGE_TITLE_CLASS)).toBe(true);
     }
   });
 
-  it("marks the desktop stage with the generous rhythm surface class", async () => {
+  it("marks the desktop stage with the generous rhythm surface utilities", async () => {
     const { screen } = renderAt("/");
-    expect(screen.getByRole("main").element().classList.contains("vk-stage")).toBe(true);
+    const stage = screen.getByRole("main").element();
+    expect(stage.getAttribute("data-stage")).toBe("desktop");
+    expect(hasAllClasses(stage, STAGE_SHELL_DESKTOP_CLASS)).toBe(true);
   });
 
   it("bleeds the Resume Surface against the locked stage padding tokens", async () => {
     const { screen } = renderAt("/resume");
     const stage = screen.getByRole("main").element();
-    const surface = stage.querySelector(".vk-stage-bleed");
+    const surface = stage.querySelector("[data-stage-bleed]");
     expect(surface).toBeTruthy();
     expect(stage.contains(surface)).toBe(true);
+    expect(stage.getAttribute("data-stage")).toBe("desktop");
   });
 });

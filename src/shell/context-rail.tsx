@@ -12,6 +12,7 @@ import {
 import { OutcomeLeadLabel } from "../work/outcome-lead-label";
 import { modeForPath } from "./modes";
 import { isHireSignalEnabled } from "./hire-signal";
+import { RailModule, RailStack } from "./rail-module";
 
 const sectionHeadingClass = "m-0 text-[11px] font-[650] tracking-[0.06em] text-faint uppercase";
 
@@ -113,12 +114,12 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
   };
 
   return (
-    <div class="vk-rail-stack">
+    <RailStack>
       <HireSignalPanel />
 
       <Show when={liveUrl()}>
         {(live) => (
-          <section class="vk-rail-module" aria-labelledby="rail-live">
+          <RailModule aria-labelledby="rail-live">
             <h2 id="rail-live" class={sectionHeadingClass}>
               Live
             </h2>
@@ -128,18 +129,18 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
             <p class="m-0 mt-1.5 text-[12px] leading-[1.45] text-faint">
               {live().replace(/^https?:\/\//i, "")}
             </p>
-          </section>
+          </RailModule>
         )}
       </Show>
 
-      <section class="vk-rail-module" aria-labelledby="rail-role">
+      <RailModule aria-labelledby="rail-role">
         <h2 id="rail-role" class={sectionHeadingClass}>
           Role
         </h2>
         <p class={sectionBodyClass}>{props.workCase.role}</p>
-      </section>
+      </RailModule>
 
-      <section class="vk-rail-module" aria-labelledby="rail-outcomes">
+      <RailModule aria-labelledby="rail-outcomes">
         <h2 id="rail-outcomes" class={sectionHeadingClass}>
           Outcomes
         </h2>
@@ -156,9 +157,9 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
             )}
           </For>
         </ul>
-      </section>
+      </RailModule>
 
-      <section class="vk-rail-module" aria-labelledby="rail-stack">
+      <RailModule aria-labelledby="rail-stack">
         <h2 id="rail-stack" class={sectionHeadingClass}>
           Stack
         </h2>
@@ -169,17 +170,17 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
             )}
           </For>
         </ul>
-      </section>
-    </div>
+      </RailModule>
+    </RailStack>
   );
 };
 
 /** About Mode rail: Hire Signal soft panel → Facts → Elsewhere (shell-round-9 A). */
 const AboutContext: Component = () => (
-  <div class="vk-rail-stack">
+  <RailStack>
     <HireSignalPanel />
 
-    <section class="vk-rail-module" aria-labelledby="rail-facts">
+    <RailModule aria-labelledby="rail-facts">
       <h2 id="rail-facts" class={sectionHeadingClass}>
         Facts
       </h2>
@@ -193,50 +194,50 @@ const AboutContext: Component = () => (
           )}
         </For>
       </dl>
-    </section>
+    </RailModule>
 
-    <section class="vk-rail-module" aria-labelledby="rail-elsewhere">
+    <RailModule aria-labelledby="rail-elsewhere">
       <h2 id="rail-elsewhere" class={sectionHeadingClass}>
         Elsewhere
       </h2>
       <RailLinkList links={ABOUT_ELSEWHERE} />
-    </section>
-  </div>
+    </RailModule>
+  </RailStack>
 );
 
 /** Resume Mode thin rail: Hire Signal soft panel → Links (PDF download + elsewhere). */
 const ResumeContext: Component = () => (
-  <div class="vk-rail-stack">
+  <RailStack>
     <HireSignalPanel />
 
-    <section class="vk-rail-module" aria-labelledby="rail-links">
+    <RailModule aria-labelledby="rail-links">
       <h2 id="rail-links" class={sectionHeadingClass}>
         Links
       </h2>
       <RailLinkList links={RESUME_LINKS} />
-    </section>
-  </div>
+    </RailModule>
+  </RailStack>
 );
 
 /** Contact Mode rail: soft hire panel (ungated, no CTA) + email / LinkedIn / GitHub / CV. */
 const ContactContext: Component = () => (
-  <div class="vk-rail-stack">
+  <RailStack>
     <HireSignalPanel gated={false} withCta={false} />
 
-    <section class="vk-rail-module" aria-labelledby="rail-quick-links">
+    <RailModule aria-labelledby="rail-quick-links">
       <h2 id="rail-quick-links" class={sectionHeadingClass}>
         Quick links
       </h2>
       <RailLinkList links={CONTACT_QUICK_LINKS} />
-    </section>
-  </div>
+    </RailModule>
+  </RailStack>
 );
 
 /** Work Mode without an active case — hire soft panel only; no glossary empty state. */
 const WorkIndexContext: Component = () => (
-  <div class="vk-rail-stack">
+  <RailStack>
     <HireSignalPanel />
-  </div>
+  </RailStack>
 );
 
 /**

@@ -5,6 +5,8 @@ import { ContextRail } from "./context-rail";
 import { HireSignalChip } from "./hire-signal-chip";
 import { LeftChrome } from "./left-chrome";
 import { modeTitleForPath } from "./modes";
+import { SCROLL_PANE_CLASS } from "./scroll-pane";
+import { StageShell } from "./stage-shell";
 
 const iconButtonClass =
   "grid size-[34px] shrink-0 place-items-center rounded-lg border border-border text-muted hover:bg-bg-hover hover:text-fg";
@@ -66,12 +68,9 @@ export const MobileShell: ParentComponent = (props) => {
         </button>
       </header>
 
-      <main
-        class="vk-scroll vk-stage-mobile min-h-0 min-w-0 flex-1 overflow-auto bg-bg-panel"
-        id="stage"
-      >
+      <StageShell density="mobile" class="min-h-0 min-w-0 flex-1 overflow-auto bg-bg-panel">
         {props.children}
-      </main>
+      </StageShell>
 
       <HireSignalChip />
 
@@ -86,7 +85,7 @@ export const MobileShell: ParentComponent = (props) => {
 
       <Show when={drawerOpen()}>
         <aside
-          class="vk-scroll absolute top-0 bottom-0 left-0 z-40 flex w-[min(82%,300px)] flex-col overflow-auto border-r border-border bg-bg-deep p-[12px_8px]"
+          class={`${SCROLL_PANE_CLASS} absolute top-0 bottom-0 left-0 z-40 flex w-[min(82%,300px)] flex-col overflow-auto border-r border-border bg-bg-deep p-[12px_8px]`}
           role="dialog"
           aria-modal="true"
           aria-label="Navigation"
@@ -99,8 +98,8 @@ export const MobileShell: ParentComponent = (props) => {
         <aside
           class={
             sheetDense()
-              ? "vk-scroll absolute inset-0 z-40 overflow-auto border-t border-border bg-bg-deep p-[12px_10px]"
-              : "vk-scroll absolute right-0 bottom-0 left-0 z-40 max-h-[62%] overflow-auto rounded-t-2xl border-t border-border bg-bg-deep p-[12px_10px_20px]"
+              ? `${SCROLL_PANE_CLASS} absolute inset-0 z-40 overflow-auto border-t border-border bg-bg-deep p-[12px_10px]`
+              : `${SCROLL_PANE_CLASS} absolute right-0 bottom-0 left-0 z-40 max-h-[62%] overflow-auto rounded-t-2xl border-t border-border bg-bg-deep p-[12px_10px_20px]`
           }
           role="dialog"
           aria-modal="true"

@@ -9,6 +9,7 @@ import {
   HIRE_SIGNAL_SNOOZE_MS,
   setHireSignalEnabledForTests,
 } from "./shell/hire-signal";
+import { SCROLL_PANE_CLASS } from "./shell/scroll-pane";
 import { THEME_STORAGE_KEY } from "./theme/theme";
 import { getWorkCase, workCaseHref } from "./work/inventory";
 import { WORK_MEDIA_CAROUSEL_SIZES } from "./work/work-case-media";
@@ -81,11 +82,11 @@ describe("App Shell Mode routes (App Shell seam)", () => {
     await expect.element(stage).toBeVisible();
     await expect.element(rail).toBeVisible();
 
-    const workTreeScroll = workTree.element().querySelector(".vk-scroll");
+    const workTreeScroll = workTree.element().querySelector(`.${SCROLL_PANE_CLASS}`);
     expect(workTreeScroll).toBeTruthy();
 
     for (const el of [stage.element(), rail.element(), workTreeScroll as HTMLElement]) {
-      expect(el.classList.contains("vk-scroll")).toBe(true);
+      expect(el.classList.contains(SCROLL_PANE_CLASS)).toBe(true);
     }
   });
 });
@@ -1405,18 +1406,18 @@ describe("Mobile App Shell (App Shell seam)", () => {
 
     const stage = screen.getByRole("main");
     await expect.element(stage).toBeVisible();
-    expect(stage.element().classList.contains("vk-scroll")).toBe(true);
+    expect(stage.element().classList.contains(SCROLL_PANE_CLASS)).toBe(true);
 
     await screen.getByRole("button", { name: /open navigation/i }).click();
     const drawer = screen.getByRole("dialog", { name: /navigation/i });
     await expect.element(drawer).toBeVisible();
-    expect(drawer.element().classList.contains("vk-scroll")).toBe(true);
+    expect(drawer.element().classList.contains(SCROLL_PANE_CLASS)).toBe(true);
 
     await screen.getByRole("button", { name: /dismiss overlay/i }).click();
     await screen.getByRole("button", { name: /open context/i }).click();
     const sheet = screen.getByRole("dialog", { name: /^Context$/i });
     await expect.element(sheet).toBeVisible();
-    expect(sheet.element().classList.contains("vk-scroll")).toBe(true);
+    expect(sheet.element().classList.contains(SCROLL_PANE_CLASS)).toBe(true);
   });
 
   it("opens Context Rail content as a sheet from ···, full-screen when dense", async () => {

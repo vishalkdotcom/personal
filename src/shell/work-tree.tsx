@@ -1,6 +1,7 @@
 import { A, useLocation, useNavigate } from "@solidjs/router";
 import { For, type Component } from "solid-js";
 import { WORK_FOLDERS, workCaseHref, type WorkCase, type WorkFolder } from "../work/inventory";
+import { ScrollPane } from "./scroll-pane";
 
 function isModifiedClick(event: MouseEvent): boolean {
   return event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey;
@@ -88,8 +89,8 @@ export const WorkTree: Component = () => (
     aria-label="Work tree"
   >
     <div class="px-2 pt-1 pb-1.5 text-[11px] font-[550] tracking-[0.02em] text-faint">Work</div>
-    <div class="vk-scroll flex min-h-0 flex-1 flex-col gap-px overflow-auto">
+    <ScrollPane class="flex min-h-0 flex-1 flex-col gap-px overflow-auto">
       <For each={WORK_FOLDERS}>{(folder) => <WorkFolderGroup folder={folder} />}</For>
-    </div>
+    </ScrollPane>
   </nav>
 );
