@@ -10,7 +10,7 @@ export const LeftChrome: Component = () => (
       <div class="group-data-[left-collapsed]/shell:hidden">
         <div class="whitespace-nowrap text-sm font-[650] tracking-[-0.02em]">Vishal Kumar</div>
         <div class="mt-[3px] whitespace-nowrap text-[11px] text-faint">
-          Senior FE · Reporting UIs
+          Senior FE · Complex product UI
         </div>
       </div>
       <ThemeControl />

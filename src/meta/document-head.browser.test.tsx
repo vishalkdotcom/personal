@@ -41,7 +41,7 @@ describe("Document head meta sync (App Shell seam)", () => {
       .element(aboutScreen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
     expect(appDocumentTitle()).toBe("About · Vishal Kumar");
-    expect(metaContent('meta[name="description"]')).toContain("data-heavy reporting UIs");
+    expect(metaContent('meta[name="description"]')).toContain("complex React/Next.js product UI");
     expect(metaContent('meta[property="og:title"]')).toBe("About · Vishal Kumar");
     expect(metaContent('meta[property="og:image"]')).toBe(`${SITE_ORIGIN}/og.png`);
     expect(metaContent('meta[name="twitter:card"]')).toBe("summary_large_image");

@@ -49,7 +49,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     const resume = pageMetaForPath("/resume");
     expect(resume.title).toBe(`Resume · ${SITE_NAME}`);
     expect(resume.description).toBe(
-      "PDF resume for Vishal Kumar — Senior Frontend Engineer · React / Next.js · Analytics & Reporting UIs.",
+      "PDF resume for Vishal Kumar — Senior Frontend Engineer · React / Next.js · Complex product UI (reporting, forms, platform).",
     );
     expect(resume.description).not.toMatch(/Resume Surface/i);
     expect(resume.canonical).toBe(`${SITE_ORIGIN}/resume`);
