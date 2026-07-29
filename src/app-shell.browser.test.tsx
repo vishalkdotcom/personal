@@ -368,6 +368,8 @@ describe("Work Folder dense outcome indexes (App Shell seam)", () => {
       expect(thumb).toBeTruthy();
       expect(thumb?.getAttribute("src")).toBeTruthy();
       expect(thumb?.getAttribute("alt")).toBe("");
+      expect(thumb?.classList.contains("object-cover")).toBe(true);
+      expect(thumb?.classList.contains("object-left-top")).toBe(true);
       return row;
     };
 
@@ -825,6 +827,50 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
       .not.toBeInTheDocument();
     await expect
       .element(dossier.screen.getByRole("dialog", { name: /^Preview$/i }))
+      .not.toBeInTheDocument();
+  });
+
+  it("contains stage carousel shots on a muted deep backdrop without slideTone gradients", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const shot = carousel.getByRole("img", { name: /Shot 1 · Home/i }).element();
+
+    expect(shot.classList.contains("object-contain")).toBe(true);
+    expect(shot.classList.contains("object-cover")).toBe(false);
+
+    const slide = shot.closest("[data-case-media-slide]");
+    expect(slide).toBeTruthy();
+    expect(slide!.classList.contains("bg-bg-deep")).toBe(true);
+    expect(slide!.className).not.toMatch(/radial-gradient|linear-gradient/);
+  });
+
+  it("opens a shared fullscreen media viewer from the stage slide and closes without pointer-only traps", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+
+    await expect
+      .element(screen.getByRole("dialog", { name: /media viewer/i }))
+      .not.toBeInTheDocument();
+
+    const openFullscreen = carousel.getByRole("button", {
+      name: /view shot 1 · home fullscreen/i,
+    });
+    await expect.element(openFullscreen).toBeVisible();
+    await openFullscreen.click();
+    const viewer = screen.getByRole("dialog", { name: /media viewer/i });
+    await expect.element(viewer).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+
+    const close = viewer.getByRole("button", { name: /close media viewer/i });
+    await expect.element(close).toBeVisible();
+    await close.click();
+    await expect.element(viewer).not.toBeInTheDocument();
+
+    await openFullscreen.click();
+    await expect.element(screen.getByRole("dialog", { name: /media viewer/i })).toBeVisible();
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    await expect
+      .element(screen.getByRole("dialog", { name: /media viewer/i }))
       .not.toBeInTheDocument();
   });
 });
@@ -1346,6 +1392,20 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect
       .element(dossier.screen.getByRole("dialog", { name: /^Preview$/i }))
       .not.toBeInTheDocument();
+  });
+
+  it("opens the shared fullscreen media viewer from a stage slide on mobile", async () => {
+    await setMobileViewport();
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+
+    await carousel.getByRole("button", { name: /view shot 1 · home fullscreen/i }).click();
+    const viewer = screen.getByRole("dialog", { name: /media viewer/i });
+    await expect.element(viewer).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+
+    await viewer.getByRole("button", { name: /close media viewer/i }).click();
+    await expect.element(viewer).not.toBeInTheDocument();
   });
 });
 

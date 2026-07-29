@@ -1,99 +1,153 @@
-import { For, createSignal, type Component } from "solid-js";
+import { For, Show, createSignal, type Accessor, type Component } from "solid-js";
 import type { WorkMediaSlide } from "../work/inventory";
 import { resolveWorkMediaSrc } from "../work/work-case-media";
-
-const slideTone = [
-  "bg-[radial-gradient(ellipse_at_20%_20%,rgba(108,182,255,0.22),transparent_50%),linear-gradient(145deg,#2a323c,#1a2028_50%,#2a322c)]",
-  "bg-[radial-gradient(ellipse_at_80%_30%,rgba(232,168,124,0.18),transparent_45%),linear-gradient(145deg,#32282a,#1a2028_50%,#283040)]",
-  "bg-[radial-gradient(ellipse_at_40%_70%,rgba(108,182,255,0.14),transparent_50%),linear-gradient(145deg,#243038,#1a2028_50%,#3a3228)]",
-];
+import { MediaViewer } from "./media-viewer";
 
 type MediaCarouselProps = {
   slides: WorkMediaSlide[];
 };
 
+const CaseMediaSlide: Component<{
+  slide: WorkMediaSlide;
+  slideIndex: Accessor<number>;
+  activeIndex: Accessor<number>;
+}> = (props) => {
+  const src = resolveWorkMediaSrc(props.slide.src);
+  const isActive = () => props.slideIndex() === props.activeIndex();
+
+  return (
+    <div
+      class="relative grid min-w-full place-items-end justify-items-start bg-bg-deep p-2.5"
+      data-case-media-slide
+      aria-hidden={isActive() ? undefined : "true"}
+    >
+      <img
+        src={src}
+        alt={props.slide.label}
+        class="absolute inset-0 h-full w-full object-contain"
+      />
+      <span class="pointer-events-none relative rounded-md bg-bg-deep/80 px-2 py-1 text-[11px] tracking-[0.06em] text-faint uppercase">
+        {props.slide.label}
+      </span>
+    </div>
+  );
+};
+
+const SlideDot: Component<{
+  slideIndex: Accessor<number>;
+  activeIndex: Accessor<number>;
+  onSelect: (slideIndex: number) => void;
+}> = (props) => {
+  const isCurrent = () => props.slideIndex() === props.activeIndex();
+
+  return (
+    <button
+      type="button"
+      class={
+        isCurrent()
+          ? "size-1.5 rounded-full border-0 bg-accent p-0"
+          : "size-1.5 rounded-full border-0 bg-fg/25 p-0"
+      }
+      aria-label={`Go to slide ${props.slideIndex() + 1}`}
+      aria-current={isCurrent() ? "true" : undefined}
+      onClick={() => props.onSelect(props.slideIndex())}
+    />
+  );
+};
+
 /**
  * Work Case stage media — labeled slides with prev/next + dots.
- * Locked inventory slides wire `src`; label overlay stays for wayfinding.
+ * Contained shots on a muted deep backdrop; activating the stage poster opens the shared fullscreen viewer.
  * Parent should remount this when the Work Case changes so slide index resets.
  */
 export const MediaCarousel: Component<MediaCarouselProps> = (props) => {
   const [index, setIndex] = createSignal(0);
+  const [viewerOpen, setViewerOpen] = createSignal(false);
+  let fullscreenTriggerEl: HTMLButtonElement | undefined;
   const count = () => props.slides.length;
   const go = (next: number) => {
     const n = count();
     if (n === 0) return;
     setIndex(((next % n) + n) % n);
   };
+  const activeSlide = () => props.slides[index()];
+  const closeViewer = () => {
+    setViewerOpen(false);
+    fullscreenTriggerEl?.focus();
+  };
 
   return (
-    <section
-      class="relative overflow-hidden rounded-xl border border-border"
-      aria-roledescription="carousel"
-      aria-label="Case media"
-    >
-      <div
-        class="flex aspect-[16/10] transition-transform duration-[220ms] ease-shell"
-        style={{ transform: `translateX(-${index() * 100}%)` }}
+    <>
+      <section
+        class="relative overflow-hidden rounded-xl border border-border"
+        aria-roledescription="carousel"
+        aria-label="Case media"
       >
-        <For each={props.slides}>
-          {(slide, slideIndex) => {
-            const src = resolveWorkMediaSrc(slide.src);
-            return (
-              <div
-                class={`relative grid min-w-full place-items-end justify-items-start p-2.5 ${slideTone[slideIndex() % slideTone.length]}`}
-                aria-hidden={slideIndex() === index() ? undefined : "true"}
-              >
-                <img
-                  src={src}
-                  alt={slide.label}
-                  class="absolute inset-0 h-full w-full object-cover"
-                />
-                <span class="relative rounded-md bg-bg-deep/80 px-2 py-1 text-[11px] tracking-[0.06em] text-faint uppercase">
-                  {slide.label}
-                </span>
-              </div>
-            );
-          }}
-        </For>
-      </div>
-
-      <div class="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2">
-        <button
-          type="button"
-          class="pointer-events-auto grid size-8 place-items-center rounded-md border border-border bg-bg-deep/85 text-sm text-muted hover:bg-bg-hover hover:text-fg"
-          aria-label="Previous slide"
-          onClick={() => go(index() - 1)}
+        <div
+          class="flex aspect-[16/10] transition-transform duration-[220ms] ease-shell"
+          style={{ transform: `translateX(-${index() * 100}%)` }}
         >
-          ‹
-        </button>
-        <button
-          type="button"
-          class="pointer-events-auto grid size-8 place-items-center rounded-md border border-border bg-bg-deep/85 text-sm text-muted hover:bg-bg-hover hover:text-fg"
-          aria-label="Next slide"
-          onClick={() => go(index() + 1)}
-        >
-          ›
-        </button>
-      </div>
+          <For each={props.slides}>
+            {(slide, slideIndex) => (
+              <CaseMediaSlide slide={slide} slideIndex={slideIndex} activeIndex={index} />
+            )}
+          </For>
+        </div>
 
-      <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5" aria-label="Slides">
-        <For each={props.slides}>
-          {(_, slideIndex) => (
+        <Show when={activeSlide()}>
+          {(slide) => (
             <button
+              ref={(el) => {
+                fullscreenTriggerEl = el;
+              }}
               type="button"
-              class={
-                slideIndex() === index()
-                  ? "size-1.5 rounded-full border-0 bg-accent p-0"
-                  : "size-1.5 rounded-full border-0 bg-fg/25 p-0"
-              }
-              aria-label={`Go to slide ${slideIndex() + 1}`}
-              aria-current={slideIndex() === index() ? "true" : undefined}
-              onClick={() => go(slideIndex())}
+              class="absolute inset-0 z-0 block border-0 bg-transparent p-0"
+              aria-label={`View ${slide().label} fullscreen`}
+              onClick={() => setViewerOpen(true)}
             />
           )}
-        </For>
-      </div>
-    </section>
+        </Show>
+
+        <div class="pointer-events-none absolute inset-y-0 left-0 right-0 z-[1] flex items-center justify-between px-2">
+          <button
+            type="button"
+            class="pointer-events-auto grid size-8 place-items-center rounded-md border border-border bg-bg-deep/85 text-sm text-muted hover:bg-bg-hover hover:text-fg"
+            aria-label="Previous slide"
+            onClick={() => go(index() - 1)}
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            class="pointer-events-auto grid size-8 place-items-center rounded-md border border-border bg-bg-deep/85 text-sm text-muted hover:bg-bg-hover hover:text-fg"
+            aria-label="Next slide"
+            onClick={() => go(index() + 1)}
+          >
+            ›
+          </button>
+        </div>
+
+        <div
+          class="absolute bottom-2 left-0 right-0 z-[1] flex justify-center gap-1.5"
+          aria-label="Slides"
+        >
+          <For each={props.slides}>
+            {(_, slideIndex) => (
+              <SlideDot slideIndex={slideIndex} activeIndex={index} onSelect={go} />
+            )}
+          </For>
+        </div>
+      </section>
+
+      <Show when={viewerOpen() ? activeSlide() : undefined}>
+        {(slide) => (
+          <MediaViewer
+            src={resolveWorkMediaSrc(slide().src)}
+            label={slide().label}
+            onClose={closeViewer}
+          />
+        )}
+      </Show>
+    </>
   );
 };
