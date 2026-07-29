@@ -64,8 +64,11 @@ export const HIRE_SIGNAL_DETAIL = "Senior Frontend · Complex product UI · remo
 
 export const ABOUT_AVAILABILITY = `Open to roles · ${HIRE_SIGNAL_DETAIL}`;
 
+/** Left-chrome foot + Facts “Based” — one shared location string. */
+export const BASED_LOCATION = "Punjab · remote";
+
 export const ABOUT_FACTS: AboutFact[] = [
-  { label: "Based", value: "Punjab · remote" },
+  { label: "Based", value: BASED_LOCATION },
   { label: "Experience", value: "13+ yrs" },
   { label: "Focus", value: "Complex product UI" },
 ];

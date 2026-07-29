@@ -167,6 +167,31 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(screen.getByRole("button", { name: /collapse details/i })).toBeVisible();
   });
 
+  it("pins a left-chrome foot with avatar and Punjab · remote", async () => {
+    const { screen } = renderAt("/");
+    const left = screen.getByRole("complementary", { name: /^left chrome$/i });
+    const foot = left.getByRole("group", { name: /^identity$/i });
+
+    await expect.element(foot).toBeVisible();
+    await expect.element(foot.getByRole("img", { name: /^Vishal Kumar$/i })).toBeVisible();
+    await expect.element(foot.getByText(/^VK$/i)).toBeVisible();
+    await expect.element(foot.getByText(/^Punjab · remote$/i)).toBeVisible();
+    expect(foot.element().querySelector("a")).toBeNull();
+  });
+
+  it("keeps only the avatar in the collapsed left rail foot", async () => {
+    const { screen } = renderAt("/");
+    const left = screen.getByRole("complementary", { name: /^left chrome$/i });
+    const foot = left.getByRole("group", { name: /^identity$/i });
+
+    await screen.getByRole("button", { name: /collapse left/i }).click();
+    await expect.element(screen.getByRole("button", { name: /expand left/i })).toBeVisible();
+
+    await expect.element(foot.getByRole("img", { name: /^Vishal Kumar$/i })).toBeVisible();
+    await expect.element(foot.getByText(/^Punjab · remote$/i)).not.toBeInTheDocument();
+    await expect.element(screen.getByRole("link", { name: /^About$/i })).toBeVisible();
+  });
+
   it("shows Mode title only in the desktop header (no folder/case crumb trail)", async () => {
     const { screen } = renderAt("/");
     await expect

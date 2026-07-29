@@ -19,7 +19,7 @@ Update this list when a locus moves or consolidates.
 | Context Rail (incl. availability / hire CTA slots per Mode) | Shell Context Rail module under `src/shell/` |
 | Hire Signal flag, snooze, chip blurb | Hire Signal module + chip under `src/shell/` |
 | Availability / elsewhere / quick-link **copy data** | Mode content modules under `src/about/`, `src/resume/`, `src/contact/` (prefer one shared export when copy is identical) |
-| Mode list / left IA | Mode nav + left chrome under `src/shell/` |
+| Mode list / left IA / identity foot | Mode nav + left chrome under `src/shell/` |
 | App Shell layout / mobile shell | App Shell + mobile shell under `src/shell/` |
 | Theme preference entry | Theme module under `src/theme/` (wired by the App Shell) |
 

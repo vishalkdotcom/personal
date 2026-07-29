@@ -35,7 +35,7 @@ const DesktopTriptych: ParentComponent = (props) => {
         class="flex min-w-0 flex-col overflow-hidden border-r border-border bg-bg-deep p-[12px_8px] transition-[padding] duration-[160ms] ease-shell group-data-[left-collapsed]/shell:p-[10px_6px]"
         aria-label="Left chrome"
       >
-        <LeftChrome />
+        <LeftChrome collapsed={leftCollapsed()} />
       </aside>
 
       <div class="flex min-w-0 flex-col overflow-hidden bg-bg">
