@@ -11,13 +11,15 @@ import {
 } from "./shell/hire-signal";
 import { SCROLL_PANE_CLASS } from "./shell/scroll-pane";
 import { THEME_STORAGE_KEY } from "./theme/theme";
-import { getWorkCase, workCaseHref } from "./work/inventory";
+import { getWorkCase, WORK_FOLDERS, workCaseHref } from "./work/inventory";
 import { WORK_MEDIA_CAROUSEL_SIZES } from "./work/work-case-media";
 
 const SUPPLY_CHAIN_PATH = workCaseHref("prototypes", "supplychain-plus");
 const SUPPLY_CHAIN_CASE = getWorkCase("prototypes", "supplychain-plus")!;
 const ENGAGE_CASE = getWorkCase("labor-solutions", "engage-reporting")!;
 const INDICATOR_BANK_CASE = getWorkCase("labor-solutions", "indicator-bank")!;
+const ENGAGE_PATH = workCaseHref("labor-solutions", "engage-reporting");
+const FOLDER_ONLY_HREFS = new Set(WORK_FOLDERS.map((folder) => `/work/${folder.slug}`));
 
 function renderAt(path: string) {
   const history = createMemoryHistory();
@@ -28,6 +30,16 @@ function renderAt(path: string) {
     </MemoryRouter>
   ));
   return { ...result, history, screen: page.elementLocator(result.baseElement) };
+}
+
+/** Folder-index paths must never appear as generated UI hrefs. */
+function folderOnlyHrefsIn(root: Element): string[] {
+  return [...root.querySelectorAll("a[href]")]
+    .map((anchor) => anchor.getAttribute("href") ?? "")
+    .filter((href) => {
+      const path = href.replace(/[?#].*$/, "").replace(/\/$/, "") || "/";
+      return FOLDER_ONLY_HREFS.has(path);
+    });
 }
 
 /** Assert Case media carousel shows a wired inventory `<img>` for the first shot. */
@@ -327,9 +339,10 @@ describe("Work dense outcome index (App Shell seam)", () => {
   afterEach(() => cleanup());
 
   it("does not render a Work Folder index surface at /work/<folder-slug>", async () => {
-    const { screen } = renderAt("/work/labor-solutions");
+    const { history, screen } = renderAt("/work/labor-solutions");
     const main = screen.getByRole("main");
 
+    expect(history.get()).toBe("/work/labor-solutions");
     await expect
       .element(main.getByRole("heading", { name: /^Labor Solutions$/i }))
       .not.toBeInTheDocument();
@@ -345,6 +358,15 @@ describe("Work dense outcome index (App Shell seam)", () => {
     await expect
       .element(screen.getByText(/Work Folder · Labor Solutions \(stub\)/i))
       .not.toBeInTheDocument();
+  });
+
+  it("does not generate /work/<folder-slug> hrefs from App Shell UI surfaces", async () => {
+    for (const path of ["/", "/work", SUPPLY_CHAIN_PATH, ENGAGE_PATH]) {
+      cleanup();
+      const { screen } = renderAt(path);
+      await expect.element(screen.getByRole("main")).toBeVisible();
+      expect(folderOnlyHrefsIn(screen.element()), path).toEqual([]);
+    }
   });
 
   it("still deep-links Work Cases under a folder slug", async () => {
