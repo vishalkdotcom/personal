@@ -135,7 +135,7 @@ describe("Resume Surface (App Shell seam)", () => {
     await expect.element(stage).not.toHaveTextContent(/\(stub\)/i);
   });
 
-  it("keeps shell chrome and a thin Context Rail with links and Availability CTA", async () => {
+  it("keeps shell chrome and a thin Context Rail with Hire Signal soft panel and links", async () => {
     const { screen } = renderAt("/resume");
 
     await expect.element(screen.getByRole("navigation", { name: /modes/i })).toBeVisible();
@@ -143,8 +143,8 @@ describe("Resume Surface (App Shell seam)", () => {
 
     const rail = screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail).toBeVisible();
-    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
-    await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
+    await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
     await expect.element(rail.getByText(/^Links$/i)).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /Download PDF/i })).toBeVisible();
     expect(
@@ -158,7 +158,7 @@ describe("Resume Surface (App Shell seam)", () => {
     await expect.element(rail).not.toHaveTextContent(/Context follows the active Mode/i);
 
     const text = rail.element().textContent ?? "";
-    const markers = ["Availability", "Links"];
+    const markers = ["Open to roles", "Links"];
     let previous = -1;
     for (const marker of markers) {
       const index = text.indexOf(marker);

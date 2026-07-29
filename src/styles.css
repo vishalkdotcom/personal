@@ -18,6 +18,7 @@
   --color-muted: var(--vk-muted);
   --color-faint: var(--vk-faint);
   --color-accent: var(--vk-accent);
+  --color-accent-soft: var(--vk-accent-soft);
   --color-ok: var(--vk-ok);
   --color-warn: var(--vk-warn);
   --color-warn-soft: var(--vk-warn-soft);
@@ -36,6 +37,7 @@
   --vk-muted: rgba(26, 28, 30, 0.62);
   --vk-faint: rgba(26, 28, 30, 0.42);
   --vk-accent: #2563a8;
+  --vk-accent-soft: rgba(37, 99, 168, 0.08);
   --vk-ok: #2f8f4e;
   --vk-warn: #b86a3a;
   --vk-warn-soft: rgba(184, 106, 58, 0.12);
@@ -54,6 +56,7 @@
   --vk-muted: rgba(232, 230, 227, 0.55);
   --vk-faint: rgba(232, 230, 227, 0.36);
   --vk-accent: #6cb6ff;
+  --vk-accent-soft: rgba(108, 182, 255, 0.14);
   --vk-ok: #5dba7a;
   --vk-warn: #e8a87c;
   --vk-warn-soft: rgba(232, 168, 124, 0.14);

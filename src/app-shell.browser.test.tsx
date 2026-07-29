@@ -353,7 +353,8 @@ describe("Work Folder dense outcome indexes (App Shell seam)", () => {
     await expect.element(main.getByRole("link", { name: /Snap2Paper/i })).toBeVisible();
     const rail = screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail).not.toHaveTextContent(/Context follows the active Mode/i);
-    await expect.element(rail.getByRole("link", { name: /^Open to roles$/i })).toBeVisible();
+    await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
   });
 
   it("shows media thumbs on All work and Work Folder index rows when cases have media", async () => {
@@ -408,15 +409,15 @@ describe("Work Context Rail (App Shell seam)", () => {
     const rail = screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail).toBeVisible();
 
-    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
     await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Role$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Outcomes$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Stack$/i)).toBeVisible();
-    await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
 
     const text = rail.element().textContent ?? "";
-    const markers = ["Availability", "Live", "Role", "Outcomes", "Stack", "Get in touch"];
+    const markers = ["Open to roles", "Live", "Role", "Outcomes", "Stack"];
     let previous = -1;
     for (const marker of markers) {
       const index = text.indexOf(marker);
@@ -541,7 +542,7 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     const { screen } = renderAt("/work/labor-solutions/engage-reporting");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
 
-    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
     await expect.element(rail.getByText(/^Live$/i)).not.toBeInTheDocument();
     await expect.element(rail.getByText(/^Role$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Outcomes$/i)).toBeVisible();
@@ -551,7 +552,7 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     await expect.element(rail.getByText(/^Metabase Embedding SDK$/i)).toBeVisible();
 
     const text = rail.element().textContent ?? "";
-    const markers = ["Availability", "Role", "Outcomes", "Stack", "Get in touch"];
+    const markers = ["Open to roles", "Role", "Outcomes", "Stack"];
     let previous = -1;
     for (const marker of markers) {
       const index = text.indexOf(marker);
@@ -713,7 +714,7 @@ describe("About home IA (App Shell seam)", () => {
   it("binds About Context Rail on /", async () => {
     const { screen } = renderAt("/");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
-    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
     await expect.element(rail.getByText(/^Facts$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Elsewhere$/i)).toBeVisible();
     await expect.element(rail).not.toHaveTextContent(/sc-plus\.vercel\.app/i);
@@ -990,13 +991,13 @@ describe("About Mode (App Shell seam)", () => {
     await expect.element(stage).not.toHaveTextContent(/seeking senior/i);
   });
 
-  it("shows Availability CTA, Facts, and Elsewhere in Context Rail order", async () => {
+  it("shows Hire Signal soft panel, Facts, and Elsewhere in Context Rail order", async () => {
     const { screen } = renderAt("/about");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail).toBeVisible();
 
-    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
-    await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
+    await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
     await expect.element(rail.getByText(/^Facts$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Elsewhere$/i)).toBeVisible();
     await expect.element(rail.getByText(/Punjab · remote/i)).toBeVisible();
@@ -1007,7 +1008,7 @@ describe("About Mode (App Shell seam)", () => {
     await expect.element(rail.getByRole("link", { name: /^GitHub/i })).toBeVisible();
 
     const text = rail.element().textContent ?? "";
-    const markers = ["Availability", "Facts", "Elsewhere"];
+    const markers = ["Open to roles", "Facts", "Elsewhere"];
     let previous = -1;
     for (const marker of markers) {
       const index = text.indexOf(marker);
@@ -1130,14 +1131,15 @@ describe("Contact Mode (App Shell seam)", () => {
     await expect.element(stage).not.toHaveTextContent(/RESEND_API_KEY|stack|re_/i);
   });
 
-  it("shows availability plus email / LinkedIn / GitHub / CV in the Context Rail", async () => {
+  it("shows the soft hire panel plus email / LinkedIn / GitHub / CV in the Context Rail", async () => {
     const { screen } = renderAt("/contact");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
 
-    await expect.element(rail.getByText(/^Availability$/i)).toBeVisible();
+    await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
+    await expect.element(rail).toHaveTextContent(/Senior Frontend · Complex product UI · remote/i);
     await expect
-      .element(rail)
-      .toHaveTextContent(/Open to roles · Senior Frontend · Complex product UI · remote/i);
+      .element(rail.getByRole("link", { name: /^Get in touch$/i }))
+      .not.toBeInTheDocument();
     await expect.element(rail.getByText(/^Quick links$/i)).toBeVisible();
 
     const email = rail.getByRole("link", { name: /^Email/i });
@@ -1159,7 +1161,7 @@ describe("Contact Mode (App Shell seam)", () => {
     expect(cv.element().getAttribute("href")).toBe("/vishal-cv.pdf");
 
     const text = rail.element().textContent ?? "";
-    const markers = ["Availability", "Quick links"];
+    const markers = ["Open to roles", "Quick links"];
     let previous = -1;
     for (const marker of markers) {
       const index = text.indexOf(marker);
@@ -1296,7 +1298,9 @@ describe("Mobile App Shell (App Shell seam)", () => {
     const aboutSheet = about.screen.getByRole("dialog", { name: /context/i });
     await expect.element(aboutSheet).toBeVisible();
     expect(aboutSheet.element().hasAttribute("data-dense")).toBe(false);
-    await expect.element(aboutSheet.getByText(/^Availability$/i)).toBeVisible();
+    await expect
+      .element(aboutSheet.getByRole("heading", { name: /^Open to roles$/i }))
+      .toBeVisible();
     await expect.element(aboutSheet.getByText(/^Facts$/i)).toBeVisible();
   });
 
@@ -1353,15 +1357,13 @@ describe("Hire Signal (App Shell seam)", () => {
     await restoreDesktopViewport();
   });
 
-  it("shows desktop Context Rail hire CTA and mobile Open to roles chip when the flag is on", async () => {
+  it("shows desktop soft Hire Signal panel and mobile Open to roles chip when the flag is on", async () => {
     setHireSignalEnabledForTests(true);
     const desktop = renderAt(SUPPLY_CHAIN_PATH);
     const rail = desktop.screen.getByRole("complementary", { name: /^details$/i });
-    await expect.element(rail.getByRole("link", { name: /^Open to roles$/i })).toBeVisible();
-    await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
-    await expect
-      .element(rail)
-      .toHaveTextContent(/Open to roles · Senior Frontend · Complex product UI · remote/i);
+    await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
+    await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
+    await expect.element(rail).toHaveTextContent(/Senior Frontend · Complex product UI · remote/i);
     cleanup();
 
     await setMobileViewport();
@@ -1371,20 +1373,20 @@ describe("Hire Signal (App Shell seam)", () => {
       .toBeVisible();
   });
 
-  it("keeps one Availability body on Work and About Hire Signal rails", async () => {
+  it("keeps one Hire Signal detail body on Work and About rails", async () => {
     setHireSignalEnabledForTests(true);
     const work = renderAt(SUPPLY_CHAIN_PATH);
     const workRail = work.screen.getByRole("complementary", { name: /^details$/i });
     await expect
       .element(workRail)
-      .toHaveTextContent(/Open to roles · Senior Frontend · Complex product UI · remote/i);
+      .toHaveTextContent(/Senior Frontend · Complex product UI · remote/i);
     cleanup();
 
     const about = renderAt("/about");
     const aboutRail = about.screen.getByRole("complementary", { name: /^details$/i });
     await expect
       .element(aboutRail)
-      .toHaveTextContent(/Open to roles · Senior Frontend · Complex product UI · remote/i);
+      .toHaveTextContent(/Senior Frontend · Complex product UI · remote/i);
   });
 
   it("hides both Hire Signal surfaces when the flag is off", async () => {
@@ -1393,7 +1395,7 @@ describe("Hire Signal (App Shell seam)", () => {
     const rail = desktop.screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
     await expect
-      .element(rail.getByRole("link", { name: /^Open to roles$/i }))
+      .element(rail.getByRole("heading", { name: /^Open to roles$/i }))
       .not.toBeInTheDocument();
     await expect.element(rail.getByRole("link", { name: /get in touch/i })).not.toBeInTheDocument();
     cleanup();
@@ -1467,6 +1469,7 @@ describe("Hire Signal (App Shell seam)", () => {
     await expect.element(stage.getByLabelText(/^Name$/i)).toBeVisible();
     await expect.element(stage.getByLabelText(/^Email$/i)).toBeVisible();
     await expect.element(stage.getByLabelText(/^Message$/i)).toBeVisible();
+    await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^Email/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^LinkedIn/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^GitHub/i })).toBeVisible();

@@ -60,7 +60,9 @@ export const ABOUT_SELECTED_WORK: readonly AboutSelectedWorkPeek[] = [
   },
 ];
 
-export const ABOUT_AVAILABILITY = "Open to roles · Senior Frontend · Complex product UI · remote";
+export const HIRE_SIGNAL_DETAIL = "Senior Frontend · Complex product UI · remote";
+
+export const ABOUT_AVAILABILITY = `Open to roles · ${HIRE_SIGNAL_DETAIL}`;
 
 export const ABOUT_FACTS: AboutFact[] = [
   { label: "Based", value: "Punjab · remote" },

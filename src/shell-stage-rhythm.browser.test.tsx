@@ -43,8 +43,16 @@ describe("Context Rail panels and stage rhythm (App Shell seam)", () => {
       const rail = screen.getByRole("complementary", { name: /^details$/i });
       await expect.element(rail).toBeVisible();
 
+      await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
+      const hire = rail.element().querySelector("#rail-hire-signal")?.closest("section");
+      expect(hire, `expected soft Hire Signal panel on ${path}`).toBeTruthy();
+      expect(hire!.classList.contains("vk-rail-module")).toBe(false);
+      expect(hire!.className).toMatch(/bg-accent-soft/);
+
       const modules = railModules(rail.element());
-      expect(modules.length, `expected rail modules on ${path}`).toBeGreaterThanOrEqual(2);
+      // /resume + /contact are soft hire panel + one links module; others keep ≥2 bordered modules.
+      const minModules = path === "/resume" || path === "/contact" ? 1 : 2;
+      expect(modules.length, `expected rail modules on ${path}`).toBeGreaterThanOrEqual(minModules);
       for (const mod of modules) {
         expect(mod.classList.contains("vk-rail-module")).toBe(true);
       }

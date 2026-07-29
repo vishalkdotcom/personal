@@ -1,7 +1,7 @@
 import { A, useLocation } from "@solidjs/router";
 import { For, Match, Show, Switch, type Component } from "solid-js";
-import { ABOUT_AVAILABILITY, ABOUT_ELSEWHERE, ABOUT_FACTS } from "../about/content";
-import { CONTACT_AVAILABILITY, CONTACT_QUICK_LINKS } from "../contact/content";
+import { ABOUT_ELSEWHERE, ABOUT_FACTS, HIRE_SIGNAL_DETAIL } from "../about/content";
+import { CONTACT_QUICK_LINKS } from "../contact/content";
 import { RESUME_LINKS } from "../resume/content";
 import {
   getWorkCaseFromPath,
@@ -18,6 +18,10 @@ const sectionBodyClass = "m-0 mt-1.5 text-[12.5px] leading-[1.45] text-muted";
 
 const ctaClass =
   "inline-flex items-center justify-center rounded-md border border-border bg-bg-panel px-2.5 py-1.5 text-[12px] font-medium text-fg hover:bg-bg-hover";
+
+/** Soft accent hire CTA (shell-round-9) — panel + Work Case footer. */
+const softHireCtaClass =
+  "inline-flex items-center justify-center rounded-md bg-accent/14 px-2.5 py-1.5 text-[12px] font-medium text-accent hover:bg-accent/20";
 
 const linkClass = "text-accent underline-offset-2 hover:underline";
 
@@ -69,31 +73,37 @@ const RailLinkList: Component<{ links: readonly RailLink[] }> = (props) => (
   </ul>
 );
 
-/** Shared desktop Hire Signal Availability section (one copy + gated CTA). */
-const HireSignalAvailability: Component<{ ctaLabel: string }> = (props) => (
-  <Show when={isHireSignalEnabled()}>
-    <section class="vk-rail-module" aria-labelledby="rail-availability">
-      <h2 id="rail-availability" class={sectionHeadingClass}>
-        Availability
-      </h2>
-      <p class={sectionBodyClass}>{ABOUT_AVAILABILITY}</p>
-      <A href="/contact" class={`${ctaClass} mt-2`}>
-        {props.ctaLabel}
-      </A>
-    </section>
-  </Show>
-);
+/**
+ * Desktop Hire Signal soft accent panel (shell-round-9): status-dot + Open to roles + soft CTA.
+ * Contact Mode renders it ungated without the CTA — the stage is already the contact surface.
+ */
+const HireSignalPanel: Component<{ gated?: boolean; withCta?: boolean }> = (props) => {
+  const visible = () => props.gated === false || isHireSignalEnabled();
+  return (
+    <Show when={visible()}>
+      <section
+        class="rounded-lg border border-accent/15 bg-accent-soft p-3"
+        aria-labelledby="rail-hire-signal"
+      >
+        <h2
+          id="rail-hire-signal"
+          class="m-0 mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-accent"
+        >
+          <span class="size-[7px] shrink-0 rounded-full bg-ok" aria-hidden="true" />
+          Open to roles
+        </h2>
+        <p class="m-0 mb-2.5 text-[12px] leading-[1.45] text-muted">{HIRE_SIGNAL_DETAIL}</p>
+        <Show when={props.withCta !== false}>
+          <A href="/contact" class={softHireCtaClass}>
+            Get in touch
+          </A>
+        </Show>
+      </section>
+    </Show>
+  );
+};
 
-/** Work Case footer hire CTA — gated with Hire Signal; never snoozed. */
-const HireSignalFooterCta: Component = () => (
-  <Show when={isHireSignalEnabled()}>
-    <section class="vk-rail-module" aria-label="Get in touch">
-      <A href="/contact" class={`${ctaClass} w-full`}>
-        Get in touch
-      </A>
-    </section>
-  </Show>
-);
+/** Work Case footer hire CTA removed (2026-07-29 amendment) — the soft panel carries the hire action. */
 
 const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
   const liveUrl = () => {
@@ -103,7 +113,7 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
 
   return (
     <div class="vk-rail-stack">
-      <HireSignalAvailability ctaLabel="Open to roles" />
+      <HireSignalPanel />
 
       <Show when={liveUrl()}>
         {(live) => (
@@ -149,16 +159,14 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
           </For>
         </ul>
       </section>
-
-      <HireSignalFooterCta />
     </div>
   );
 };
 
-/** About Mode rail: Availability CTA → Facts → Elsewhere (shell-round-9 A). */
+/** About Mode rail: Hire Signal soft panel → Facts → Elsewhere (shell-round-9 A). */
 const AboutContext: Component = () => (
   <div class="vk-rail-stack">
-    <HireSignalAvailability ctaLabel="Get in touch" />
+    <HireSignalPanel />
 
     <section class="vk-rail-module" aria-labelledby="rail-facts">
       <h2 id="rail-facts" class={sectionHeadingClass}>
@@ -185,10 +193,10 @@ const AboutContext: Component = () => (
   </div>
 );
 
-/** Resume Mode thin rail: Availability CTA → Links (PDF download + elsewhere). */
+/** Resume Mode thin rail: Hire Signal soft panel → Links (PDF download + elsewhere). */
 const ResumeContext: Component = () => (
   <div class="vk-rail-stack">
-    <HireSignalAvailability ctaLabel="Get in touch" />
+    <HireSignalPanel />
 
     <section class="vk-rail-module" aria-labelledby="rail-links">
       <h2 id="rail-links" class={sectionHeadingClass}>
@@ -199,15 +207,10 @@ const ResumeContext: Component = () => (
   </div>
 );
 
-/** Contact Mode rail: availability + email / LinkedIn / GitHub / CV (not Hire-Signal-gated). */
+/** Contact Mode rail: soft hire panel (ungated, no CTA) + email / LinkedIn / GitHub / CV. */
 const ContactContext: Component = () => (
   <div class="vk-rail-stack">
-    <section class="vk-rail-module" aria-labelledby="rail-availability">
-      <h2 id="rail-availability" class={sectionHeadingClass}>
-        Availability
-      </h2>
-      <p class={sectionBodyClass}>{CONTACT_AVAILABILITY}</p>
-    </section>
+    <HireSignalPanel gated={false} withCta={false} />
 
     <section class="vk-rail-module" aria-labelledby="rail-quick-links">
       <h2 id="rail-quick-links" class={sectionHeadingClass}>
@@ -218,16 +221,16 @@ const ContactContext: Component = () => (
   </div>
 );
 
-/** Work Mode without an active case — hire CTA only; no glossary empty state. */
+/** Work Mode without an active case — hire soft panel only; no glossary empty state. */
 const WorkIndexContext: Component = () => (
   <div class="vk-rail-stack">
-    <HireSignalAvailability ctaLabel="Open to roles" />
+    <HireSignalPanel />
   </div>
 );
 
 /**
- * Context Rail body: Work Case sections when a case is active; hire CTA on Work
- * indexes; About Mode Availability → Facts → Elsewhere on `/` and `/about`; thin
+ * Context Rail body: Work Case sections when a case is active; hire soft panel on Work
+ * indexes; About Mode Hire Signal → Facts → Elsewhere on `/` and `/about`; thin
  * Resume links/hire on `/resume`; Contact availability + quick links on `/contact`.
  */
 export const ContextRail: Component = () => {

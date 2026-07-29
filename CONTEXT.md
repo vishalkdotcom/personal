@@ -21,12 +21,12 @@ A single piece of work under an employer or project folder in Work, shown as a p
 _Avoid_: project card, portfolio item, task
 
 **Public Storefront**:
-A Work Case with a real public URL and media; Preview and Live are honest and enabled.
-_Avoid_: demo mock, redacted reconstruction
+A Work Case with a real public URL and media; Live opens that URL honestly (no in-shell Preview surface).
+_Avoid_: demo mock, redacted reconstruction, Preview (as a product surface)
 
 **Internal Dossier**:
-A Work Case for auth-walled or non-public work: outcomes and artifacts; authentic product screenshots when available; approved illustrative mocks only when a Spec explicitly locks them for that case; never unapproved lookalikes or reconstructed client UI; Preview off; omit Live when there is no public URL.
-_Avoid_: redacted screenshot case, fake UI recreation, unapproved mock
+A Work Case for auth-walled or non-public work: outcomes and artifacts (including an honest access-description when useful); authentic product screenshots when available; Public Claim impact metrics only when a Spec locks them for that case; approved illustrative mocks only when a Spec explicitly locks them for that case; never unapproved lookalikes or reconstructed client UI; omit Live when there is no public URL.
+_Avoid_: redacted screenshot case, fake UI recreation, unapproved mock, Preview (as a product surface), auth-walled apology banner
 
 **Selected Work**:
 A short About-center strip of a few Work Case peeks with an affordance to the full Work index — not the full index itself.
@@ -49,12 +49,16 @@ The availability / open-to-roles call to action in the desktop Context Rail and 
 _Avoid_: sticky hire bar, chat composer CTA
 
 **Work Folder**:
-An employer or grouping node in the Work tree that contains Work Cases (e.g. Labor Solutions, Advance Auto Parts, Prototypes, Tools).
-_Avoid_: category, tab, project group
+An employer or grouping node in the Work tree and on the Work index that contains Work Cases (e.g. Labor Solutions, Advance Auto Parts, Prototypes, Tools). It is not its own routed index surface — cases open from the tree or the Work index.
+_Avoid_: category, tab, project group, folder index page
 
 **Public Claim**:
 A proof-safe outcome or metric allowed in public Work Case copy.
 _Avoid_: hero vanity metric (when meaning interview-only volume stats)
+
+**Outcome lead-label**:
+A short accent lead word on a Work Case outcome (e.g. Parity, Depth) that names the beat before the claim text.
+_Avoid_: outcome title, bullet heading, section header (when meaning the in-line lead)
 
 **Interview-Only Claim**:
 An evidenced career-archive claim kept off the public site for interviews or private briefing.
