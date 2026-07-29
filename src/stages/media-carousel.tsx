@@ -2,6 +2,7 @@ import { For, Show, createSignal, type Accessor, type Component } from "solid-js
 import type { WorkMediaSlide } from "../work/inventory";
 import { resolveWorkMedia, WORK_MEDIA_CAROUSEL_SIZES } from "../work/work-case-media";
 import { MediaViewer } from "./media-viewer";
+import { STAGE_PROOF_MEASURE_CLASS } from "./work-case-stage-chrome";
 
 type MediaCarouselProps = {
   slides: WorkMediaSlide[];
@@ -83,7 +84,7 @@ export const MediaCarousel: Component<MediaCarouselProps> = (props) => {
   return (
     <>
       <section
-        class="relative overflow-hidden rounded-xl border border-border"
+        class={`relative ${STAGE_PROOF_MEASURE_CLASS} overflow-hidden rounded-xl border border-border`}
         aria-roledescription="carousel"
         aria-label="Case media"
       >

@@ -59,6 +59,37 @@ describe("Work Case Outcome lead-labels (inventory SoT)", () => {
     expect(engage?.outcomes.map((outcome) => outcome.label)).toEqual(["Parity", "Depth"]);
   });
 
+  it("locks Engage reporting Tier A metrics and access-description artifact", () => {
+    const engage = WORK_FOLDERS.flatMap((folder) => folder.cases).find(
+      (entry) => entry.slug === "engage-reporting",
+    );
+    expect(engage?.surface).toBe("internal-dossier");
+    if (engage?.surface !== "internal-dossier") return;
+    expect(engage.metrics).toEqual([
+      { value: "PIC", label: "on 6 OKRs" },
+      { value: "0.5→1.0", label: "OKR across 43 tracked tickets" },
+      { value: "~2×", label: "build ~84.5s→~40.6s" },
+    ]);
+    expect(engage.metricsFootnote).toMatch(/platform-adjacent/i);
+    expect(engage.artifacts?.map((artifact) => artifact.title)).toEqual([
+      "Problem → fix",
+      "What you'd see if you had access",
+    ]);
+  });
+
+  it("keeps non-Engage Internal Dossiers free of metrics and redundant What shipped cards", () => {
+    for (const folder of WORK_FOLDERS) {
+      for (const workCase of folder.cases) {
+        if (workCase.surface !== "internal-dossier" || workCase.slug === "engage-reporting") {
+          continue;
+        }
+        expect(workCase.metrics, workCase.slug).toBeUndefined();
+        expect(workCase.metricsFootnote, workCase.slug).toBeUndefined();
+        expect(workCase.artifacts ?? [], workCase.slug).toEqual([]);
+      }
+    }
+  });
+
   it("locks SupplyChain+ Craft and AI lead-labels", () => {
     const supplyChain = WORK_FOLDERS.flatMap((folder) => folder.cases).find(
       (entry) => entry.slug === "supplychain-plus",

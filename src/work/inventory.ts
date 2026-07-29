@@ -13,12 +13,20 @@ export type WorkMediaSlide = {
   src: string;
 };
 
-/** Internal Dossier artifact block (problem→fix, what shipped, …). */
+/** Internal Dossier artifact block (problem→fix, access-description, …). */
 export type WorkArtifact = {
   title: string;
   body: string;
   /** Accent callout body — used for problem→fix tension. */
   emphasis?: "callout";
+};
+
+/** Spec-locked Public Claim impact metric (Engage Tier A only for now). */
+export type WorkImpactMetric = {
+  /** Punchy figure shown large in the 3-up row. */
+  value: string;
+  /** Supporting claim under the value. */
+  label: string;
 };
 
 /** Outcome lead-label + claim text — Public Claims only when filled. */
@@ -54,7 +62,14 @@ export type PublicStorefrontCase = WorkCaseShared & {
 
 export type InternalDossierCase = WorkCaseShared & {
   surface: "internal-dossier";
-  /** Artifact blocks under the outcomes list. */
+  /**
+   * Spec-locked Public Claim metrics row (Engage reporting only until a later Spec
+   * unlocks others). Omit on all other Internal Dossiers.
+   */
+  metrics?: WorkImpactMetric[];
+  /** Footnote under the metrics row (e.g. platform-adjacent build note). */
+  metricsFootnote?: string;
+  /** Artifact blocks under the outcomes list — only when they add a distinct beat. */
   artifacts?: WorkArtifact[];
 };
 
@@ -81,6 +96,13 @@ export const WORK_FOLDERS: WorkFolder[] = [
         surface: "internal-dossier",
         role: "Senior Frontend · Labor Solutions · Engage reporting",
         lede: "Engage questionnaire reporting — Summary, Categories, and Miscellaneous with Metabase embeds, risk maps, and one scoring path for dashboards and exports.",
+        metrics: [
+          { value: "PIC", label: "on 6 OKRs" },
+          { value: "0.5→1.0", label: "OKR across 43 tracked tickets" },
+          { value: "~2×", label: "build ~84.5s→~40.6s" },
+        ],
+        metricsFootnote:
+          "Build-time cut is platform-adjacent (Next.js upgrade, CI caching, barrel cleanup) — shared across the app, not Engage-only.",
         outcomes: [
           {
             label: "Parity",
@@ -98,8 +120,8 @@ export const WORK_FOLDERS: WorkFolder[] = [
             body: "Facility-first vs question-first aggregations drifted scores between dashboard and Excel. Analytics cards became the single scoring authority; exports aligned.",
           },
           {
-            title: "What shipped",
-            body: "Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, and top/bottom sites.",
+            title: "What you'd see if you had access",
+            body: "Metabase-embedded Summary and Categories, geographic risk maps, and filterable site tables — the live reporting surface operators use after sign-in.",
           },
         ],
         stack: ["React", "Next.js", "TypeScript", "Metabase Embedding SDK", "Redux Toolkit"],
@@ -126,12 +148,6 @@ export const WORK_FOLDERS: WorkFolder[] = [
           {
             label: "Integrity",
             text: "Protected Excel import/export with partial-success validation, soft deletion, and idempotent survey association for reusable survey content",
-          },
-        ],
-        artifacts: [
-          {
-            title: "What shipped",
-            body: "Indicators, Questions, Answer Sets, and Manage Associations — with protected Excel import/export and reusable survey content across Django and Next.js.",
           },
         ],
         stack: ["Django", "Next.js", "React", "TypeScript", "Excel import/export"],
@@ -162,12 +178,6 @@ export const WORK_FOLDERS: WorkFolder[] = [
             text: "Built the store KPI measurement UI (Next.js, Tremor/Nivo, TypeScript, Snowflake) serving operational and leadership stakeholders with trends, filters, and drill-down views",
           },
         ],
-        artifacts: [
-          {
-            title: "What shipped",
-            body: "Next.js, Tremor/Nivo, TypeScript, and Snowflake UI serving operational and leadership stakeholders with trends, filters, and drill-down views.",
-          },
-        ],
         stack: ["Next.js", "TypeScript", "Tremor", "Nivo", "Snowflake"],
         media: [{ label: "Shot 1 · Topsheet", src: "projects/aai-mfdb-1.png" }],
       },
@@ -182,12 +192,6 @@ export const WORK_FOLDERS: WorkFolder[] = [
           {
             label: "Self-serve",
             text: "Built the self-service ML model hosting dashboard (Next.js, TypeScript, Tailwind) enabling data scientists to register, version, and deploy models without filing engineering tickets",
-          },
-        ],
-        artifacts: [
-          {
-            title: "What shipped",
-            body: "Next.js, TypeScript, and Tailwind dashboard for data scientists to register, version, and deploy models.",
           },
         ],
         stack: ["Next.js", "TypeScript", "Tailwind CSS"],
@@ -214,12 +218,6 @@ export const WORK_FOLDERS: WorkFolder[] = [
           {
             label: "Reach",
             text: "Streamlit + Snowflake SPA for regional leadership and store managers to analyze performance and identify outliers",
-          },
-        ],
-        artifacts: [
-          {
-            title: "What shipped",
-            body: "Streamlit + Snowflake SPA for regional leadership and store managers to analyze performance and identify outliers.",
           },
         ],
         stack: ["Streamlit", "Snowflake", "Python"],
