@@ -21,6 +21,7 @@ Read this when changing dependencies, build config, JSX/TS setup, or deploy wiri
 - Build stamps per-path HTML meta shells for the finite Mode + Work Case deep-link set (`src/meta/`); full-body SSR is not required.
 - Contact form: Pages Function `POST /api/contact` → Resend via `fetch` (`functions/api/contact.ts`).
 - Secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` in Pages env only (never `VITE_`-prefixed).
+- Public build env (baked into the client bundle): `VITE_HIRE_SIGNAL`, `VITE_GOOGLE_ANALYTICS_ID` (GA4; blank disables).
 - Functions scope: `dist/_routes.json` include `/api/*` only (copied from `static/_routes.json`).
 
 ## Testing
