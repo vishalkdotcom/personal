@@ -21,6 +21,13 @@ const LIGHT_BG_DEEP = "rgb(236, 238, 240)";
 
 const SUPPLY_CHAIN_PATH = workCaseHref("prototypes", "supplychain-plus");
 const SUPPLY_CHAIN_CASE = getWorkCase("prototypes", "supplychain-plus")!;
+/** Manifest-locked SupplyChain+ captions (sentence case, no Shot N ·). */
+const SC_CAPTION_1 = /Control Center risk overview/i;
+const SC_CAPTION_2 = /Why this supplier is high risk/i;
+const SC_CAPTION_3 = /Remediation with evidence timeline/i;
+const SC_CAPTION_LAST = /Compliance across frameworks/i;
+const SC_VIEW_FIRST = /view control center risk overview fullscreen/i;
+const SC_VIEW_SECOND = /view why this supplier is high risk fullscreen/i;
 const ENGAGE_CASE = getWorkCase("labor-solutions", "engage-reporting")!;
 const INDICATOR_BANK_CASE = getWorkCase("labor-solutions", "indicator-bank")!;
 const ENGAGE_PATH = workCaseHref("labor-solutions", "engage-reporting");
@@ -915,7 +922,7 @@ describe("Public Storefront SupplyChain+ (App Shell seam)", () => {
 
     const text = stage.element().textContent ?? "";
     const outcomesIndex = text.indexOf(SUPPLY_CHAIN_CASE.outcomes[0]!.text);
-    const mediaIndex = text.search(/Shot 1/i);
+    const mediaIndex = text.search(SC_CAPTION_1);
     expect(outcomesIndex).toBeGreaterThan(-1);
     expect(mediaIndex).toBeGreaterThan(outcomesIndex);
   });
@@ -1000,14 +1007,24 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
   it("uses a stage carousel with wired inventory images for Public Storefront media", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
     const stage = screen.getByRole("main");
-    const carousel = await expectWiredCaseMedia(stage, /Shot 1 · Home/i);
+    const carousel = await expectWiredCaseMedia(stage, SC_CAPTION_1);
 
-    await expect.element(carousel).toHaveTextContent(/Shot 1/i);
+    await expect.element(carousel).toHaveTextContent(SC_CAPTION_1);
     await expect.element(stage).not.toHaveTextContent(/media placeholder/i);
+    await expect.element(carousel).not.toHaveTextContent(/Shot\s+\d+\s*·/i);
+
+    const caption = carousel
+      .element()
+      .querySelector(
+        "[data-case-media-slide]:not([aria-hidden]) span, [data-case-media-slide] span",
+      );
+    expect(caption, "expected stage caption overlay").toBeTruthy();
+    expect(caption!.className).not.toMatch(/\buppercase\b/);
+    expect(caption!.className).not.toMatch(/tracking-\[0\.06em\]/);
 
     await carousel.getByRole("button", { name: /next/i }).click();
-    await expect.element(carousel).toHaveTextContent(/Shot 2/i);
-    await expect.element(carousel.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+    await expect.element(carousel).toHaveTextContent(SC_CAPTION_2);
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_2 })).toBeVisible();
   });
 
   it("has no Preview chip or Preview overlay on Public Storefront or Internal Dossier", async () => {
@@ -1031,8 +1048,8 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
 
   it("contains stage carousel shots on a muted deep backdrop without slideTone gradients", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
-    const shot = carousel.getByRole("img", { name: /Shot 1 · Home/i }).element();
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), SC_CAPTION_1);
+    const shot = carousel.getByRole("img", { name: SC_CAPTION_1 }).element();
 
     expect(shot.classList.contains("object-contain")).toBe(true);
     expect(shot.classList.contains("object-cover")).toBe(false);
@@ -1045,20 +1062,20 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
 
   it("opens a shared fullscreen media viewer from the stage slide and closes without pointer-only traps", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), SC_CAPTION_1);
 
     await expect
       .element(screen.getByRole("dialog", { name: /media viewer/i }))
       .not.toBeInTheDocument();
 
     const openFullscreen = carousel.getByRole("button", {
-      name: /view shot 1 · home fullscreen/i,
+      name: SC_VIEW_FIRST,
     });
     await expect.element(openFullscreen).toBeVisible();
     await openFullscreen.click();
     const viewer = screen.getByRole("dialog", { name: /media viewer/i });
     await expect.element(viewer).toBeVisible();
-    await expect.element(viewer.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: SC_CAPTION_1 })).toBeVisible();
 
     const close = viewer.getByRole("button", { name: /close media viewer/i });
     await expect.element(close).toBeVisible();
@@ -1075,10 +1092,10 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
 
   it("wires responsive WebP srcset/sizes and lazy-loads non-active slides", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
-    const active = carousel.getByRole("img", { name: /Shot 1 · Home/i }).element();
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), SC_CAPTION_1);
+    const active = carousel.getByRole("img", { name: SC_CAPTION_1 }).element();
     const inactive = [...carousel.element().querySelectorAll("img")].find((img) =>
-      /Shot 2 · Diagnosis/i.test(img.getAttribute("alt") ?? ""),
+      SC_CAPTION_2.test(img.getAttribute("alt") ?? ""),
     );
     expect(inactive).toBeTruthy();
 
@@ -1100,94 +1117,94 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
 
   it("moves and wraps slides with ←/→/Home/End while the carousel is in view without focus", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), SC_CAPTION_1);
     // Deliberately leave focus elsewhere — keys are viewport-bound, not focus-gated.
     (document.activeElement as HTMLElement | null)?.blur?.();
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
-    await expect.element(carousel.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_2 })).toBeVisible();
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
-    await expect.element(carousel.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_LAST })).toBeVisible();
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
-    await expect.element(carousel.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_1 })).toBeVisible();
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
-    await expect.element(carousel.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_LAST })).toBeVisible();
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Home", bubbles: true }));
-    await expect.element(carousel.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_1 })).toBeVisible();
   });
 
   it("opens the media viewer as a carousel with filmstrip and live-synced stage index", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), SC_CAPTION_1);
 
-    await carousel.getByRole("button", { name: /view shot 1 · home fullscreen/i }).click();
+    await carousel.getByRole("button", { name: SC_VIEW_FIRST }).click();
     const viewer = screen.getByRole("dialog", { name: /media viewer/i });
     await expect.element(viewer).toBeVisible();
-    await expect.element(viewer.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: SC_CAPTION_1 })).toBeVisible();
     await expect.element(viewer.getByRole("button", { name: /previous slide/i })).toBeVisible();
     await expect.element(viewer.getByRole("button", { name: /next slide/i })).toBeVisible();
 
     const filmstrip = viewer.getByRole("group", { name: /^Slides$/i });
     await expect.element(filmstrip).toBeVisible();
-    await expect.element(filmstrip.getByRole("button", { name: /Shot 1 · Home/i })).toBeVisible();
-    await expect.element(filmstrip.getByRole("button", { name: /Shot 3 · Audit/i })).toBeVisible();
+    await expect.element(filmstrip.getByRole("button", { name: SC_CAPTION_1 })).toBeVisible();
+    await expect.element(filmstrip.getByRole("button", { name: SC_CAPTION_3 })).toBeVisible();
 
     await viewer.getByRole("button", { name: /next slide/i }).click();
-    await expect.element(viewer.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: SC_CAPTION_2 })).toBeVisible();
     // Shared live index — stage updates immediately while the viewer stays open.
-    await expect.element(carousel.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_2 })).toBeVisible();
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
-    await expect.element(viewer.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
-    await expect.element(carousel.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: SC_CAPTION_LAST })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_LAST })).toBeVisible();
 
-    await filmstrip.getByRole("button", { name: /Shot 1 · Home/i }).click();
-    await expect.element(viewer.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
-    await expect.element(carousel.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+    await filmstrip.getByRole("button", { name: SC_CAPTION_1 }).click();
+    await expect.element(viewer.getByRole("img", { name: SC_CAPTION_1 })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_1 })).toBeVisible();
   });
 
   it("keeps the browsed index on Esc and ✕ close, and leaves Enter unbound", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), SC_CAPTION_1);
 
-    await carousel.getByRole("button", { name: /view shot 1 · home fullscreen/i }).click();
+    await carousel.getByRole("button", { name: SC_VIEW_FIRST }).click();
     let viewer = screen.getByRole("dialog", { name: /media viewer/i });
     await expect.element(viewer).toBeVisible();
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
-    await expect.element(viewer.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: SC_CAPTION_2 })).toBeVisible();
 
     // Enter has no commit/restore binding — viewer stays open on the browsed shot.
     document.body.focus();
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
     await expect.element(screen.getByRole("dialog", { name: /media viewer/i })).toBeVisible();
-    await expect.element(viewer.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: SC_CAPTION_2 })).toBeVisible();
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     await expect
       .element(screen.getByRole("dialog", { name: /media viewer/i }))
       .not.toBeInTheDocument();
-    await expect.element(carousel.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_2 })).toBeVisible();
 
-    await carousel.getByRole("button", { name: /view shot 2 · diagnosis fullscreen/i }).click();
+    await carousel.getByRole("button", { name: SC_VIEW_SECOND }).click();
     viewer = screen.getByRole("dialog", { name: /media viewer/i });
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
-    await expect.element(viewer.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: SC_CAPTION_LAST })).toBeVisible();
 
     await viewer.getByRole("button", { name: /close media viewer/i }).click();
     await expect
       .element(screen.getByRole("dialog", { name: /media viewer/i }))
       .not.toBeInTheDocument();
-    await expect.element(carousel.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: SC_CAPTION_LAST })).toBeVisible();
   });
 
   it("renders an unclipped outer focus halo on carousel media focus-within", async () => {
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), SC_CAPTION_1);
     const root = carousel.element();
     const mediaFrame = root.querySelector("[data-media-frame]");
     expect(mediaFrame, "expected inner media frame").toBeTruthy();
@@ -1196,7 +1213,7 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
     expect(getComputedStyle(root).overflow).not.toBe("hidden");
     expect(getComputedStyle(mediaFrame!).overflow).toBe("hidden");
 
-    const openHit = carousel.getByRole("button", { name: /view shot 1 · home fullscreen/i });
+    const openHit = carousel.getByRole("button", { name: SC_VIEW_FIRST });
     openHit.element().focus();
     expect(root.contains(document.activeElement)).toBe(true);
 
@@ -1230,6 +1247,8 @@ const promptSurveyAndToolsStorefronts = [
     liveLabel: /qgenai\.vercel\.app/i,
     claim: /Prompt-to-survey UI/i,
     stack: /^Vercel AI SDK$/i,
+    firstCaption: /Prompt to multi-type questions/i,
+    secondCaption: /Respondent preview of the survey/i,
     forbidden: [/\(stub\)/i],
   },
   {
@@ -1241,6 +1260,8 @@ const promptSurveyAndToolsStorefronts = [
     liveLabel: /mcq\.vishalk\.com/i,
     claim: /editable MCQ/i,
     stack: /^Gemini$/i,
+    firstCaption: /Drop photos to extract questions/i,
+    secondCaption: /Edit MCQs in your library/i,
     forbidden: [/\(stub\)/i],
   },
   {
@@ -1252,6 +1273,8 @@ const promptSurveyAndToolsStorefronts = [
     liveLabel: /printgrid\.vishalk\.com/i,
     claim: /passport/i,
     stack: /^Client-side PDF$/i,
+    firstCaption: /Passport grid on 4×6 with guides/i,
+    secondCaption: /Wallet photos on A4 sheet/i,
     forbidden: [/\(stub\)/i],
   },
   {
@@ -1263,6 +1286,8 @@ const promptSurveyAndToolsStorefronts = [
     liveLabel: /pdfgrid\.vishalk\.com/i,
     claim: /printable grid layouts/i,
     stack: /^Client-side layout$/i,
+    firstCaption: /Live N-up preview before export/i,
+    secondCaption: /Generate print-ready grid PDF/i,
     forbidden: [/\(stub\)/i],
   },
 ] as const;
@@ -1294,11 +1319,11 @@ describe("Public Storefront PromptSurvey and Tools (App Shell seam)", () => {
     it(`keeps wired carousel without Preview for ${storefront.path}`, async () => {
       const { screen } = renderAt(storefront.path);
       const stage = screen.getByRole("main");
-      const carousel = await expectWiredCaseMedia(stage, /Shot 1/i);
+      const carousel = await expectWiredCaseMedia(stage, storefront.firstCaption);
 
-      await expect.element(carousel).toHaveTextContent(/Shot 1/i);
+      await expect.element(carousel).toHaveTextContent(storefront.firstCaption);
       await carousel.getByRole("button", { name: /next/i }).click();
-      await expect.element(carousel).toHaveTextContent(/Shot 2/i);
+      await expect.element(carousel).toHaveTextContent(storefront.secondCaption);
 
       await expect
         .element(screen.getByRole("button", { name: /^Preview$/i }))
@@ -1324,7 +1349,7 @@ describe("Public Storefront PromptSurvey and Tools (App Shell seam)", () => {
 
       const text = stage.element().textContent ?? "";
       const outcomesIndex = text.search(storefront.claim);
-      const mediaIndex = text.search(/Shot 1/i);
+      const mediaIndex = text.search(storefront.firstCaption);
       expect(outcomesIndex).toBeGreaterThan(-1);
       expect(mediaIndex).toBeGreaterThan(outcomesIndex);
 
@@ -1766,8 +1791,8 @@ describe("Mobile App Shell (App Shell seam)", () => {
   it("sizes the stage carousel near full mobile width at ~390px", async () => {
     await setMobileViewport();
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
-    const active = carousel.getByRole("img", { name: /Shot 1 · Home/i }).element();
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), SC_CAPTION_1);
+    const active = carousel.getByRole("img", { name: SC_CAPTION_1 }).element();
 
     expect(active.getAttribute("sizes")).toBe(WORK_MEDIA_CAROUSEL_SIZES);
     expect(window.matchMedia("(max-width: 767px)").matches).toBe(true);
@@ -1780,12 +1805,12 @@ describe("Mobile App Shell (App Shell seam)", () => {
   it("opens the shared fullscreen media viewer from a stage slide on mobile", async () => {
     await setMobileViewport();
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
-    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), SC_CAPTION_1);
 
-    await carousel.getByRole("button", { name: /view shot 1 · home fullscreen/i }).click();
+    await carousel.getByRole("button", { name: SC_VIEW_FIRST }).click();
     const viewer = screen.getByRole("dialog", { name: /media viewer/i });
     await expect.element(viewer).toBeVisible();
-    await expect.element(viewer.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: SC_CAPTION_1 })).toBeVisible();
 
     await viewer.getByRole("button", { name: /close media viewer/i }).click();
     await expect.element(viewer).not.toBeInTheDocument();

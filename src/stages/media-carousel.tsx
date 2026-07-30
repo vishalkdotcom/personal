@@ -42,7 +42,7 @@ const CaseMediaSlide: Component<{
         loading={isActive() ? "eager" : "lazy"}
         decoding={isActive() ? "auto" : "async"}
       />
-      <span class="pointer-events-none relative rounded-md bg-bg-deep/80 px-2 py-1 text-[11px] tracking-[0.06em] text-faint uppercase">
+      <span class="pointer-events-none relative rounded-md bg-bg-deep/80 px-2 py-1 text-[11px] text-faint">
         {props.slide.label}
       </span>
     </div>

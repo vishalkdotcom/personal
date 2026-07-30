@@ -254,9 +254,17 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["Next.js 16", "React 19", "PostgreSQL/pgvector", "Drizzle ORM", "Vercel AI SDK"],
         media: [
-          { label: "Shot 1 · Home", src: "work/supplychain-plus/home.png" },
-          { label: "Shot 2 · Diagnosis", src: "work/supplychain-plus/diagnosis.png" },
-          { label: "Shot 3 · Audit", src: "work/supplychain-plus/audit.png" },
+          { label: "Control Center risk overview", src: "work/supplychain-plus/home.png" },
+          { label: "Why this supplier is high risk", src: "work/supplychain-plus/diagnosis.png" },
+          { label: "Remediation with evidence timeline", src: "work/supplychain-plus/audit.png" },
+          {
+            label: "Ask questions, get cited answers",
+            src: "work/supplychain-plus/ai-assistant.png",
+          },
+          {
+            label: "Compliance across frameworks",
+            src: "work/supplychain-plus/regulatory-radar.png",
+          },
         ],
       },
       {
@@ -279,9 +287,10 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["Next.js 15", "React 19", "Vercel AI SDK", "Zod", "shadcn/ui", "IndexedDB"],
         media: [
-          { label: "Shot 1 · Builder", src: "work/promptsurvey/builder.png" },
-          { label: "Shot 2 · Survey", src: "work/promptsurvey/survey.png" },
-          { label: "Shot 3 · Translate", src: "work/promptsurvey/translate.png" },
+          { label: "Prompt to multi-type questions", src: "work/promptsurvey/builder.png" },
+          { label: "Respondent preview of the survey", src: "work/promptsurvey/survey.png" },
+          { label: "Language controls for translation", src: "work/promptsurvey/translate.png" },
+          { label: "Regenerate one question with AI", src: "work/promptsurvey/regenerate.png" },
         ],
       },
     ],
@@ -311,9 +320,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["TypeScript", "Gemini", "html2canvas", "jsPDF"],
         media: [
-          { label: "Shot 1 · Library", src: "work/snap2paper/library.png" },
-          { label: "Shot 2 · Scan", src: "work/snap2paper/scan.png" },
-          { label: "Shot 3 · Print", src: "work/snap2paper/print.png" },
+          { label: "Drop photos to extract questions", src: "work/snap2paper/scan.png" },
+          { label: "Edit MCQs in your library", src: "work/snap2paper/library.png" },
+          { label: "Print preview with source photos", src: "work/snap2paper/print.png" },
         ],
       },
       {
@@ -336,9 +345,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["TypeScript", "Canvas", "Client-side PDF"],
         media: [
-          { label: "Shot 1 · Layout", src: "work/photogrid/layout.png" },
-          { label: "Shot 2 · Sizes", src: "work/photogrid/sizes.png" },
-          { label: "Shot 3 · Print", src: "work/photogrid/print.png" },
+          { label: "Passport grid on 4×6 with guides", src: "work/photogrid/layout.png" },
+          { label: "Wallet photos on A4 sheet", src: "work/photogrid/wallet-a4.png" },
+          { label: "Crop, zoom, and rotate each photo", src: "work/photogrid/photo-editor.png" },
         ],
       },
       {
@@ -361,9 +370,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["TypeScript", "PDF", "Client-side layout"],
         media: [
-          { label: "Shot 1 · Grid", src: "work/pdfgrid/grid.png" },
-          { label: "Shot 2 · Preview", src: "work/pdfgrid/preview.png" },
-          { label: "Shot 3 · Export", src: "work/pdfgrid/export.png" },
+          { label: "Live N-up preview before export", src: "work/pdfgrid/preview.png" },
+          { label: "Generate print-ready grid PDF", src: "work/pdfgrid/export.png" },
+          { label: "Standard and saved layout presets", src: "work/pdfgrid/presets.png" },
         ],
       },
     ],

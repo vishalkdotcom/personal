@@ -175,3 +175,87 @@ describe("Work Case Outcome lead-labels (inventory SoT)", () => {
     expect(supplyChain?.outcomes.map((outcome) => outcome.label)).toEqual(["Craft", "AI"]);
   });
 });
+
+/** Manifest-locked Public Storefront carousel (2026-07-30 screenshot capture manifest). */
+const LOCKED_PUBLIC_STOREFRONT_MEDIA: Record<
+  string,
+  ReadonlyArray<{ label: string; src: string }>
+> = {
+  "supplychain-plus": [
+    { label: "Control Center risk overview", src: "work/supplychain-plus/home.png" },
+    { label: "Why this supplier is high risk", src: "work/supplychain-plus/diagnosis.png" },
+    { label: "Remediation with evidence timeline", src: "work/supplychain-plus/audit.png" },
+    { label: "Ask questions, get cited answers", src: "work/supplychain-plus/ai-assistant.png" },
+    { label: "Compliance across frameworks", src: "work/supplychain-plus/regulatory-radar.png" },
+  ],
+  promptsurvey: [
+    { label: "Prompt to multi-type questions", src: "work/promptsurvey/builder.png" },
+    { label: "Respondent preview of the survey", src: "work/promptsurvey/survey.png" },
+    { label: "Language controls for translation", src: "work/promptsurvey/translate.png" },
+    { label: "Regenerate one question with AI", src: "work/promptsurvey/regenerate.png" },
+  ],
+  snap2paper: [
+    { label: "Drop photos to extract questions", src: "work/snap2paper/scan.png" },
+    { label: "Edit MCQs in your library", src: "work/snap2paper/library.png" },
+    { label: "Print preview with source photos", src: "work/snap2paper/print.png" },
+  ],
+  photogrid: [
+    { label: "Passport grid on 4×6 with guides", src: "work/photogrid/layout.png" },
+    { label: "Wallet photos on A4 sheet", src: "work/photogrid/wallet-a4.png" },
+    { label: "Crop, zoom, and rotate each photo", src: "work/photogrid/photo-editor.png" },
+  ],
+  pdfgrid: [
+    { label: "Live N-up preview before export", src: "work/pdfgrid/preview.png" },
+    { label: "Generate print-ready grid PDF", src: "work/pdfgrid/export.png" },
+    { label: "Standard and saved layout presets", src: "work/pdfgrid/presets.png" },
+  ],
+};
+
+describe("Public Storefront curated carousel (inventory SoT)", () => {
+  it("locks manifest slide counts, order, sentence-case captions, and final filenames", () => {
+    for (const [slug, locked] of Object.entries(LOCKED_PUBLIC_STOREFRONT_MEDIA)) {
+      const workCase = WORK_FOLDERS.flatMap((folder) => folder.cases).find(
+        (entry) => entry.slug === slug,
+      );
+      expect(workCase, slug).toBeDefined();
+      expect(workCase!.surface).toBe("public-storefront");
+      expect(workCase!.media, slug).toEqual([...locked]);
+      for (const slide of workCase!.media!) {
+        expect(slide.label, slide.src).not.toMatch(/^Shot\s+\d+\s*·/i);
+        expect(slide.label, slide.src).toBe(slide.label.trim());
+        expect(slide.label, slide.src).not.toBe(slide.label.toUpperCase());
+      }
+    }
+  });
+
+  it("does not ship dropped or probe/debug storefront filenames", () => {
+    const shipped = new Set(
+      WORK_FOLDERS.flatMap((folder) => folder.cases)
+        .filter((entry) => entry.surface === "public-storefront")
+        .flatMap((entry) => entry.media ?? [])
+        .map((slide) => slide.src),
+    );
+    for (const dropped of [
+      "work/supplychain-plus/intelligence-briefing.png",
+      "work/supplychain-plus/operations-jobs.png",
+      "work/supplychain-plus/suppliers-index.png",
+      "work/promptsurvey/prompt-empty.png",
+      "work/promptsurvey/library-saved.png",
+      "work/promptsurvey/ai-config.png",
+      "work/promptsurvey/_probe-puppeteer.png",
+      "work/snap2paper/edit-with-source.png",
+      "work/snap2paper/empty-home.png",
+      "work/snap2paper/settings.png",
+      "work/snap2paper/_debug-show-source.png",
+      "work/photogrid/sizes.png",
+      "work/photogrid/print.png",
+      "work/photogrid/empty-controls.png",
+      "work/pdfgrid/grid.png",
+      "work/pdfgrid/preview-overlays.png",
+      "work/pdfgrid/compile-progress.png",
+    ]) {
+      expect(shipped.has(dropped), dropped).toBe(false);
+    }
+    expect([...shipped].some((src) => src.includes("qgenai"))).toBe(false);
+  });
+});
