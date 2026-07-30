@@ -1,6 +1,6 @@
-import { A, useLocation, useNavigate } from "@solidjs/router";
+import { useLocation, useNavigate } from "@solidjs/router";
 import { For, type Component } from "solid-js";
-import { MODES, type ModeId } from "./modes";
+import { MODES, modeNavActive, type ModeId } from "./modes";
 
 const iconSvgClass =
   "size-[15px] fill-none stroke-current [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:1.6]";
@@ -61,13 +61,12 @@ export const ModeNav: Component = () => {
     <nav class="mb-4 flex flex-col gap-px" aria-label="Modes">
       <For each={MODES}>
         {(mode) => {
-          const active = () => mode.matches(location.pathname);
+          const active = () => modeNavActive(mode, location.pathname);
           return (
-            <A
+            <a
               href={mode.href}
               class={modeItemClass(active())}
-              activeClass=""
-              inactiveClass=""
+              aria-current={active() ? "page" : undefined}
               aria-label={mode.label}
               title={mode.label}
               onClick={(event) => {
@@ -80,7 +79,7 @@ export const ModeNav: Component = () => {
                 <ModeIcon id={mode.id} />
               </span>
               <span class="group-data-[left-collapsed]/shell:hidden">{mode.label}</span>
-            </A>
+            </a>
           );
         }}
       </For>

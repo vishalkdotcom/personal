@@ -4,22 +4,30 @@ export type ModeDef = {
   id: ModeId;
   label: string;
   href: string;
+  /** Path belongs to this Mode (titles, Context Rail routing). */
   matches: (pathname: string) => boolean;
+  /**
+   * Mode nav highlight. Defaults to `matches` when omitted.
+   * Work uses exact `/work` so Work Case routes leave the Mode row quiet
+   * (Work tree owns folder/case location).
+   */
+  navActive?: (pathname: string) => boolean;
 };
 
-/** v1 Modes only — Notes omitted. */
+/** v1 Modes only — Notes omitted. Nav order: About · Work · Resume · Contact. */
 export const MODES: ModeDef[] = [
-  {
-    id: "work",
-    label: "Work",
-    href: "/work",
-    matches: (pathname) => pathname === "/work" || pathname.startsWith("/work/"),
-  },
   {
     id: "about",
     label: "About",
     href: "/about",
     matches: (pathname) => pathname === "/" || pathname === "" || pathname.startsWith("/about"),
+  },
+  {
+    id: "work",
+    label: "Work",
+    href: "/work",
+    matches: (pathname) => pathname === "/work" || pathname.startsWith("/work/"),
+    navActive: (pathname) => pathname === "/work",
   },
   {
     id: "resume",
@@ -34,6 +42,10 @@ export const MODES: ModeDef[] = [
     matches: (pathname) => pathname.startsWith("/contact"),
   },
 ];
+
+export function modeNavActive(mode: ModeDef, pathname: string): boolean {
+  return (mode.navActive ?? mode.matches)(pathname);
+}
 
 export function modeForPath(pathname: string): ModeDef | undefined {
   return MODES.find((entry) => entry.matches(pathname));

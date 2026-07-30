@@ -21,6 +21,12 @@ const INDICATOR_BANK_CASE = getWorkCase("labor-solutions", "indicator-bank")!;
 const ENGAGE_PATH = workCaseHref("labor-solutions", "engage-reporting");
 const FOLDER_ONLY_HREFS = new Set(WORK_FOLDERS.map((folder) => `/work/${folder.slug}`));
 
+const EXPECTED_MODE_ORDER = ["About", "Work", "Resume", "Contact"] as const;
+
+function modeNavLabels(nav: Element): string[] {
+  return [...nav.querySelectorAll("a")].map((anchor) => anchor.getAttribute("aria-label") ?? "");
+}
+
 function renderAt(path: string) {
   const history = createMemoryHistory();
   history.set({ value: path, replace: true, scroll: false });
@@ -114,16 +120,29 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(screen.getByText("Senior FE · Product UI", { exact: true })).toBeVisible();
   });
 
-  it("offers Work · About · Resume · Contact Modes without Notes", async () => {
+  it("offers About · Work · Resume · Contact Modes without Notes", async () => {
     const { screen } = renderAt("/");
     const nav = screen.getByRole("navigation", { name: /modes/i });
     await expect.element(nav).toBeVisible();
-    await expect.element(screen.getByRole("link", { name: /^Work$/i })).toBeVisible();
-    await expect.element(screen.getByRole("link", { name: /^About$/i })).toBeVisible();
-    await expect.element(screen.getByRole("link", { name: /^Resume$/i })).toBeVisible();
-    await expect.element(screen.getByRole("link", { name: /^Contact$/i })).toBeVisible();
+    expect(modeNavLabels(nav.element())).toEqual([...EXPECTED_MODE_ORDER]);
     await expect.element(screen.getByRole("link", { name: /^Notes$/i })).not.toBeInTheDocument();
     await expect.element(nav).not.toHaveTextContent(/Notes/i);
+  });
+
+  it("highlights Work Mode nav only at exact /work, not on Work Case routes", async () => {
+    const index = renderAt("/work");
+    const workOnIndex = index.screen
+      .getByRole("navigation", { name: /modes/i })
+      .getByRole("link", { name: /^Work$/i });
+    await expect.element(workOnIndex).toHaveAttribute("aria-current", "page");
+    cleanup();
+
+    const caseView = renderAt(ENGAGE_PATH);
+    const modes = caseView.screen.getByRole("navigation", { name: /modes/i });
+    const workOnCase = modes.getByRole("link", { name: /^Work$/i });
+    await expect.element(workOnCase).not.toHaveAttribute("aria-current");
+    // Mode row stays Mode-only — no folder name promoted into Modes nav highlight.
+    expect(modeNavLabels(modes.element())).toEqual([...EXPECTED_MODE_ORDER]);
   });
 
   it("updates URL and center stage when a Mode is selected", async () => {
@@ -1484,8 +1503,9 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await screen.getByRole("button", { name: /open navigation/i }).click();
     const drawer = screen.getByRole("dialog", { name: /navigation/i });
     await expect.element(drawer).toBeVisible();
-    await expect.element(drawer.getByRole("navigation", { name: /modes/i })).toBeVisible();
-    await expect.element(drawer.getByRole("link", { name: /^About$/i })).toBeVisible();
+    const modes = drawer.getByRole("navigation", { name: /modes/i });
+    await expect.element(modes).toBeVisible();
+    expect(modeNavLabels(modes.element())).toEqual([...EXPECTED_MODE_ORDER]);
     await expect.element(drawer.getByRole("link", { name: /Engage reporting/i })).toBeVisible();
     await expect.element(drawer.getByRole("button", { name: /theme/i })).toBeVisible();
 
