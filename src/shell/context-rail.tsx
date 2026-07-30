@@ -7,9 +7,9 @@ import {
   getWorkCaseFromPath,
   isHttpLiveUrl,
   workCaseLiveUrl,
+  workInventoryStackUnion,
   type WorkCase,
 } from "../work/inventory";
-import { OutcomeLeadLabel } from "../work/outcome-lead-label";
 import { modeForPath } from "./modes";
 import { isHireSignalEnabled } from "./hire-signal";
 import { RailModule, RailStack } from "./rail-module";
@@ -26,6 +26,8 @@ const softHireCtaClass =
   "inline-flex items-center justify-center rounded-md bg-accent/14 px-2.5 py-1.5 text-[12px] font-medium text-accent hover:bg-accent/20";
 
 const linkClass = "text-accent underline-offset-2 hover:underline";
+
+const stackChipClass = "rounded-md bg-bg-active px-1.5 py-0.5 text-[11px] text-muted";
 
 type RailLink = {
   label: string;
@@ -75,6 +77,12 @@ const RailLinkList: Component<{ links: readonly RailLink[] }> = (props) => (
   </ul>
 );
 
+const StackChips: Component<{ items: readonly string[] }> = (props) => (
+  <ul class="m-0 mt-1.5 flex list-none flex-wrap gap-1.5 p-0">
+    <For each={[...props.items]}>{(item) => <li class={stackChipClass}>{item}</li>}</For>
+  </ul>
+);
+
 /**
  * Desktop Hire Signal soft accent panel (shell-round-9): status-dot + Open to roles + soft CTA.
  * Contact Mode renders it ungated without the CTA — the stage is already the contact surface.
@@ -107,6 +115,7 @@ const HireSignalPanel: Component<{ gated?: boolean; withCta?: boolean }> = (prop
 
 /** Work Case footer hire CTA removed (2026-07-29 amendment) — the soft panel carries the hire action. */
 
+/** Work Case rail: Hire Signal → Live (when present) → Role → Stack. Stage owns Outcomes. */
 const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
   const liveUrl = () => {
     const url = workCaseLiveUrl(props.workCase);
@@ -140,36 +149,11 @@ const WorkCaseContext: Component<{ workCase: WorkCase }> = (props) => {
         <p class={sectionBodyClass}>{props.workCase.role}</p>
       </RailModule>
 
-      <RailModule aria-labelledby="rail-outcomes">
-        <h2 id="rail-outcomes" class={sectionHeadingClass}>
-          Outcomes
-        </h2>
-        <ul
-          class="m-0 mt-1.5 list-none space-y-1.5 p-0 text-[12.5px] leading-[1.45] text-muted"
-          aria-label="Outcomes"
-        >
-          <For each={props.workCase.outcomes}>
-            {(outcome) => (
-              <li>
-                <OutcomeLeadLabel label={outcome.label} />
-                {outcome.text}
-              </li>
-            )}
-          </For>
-        </ul>
-      </RailModule>
-
       <RailModule aria-labelledby="rail-stack">
         <h2 id="rail-stack" class={sectionHeadingClass}>
           Stack
         </h2>
-        <ul class="m-0 mt-1.5 flex list-none flex-wrap gap-1.5 p-0">
-          <For each={props.workCase.stack}>
-            {(item) => (
-              <li class="rounded-md bg-bg-active px-1.5 py-0.5 text-[11px] text-muted">{item}</li>
-            )}
-          </For>
-        </ul>
+        <StackChips items={props.workCase.stack} />
       </RailModule>
     </RailStack>
   );
@@ -233,17 +217,24 @@ const ContactContext: Component = () => (
   </RailStack>
 );
 
-/** Work Mode without an active case — hire soft panel only; no glossary empty state. */
+/** Work index rail: Hire Signal + aggregate Stack (no Browse filler). */
 const WorkIndexContext: Component = () => (
   <RailStack>
     <HireSignalPanel />
+
+    <RailModule aria-labelledby="rail-stack">
+      <h2 id="rail-stack" class={sectionHeadingClass}>
+        Stack
+      </h2>
+      <StackChips items={workInventoryStackUnion()} />
+    </RailModule>
   </RailStack>
 );
 
 /**
- * Context Rail body: Work Case sections when a case is active; hire soft panel on Work
- * indexes; About Mode Hire Signal → Facts → Elsewhere on `/` and `/about`; thin
- * Resume links/hire on `/resume`; Contact availability + quick links on `/contact`.
+ * Context Rail body: Work Case Hire Signal → Live → Role → Stack when a case is active;
+ * Hire Signal + aggregate Stack on `/work`; About Hire Signal → Facts → Elsewhere; thin Resume
+ * links/hire; Contact availability + quick links.
  */
 export const ContextRail: Component = () => {
   const location = useLocation();

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { WORK_FOLDERS } from "./inventory";
+import { WORK_FOLDERS, workInventoryStackUnion } from "./inventory";
 
 /** Visitor-copy closers / jargon banned from Work Case ledes, outcomes, and roles. */
 const FORBIDDEN_CASE_COPY = [
@@ -68,6 +68,45 @@ describe("Work Folder framing and Context Rail Role (inventory SoT)", () => {
         expect(workCase.role, workCase.slug).not.toContain(workCase.title);
       }
     }
+  });
+});
+
+/** Frequency-desc then alpha — worked from inventory `stack[]` counts (beta-feedback-round-2). */
+const LOCKED_WORK_INDEX_STACK = [
+  "TypeScript",
+  "Next.js",
+  "React",
+  "React 19",
+  "Snowflake",
+  "Vercel AI SDK",
+  "Canvas",
+  "Client-side layout",
+  "Client-side PDF",
+  "Django",
+  "Drizzle ORM",
+  "Excel import/export",
+  "Gemini",
+  "html2canvas",
+  "IndexedDB",
+  "jsPDF",
+  "Metabase Embedding SDK",
+  "Next.js 15",
+  "Next.js 16",
+  "Nivo",
+  "PDF",
+  "PostgreSQL/pgvector",
+  "Python",
+  "Redux Toolkit",
+  "shadcn/ui",
+  "Streamlit",
+  "Tailwind CSS",
+  "Tremor",
+  "Zod",
+] as const;
+
+describe("Work index Context Rail Stack union (inventory SoT)", () => {
+  it("returns the deduped frequency-sorted union of case stacks", () => {
+    expect(workInventoryStackUnion()).toEqual([...LOCKED_WORK_INDEX_STACK]);
   });
 });
 

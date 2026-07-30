@@ -145,6 +145,8 @@ describe("Resume Surface (App Shell seam)", () => {
     await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
     await expect.element(rail.getByText(/^Links$/i)).toBeVisible();
+    await expect.element(rail.getByText(/^Stack$/i)).not.toBeInTheDocument();
+    await expect.element(rail.getByText(/^Skills$/i)).not.toBeInTheDocument();
     await expect.element(rail.getByRole("link", { name: /Download PDF/i })).toBeVisible();
     expect(
       rail

@@ -41,9 +41,9 @@ type WorkCaseShared = {
   badge: WorkBadge;
   /** Context Rail Role stub — richer copy in later case tickets. */
   role: string;
-  /** Center + Context Rail Outcomes — Public Claims only when filled. */
+  /** Stage Outcomes — Public Claims only when filled (Context Rail does not mirror these). */
   outcomes: WorkOutcome[];
-  /** Context Rail Stack — always shown expanded. */
+  /** Context Rail Stack chips — always shown expanded on Work Case rails. */
   stack: string[];
   /**
    * Proof-first stage lede (Public Claims only).
@@ -401,6 +401,24 @@ export function isHttpLiveUrl(live: string | undefined): live is string {
 /** Live URL when the case is a Public Storefront; Internal Dossiers never expose Live. */
 export function workCaseLiveUrl(workCase: WorkCase): string | undefined {
   return workCase.surface === "public-storefront" ? workCase.live : undefined;
+}
+
+/**
+ * Deduped union of every Work Case `stack[]` for the `/work` index Context Rail.
+ * Sorted by case frequency (desc), then alphabetical — Spec leaves the choice to implementers.
+ */
+export function workInventoryStackUnion(): string[] {
+  const counts = new Map<string, number>();
+  for (const folder of WORK_FOLDERS) {
+    for (const workCase of folder.cases) {
+      for (const item of workCase.stack) {
+        counts.set(item, (counts.get(item) ?? 0) + 1);
+      }
+    }
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([item]) => item);
 }
 
 export function asInternalDossier(workCase: WorkCase): InternalDossierCase | undefined {
