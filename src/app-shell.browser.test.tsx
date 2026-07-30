@@ -1718,7 +1718,11 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect.element(sheet.getByText(/^Stack$/i)).toBeVisible();
     await expect.element(sheet).toHaveTextContent(/sc-plus\.vercel\.app/i);
 
-    await screen.getByRole("button", { name: /dismiss overlay/i }).click();
+    // Sheet covers up to 62% from the bottom; click the dimmed region above it
+    // (Playwright's default center target sits under the sheet / Hire Signal).
+    await screen.getByRole("button", { name: /dismiss overlay/i }).click({
+      position: { x: Math.floor(MOBILE_VIEWPORT.width / 2), y: 40 },
+    });
     await expect.element(sheet).not.toBeInTheDocument();
 
     cleanup();
