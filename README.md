@@ -35,13 +35,15 @@ bun dev
 
 ## Deploy
 
-Cloudflare Pages:
+Cloudflare Pages (Git builds):
 
-- Build command: `bun run build`
+- Build command: `bun install --frozen-lockfile && bun run build`
 - Output directory: `dist`
 - Config: `wrangler.toml` (`pages_build_output_dir = "dist"`)
+- Build env (dashboard): `SKIP_DEPENDENCY_INSTALL=true`, `BUN_VERSION=1.3.14` — without skip, Pages runs `npm install` first and fails on Solid beta peers
 - Contact: `functions/api/contact.ts` + `static/_routes.json` (`/api/*` only)
-- Env secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` (Pages dashboard; never client-shipped)
+- Runtime secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` (Pages dashboard; never client-shipped)
+- Build-time client env: `VITE_GOOGLE_ANALYTICS_ID`, `VITE_HIRE_SIGNAL` (optional)
 
 Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical per Mode and Work Case). Unknown paths still use Pages’ SPA fallback (no top-level `404.html`).
 
