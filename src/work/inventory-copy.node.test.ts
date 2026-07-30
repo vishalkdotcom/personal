@@ -130,39 +130,41 @@ describe("Work Case Outcome lead-labels (inventory SoT)", () => {
     }
   }
 
-  it("locks Engage reporting Parity and Depth lead-labels", () => {
+  it("locks Engage reporting Consistency and Depth lead-labels", () => {
     const engage = WORK_FOLDERS.flatMap((folder) => folder.cases).find(
       (entry) => entry.slug === "engage-reporting",
     );
-    expect(engage?.outcomes.map((outcome) => outcome.label)).toEqual(["Parity", "Depth"]);
+    expect(engage?.outcomes.map((outcome) => outcome.label)).toEqual(["Consistency", "Depth"]);
   });
 
-  it("locks Engage reporting Tier A metrics and access-description artifact", () => {
+  it("locks Engage reporting lede scope, Depth drill-downs, and cuts metrics/artifacts", () => {
     const engage = WORK_FOLDERS.flatMap((folder) => folder.cases).find(
       (entry) => entry.slug === "engage-reporting",
     );
     expect(engage?.surface).toBe("internal-dossier");
     if (engage?.surface !== "internal-dossier") return;
-    expect(engage.metrics).toEqual([
-      { value: "PIC", label: "on 6 OKRs" },
-      { value: "0.5→1.0", label: "OKR across 43 tracked tickets" },
-      { value: "~2×", label: "build ~84.5s→~40.6s" },
-    ]);
-    expect(engage.metricsFootnote).toMatch(/platform-adjacent/i);
-    expect(engage.artifacts?.map((artifact) => artifact.title)).toEqual([
-      "Problem → fix",
-      "What you'd see if you had access",
-    ]);
+    expect(engage.lede).toMatch(/^Engage questionnaire and survey reporting/);
+    expect(engage.outcomes).toHaveLength(2);
+    expect(engage.outcomes[0]).toEqual({
+      label: "Consistency",
+      text: "Dashboards and Excel disagreed on scores (facility-first vs question-first). Exports now follow the analytics cards as the single authority.",
+    });
+    expect(engage.outcomes[1]?.text).toMatch(/filterable drill-downs/i);
+    expect(engage.outcomes[1]?.text).not.toMatch(/questionnaire and survey/i);
+    expect(engage.artifacts ?? []).toEqual([]);
   });
 
-  it("keeps non-Engage Internal Dossiers free of metrics and redundant What shipped cards", () => {
+  it("retires impact metrics on every Internal Dossier and keeps non-Engage free of What shipped cards", () => {
     for (const folder of WORK_FOLDERS) {
       for (const workCase of folder.cases) {
-        if (workCase.surface !== "internal-dossier" || workCase.slug === "engage-reporting") {
+        if (workCase.surface !== "internal-dossier") {
           continue;
         }
-        expect(workCase.metrics, workCase.slug).toBeUndefined();
-        expect(workCase.metricsFootnote, workCase.slug).toBeUndefined();
+        expect(workCase, workCase.slug).not.toHaveProperty("metrics");
+        expect(workCase, workCase.slug).not.toHaveProperty("metricsFootnote");
+        if (workCase.slug === "engage-reporting") {
+          continue;
+        }
         expect(workCase.artifacts ?? [], workCase.slug).toEqual([]);
       }
     }

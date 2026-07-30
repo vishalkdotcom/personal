@@ -13,20 +13,12 @@ export type WorkMediaSlide = {
   src: string;
 };
 
-/** Internal Dossier artifact block (problem→fix, access-description, …). */
+/** Internal Dossier artifact block (callout, access-description, …). */
 export type WorkArtifact = {
   title: string;
   body: string;
-  /** Accent callout body — used for problem→fix tension. */
+  /** Accent callout body — used for tension callouts. */
   emphasis?: "callout";
-};
-
-/** Spec-locked Public Claim impact metric (Engage Tier A only for now). */
-export type WorkImpactMetric = {
-  /** Punchy figure shown large in the 3-up row. */
-  value: string;
-  /** Supporting claim under the value. */
-  label: string;
 };
 
 /** Outcome lead-label + claim text — Public Claims only when filled. */
@@ -62,13 +54,6 @@ export type PublicStorefrontCase = WorkCaseShared & {
 
 export type InternalDossierCase = WorkCaseShared & {
   surface: "internal-dossier";
-  /**
-   * Spec-locked Public Claim metrics row (Engage reporting only until a later Spec
-   * unlocks others). Omit on all other Internal Dossiers.
-   */
-  metrics?: WorkImpactMetric[];
-  /** Footnote under the metrics row (e.g. platform-adjacent build note). */
-  metricsFootnote?: string;
   /** Artifact blocks under the outcomes list — only when they add a distinct beat. */
   artifacts?: WorkArtifact[];
 };
@@ -95,33 +80,15 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Production",
         surface: "internal-dossier",
         role: "Senior Frontend · Labor Solutions",
-        lede: "Engage questionnaire reporting — Summary, Categories, and Miscellaneous with Metabase embeds, risk maps, and one scoring path for dashboards and exports.",
-        metrics: [
-          { value: "PIC", label: "on 6 OKRs" },
-          { value: "0.5→1.0", label: "OKR across 43 tracked tickets" },
-          { value: "~2×", label: "build ~84.5s→~40.6s" },
-        ],
-        metricsFootnote:
-          "Build-time cut is platform-adjacent (Next.js upgrade, CI caching, barrel cleanup) — shared across the app, not Engage-only.",
+        lede: "Engage questionnaire and survey reporting — Summary, Categories, and Miscellaneous with Metabase embeds, risk maps, and one scoring path for dashboards and exports.",
         outcomes: [
           {
-            label: "Parity",
+            label: "Consistency",
             text: "Dashboards and Excel disagreed on scores (facility-first vs question-first). Exports now follow the analytics cards as the single authority.",
           },
           {
             label: "Depth",
-            text: "Reporting artifacts shipped in-product: Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, and top/bottom sites",
-          },
-        ],
-        artifacts: [
-          {
-            title: "Problem → fix",
-            emphasis: "callout",
-            body: "Facility-first vs question-first aggregations drifted scores between dashboard and Excel. Analytics cards became the single scoring authority; exports aligned.",
-          },
-          {
-            title: "What you'd see if you had access",
-            body: "Metabase-embedded Summary and Categories, geographic risk maps, and filterable site tables — the live reporting surface operators use after sign-in.",
+            text: "Reporting artifacts shipped in-product: Summary, Categories, and Miscellaneous with Metabase embeds, risk indicators, geographic/category risk maps, top/bottom sites, and filterable drill-downs",
           },
         ],
         stack: ["React", "Next.js", "TypeScript", "Metabase Embedding SDK", "Redux Toolkit"],

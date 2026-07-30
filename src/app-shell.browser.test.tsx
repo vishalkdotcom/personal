@@ -656,40 +656,35 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     const stage = screen.getByRole("main");
 
     await expect.element(stage).toHaveTextContent(ENGAGE_CASE.lede!);
+    await expect.element(stage).toHaveTextContent(/Engage questionnaire and survey reporting/i);
     await expect.element(stage).not.toHaveTextContent(/Internal \/ auth-walled/i);
     await expect.element(stage).not.toHaveTextContent(/Preview stays off/i);
     await expect.element(stage.getByRole("note")).not.toBeInTheDocument();
 
-    const metrics = stage.getByRole("region", { name: /^Impact metrics$/i });
-    await expect.element(metrics).toBeVisible();
-    await expect.element(metrics).toHaveTextContent(/PIC/i);
-    await expect.element(metrics).toHaveTextContent(/on 6 OKRs/i);
-    await expect.element(metrics).toHaveTextContent(/0\.5→1\.0/);
-    await expect.element(metrics).toHaveTextContent(/OKR across 43 tracked tickets/i);
-    await expect.element(metrics).toHaveTextContent(/~84\.5s→~40\.6s/i);
-    await expect.element(metrics).toHaveTextContent(/~2×/);
-    await expect.element(metrics).toHaveTextContent(/platform-adjacent/i);
+    await expect
+      .element(stage.getByRole("region", { name: /^Impact metrics$/i }))
+      .not.toBeInTheDocument();
+    await expect.element(stage).not.toHaveTextContent(/platform-adjacent/i);
+    await expect.element(stage).not.toHaveTextContent(/\bPIC\b/);
+    await expect.element(stage).not.toHaveTextContent(/0\.5→1\.0/);
 
     await expect.element(stage.getByRole("list", { name: /^Outcomes$/i })).toBeVisible();
-    await expect.element(stage.getByRole("region", { name: /^Artifacts$/i })).toBeVisible();
-    await expect.element(stage).toHaveTextContent(/Problem → fix/i);
-    await expect.element(stage).toHaveTextContent(/What you'd see if you had access/i);
+    await expect
+      .element(stage.getByRole("region", { name: /^Artifacts$/i }))
+      .not.toBeInTheDocument();
+    await expect.element(stage).not.toHaveTextContent(/Problem → fix/i);
+    await expect.element(stage).not.toHaveTextContent(/What you'd see if you had access/i);
     await expect.element(stage).not.toHaveTextContent(/What shipped/i);
+    await expect.element(stage.getByText("Parity", { exact: true })).not.toBeInTheDocument();
+    await expect.element(stage.getByText("Consistency", { exact: true })).toBeVisible();
     await expect.element(stage).toHaveTextContent(ENGAGE_CASE.outcomes[1]!.text);
     await expect.element(stage).toHaveTextContent(ENGAGE_CASE.outcomes[0]!.text);
+    await expect.element(stage).toHaveTextContent(/filterable drill-downs/i);
 
-    const metricsEl = metrics.element();
     const outcomes = stage.getByRole("list", { name: /^Outcomes$/i }).element();
-    const artifacts = stage.getByRole("region", { name: /^Artifacts$/i }).element();
     const carousel = await expectWiredCaseMedia(stage, /Shot 1 · Shell/i);
     expect(
-      metricsEl.compareDocumentPosition(outcomes) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
-    expect(
-      outcomes.compareDocumentPosition(artifacts) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
-    expect(
-      artifacts.compareDocumentPosition(carousel.element()) & Node.DOCUMENT_POSITION_FOLLOWING,
+      outcomes.compareDocumentPosition(carousel.element()) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     await expect.element(stage).not.toHaveTextContent(/redacted/i);
   });
@@ -756,16 +751,19 @@ describe("Internal Dossier Engage reporting (App Shell seam)", () => {
     const { screen } = renderAt("/work/labor-solutions/engage-reporting");
     const stage = screen.getByRole("main");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
-    const [parity, depth] = ENGAGE_CASE.outcomes;
+    const [consistency, depth] = ENGAGE_CASE.outcomes;
 
     const stageOutcomes = stage.getByRole("list", { name: /^Outcomes$/i });
-    await expect.element(stageOutcomes.getByText(parity!.label, { exact: true })).toBeVisible();
-    await expect.element(stageOutcomes.getByText(parity!.text)).toBeVisible();
+    await expect
+      .element(stageOutcomes.getByText(consistency!.label, { exact: true }))
+      .toBeVisible();
+    expect(consistency!.label).toBe("Consistency");
+    await expect.element(stageOutcomes.getByText(consistency!.text)).toBeVisible();
     await expect.element(stageOutcomes.getByText(depth!.label, { exact: true })).toBeVisible();
     await expect.element(stageOutcomes.getByText(depth!.text)).toBeVisible();
 
     await expect.element(rail.getByRole("list", { name: /^Outcomes$/i })).not.toBeInTheDocument();
-    await expect.element(rail).not.toHaveTextContent(parity!.text);
+    await expect.element(rail).not.toHaveTextContent(consistency!.text);
     await expect.element(rail).not.toHaveTextContent(depth!.text);
   });
 });

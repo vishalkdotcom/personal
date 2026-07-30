@@ -1,17 +1,10 @@
 import { For, Show, type Component, type ParentComponent } from "solid-js";
 import { StageTitle } from "../shell/stage-title";
-import type {
-  WorkArtifact,
-  WorkBadge,
-  WorkCase,
-  WorkFolder,
-  WorkImpactMetric,
-  WorkOutcome,
-} from "../work/inventory";
+import type { WorkArtifact, WorkBadge, WorkCase, WorkFolder, WorkOutcome } from "../work/inventory";
 import { OutcomeLeadLabel } from "../work/outcome-lead-label";
 
 /**
- * Spec-locked ~640–680px stage proof measure — lede, outcomes, artifacts, metrics, carousel.
+ * Spec-locked ~640–680px stage proof measure — lede, outcomes, artifacts, carousel.
  * Tailwind only (no new presentational globals).
  */
 export const STAGE_PROOF_MEASURE_CLASS = "max-w-[660px]";
@@ -63,32 +56,6 @@ export const WorkOutcomesList: Component<WorkOutcomesListProps> = (props) => (
       )}
     </For>
   </ul>
-);
-
-type WorkImpactMetricsProps = {
-  metrics: WorkImpactMetric[];
-  footnote?: string;
-};
-
-/** Tier A impact metrics 3-up — Engage reporting only until a Spec unlocks others. */
-export const WorkImpactMetrics: Component<WorkImpactMetricsProps> = (props) => (
-  <section class={`mb-5 ${STAGE_PROOF_MEASURE_CLASS}`} aria-label="Impact metrics">
-    <div class="grid grid-cols-3 gap-2.5">
-      <For each={props.metrics}>
-        {(metric) => (
-          <div class="rounded-[10px] border border-border bg-bg-deep px-3 py-3">
-            <p class="m-0 text-[18px] font-semibold leading-tight tracking-tight text-fg">
-              {metric.value}
-            </p>
-            <p class="m-0 mt-1.5 text-[11px] leading-[1.35] text-muted">{metric.label}</p>
-          </div>
-        )}
-      </For>
-    </div>
-    <Show when={props.footnote}>
-      {(footnote) => <p class="m-0 mt-2.5 text-[11px] leading-[1.4] text-faint">{footnote()}</p>}
-    </Show>
-  </section>
 );
 
 type WorkArtifactsListProps = {
