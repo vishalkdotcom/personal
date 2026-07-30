@@ -32,6 +32,45 @@ describe("Work Case visitor-copy voice (inventory SoT)", () => {
   }
 });
 
+/** Spec-locked `/work` framing + Context Rail Role (beta-feedback-round-2). */
+const LOCKED_FRAMING: Record<string, string> = {
+  "labor-solutions": "Senior Frontend · reporting & surveys",
+  "advance-auto-parts": "Frontend Engineer · store KPI & ML ops",
+  prototypes: "Solo · live demos",
+  tools: "Solo · local-first utilities",
+};
+
+describe("Work Folder framing and Context Rail Role (inventory SoT)", () => {
+  it("locks the four Work index framings without leading org/folder names", () => {
+    for (const folder of WORK_FOLDERS) {
+      expect(folder.framing, folder.slug).toBe(LOCKED_FRAMING[folder.slug]);
+      expect(folder.framing, folder.slug).not.toMatch(new RegExp(`^${folder.title}\\s·`));
+    }
+  });
+
+  it("locks employer Context Rail Role to role + org only", () => {
+    for (const workCase of WORK_FOLDERS.find((f) => f.slug === "labor-solutions")!.cases) {
+      expect(workCase.role).toBe("Senior Frontend · Labor Solutions");
+      expect(workCase.role).not.toContain(workCase.title);
+    }
+    for (const workCase of WORK_FOLDERS.find((f) => f.slug === "advance-auto-parts")!.cases) {
+      expect(workCase.role).toBe("Frontend Engineer · Advance Auto Parts");
+      expect(workCase.role).not.toContain(workCase.title);
+      expect(workCase.role).not.toMatch(/Senior/);
+    }
+  });
+
+  it("locks every public-storefront Context Rail Role to solo build", () => {
+    for (const folder of WORK_FOLDERS) {
+      for (const workCase of folder.cases) {
+        if (workCase.surface !== "public-storefront") continue;
+        expect(workCase.role, workCase.slug).toBe("solo build");
+        expect(workCase.role, workCase.slug).not.toContain(workCase.title);
+      }
+    }
+  });
+});
+
 describe("Work Case Outcome lead-labels (inventory SoT)", () => {
   for (const folder of WORK_FOLDERS) {
     for (const workCase of folder.cases) {

@@ -78,7 +78,7 @@ export type WorkCase = PublicStorefrontCase | InternalDossierCase;
 export type WorkFolder = {
   slug: string;
   title: string;
-  /** Claim-safe employer · role · context line for `/work` group headers. */
+  /** Claim-safe role · context line for `/work` group headers (org/folder is the heading). */
   framing: string;
   cases: WorkCase[];
 };
@@ -87,14 +87,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
   {
     slug: "labor-solutions",
     title: "Labor Solutions",
-    framing: "Labor Solutions · Senior Frontend · reporting & survey product UI",
+    framing: "Senior Frontend · reporting & surveys",
     cases: [
       {
         slug: "engage-reporting",
         title: "Engage reporting",
         badge: "Production",
         surface: "internal-dossier",
-        role: "Senior Frontend · Labor Solutions · Engage reporting",
+        role: "Senior Frontend · Labor Solutions",
         lede: "Engage questionnaire reporting — Summary, Categories, and Miscellaneous with Metabase embeds, risk maps, and one scoring path for dashboards and exports.",
         metrics: [
           { value: "PIC", label: "on 6 OKRs" },
@@ -138,7 +138,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "Indicator Bank",
         badge: "Production",
         surface: "internal-dossier",
-        role: "Senior Frontend · Labor Solutions · Indicator Bank",
+        role: "Senior Frontend · Labor Solutions",
         lede: "Multilingual Indicator Bank — reusable questions and answer sets across Django and Next.js with protected Excel import/export and survey association.",
         outcomes: [
           {
@@ -163,14 +163,14 @@ export const WORK_FOLDERS: WorkFolder[] = [
   {
     slug: "advance-auto-parts",
     title: "Advance Auto Parts",
-    framing: "Advance Auto Parts · Frontend Engineer · store KPI & ML ops",
+    framing: "Frontend Engineer · store KPI & ML ops",
     cases: [
       {
         slug: "measurement-framework",
         title: "Measurement Framework",
         badge: "Production",
         surface: "internal-dossier",
-        role: "Frontend Engineer · Advance Auto Parts · Measurement Framework",
+        role: "Frontend Engineer · Advance Auto Parts",
         lede: "Store KPI measurement UI — trends, filters, and drill-downs for operational and leadership stakeholders.",
         outcomes: [
           {
@@ -186,7 +186,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "Model Deployment Framework",
         badge: "Production",
         surface: "internal-dossier",
-        role: "Frontend Engineer · Advance Auto Parts · Model Deployment Framework",
+        role: "Frontend Engineer · Advance Auto Parts",
         lede: "Self-service ML model hosting dashboard — register, version, and deploy models without filing engineering tickets.",
         outcomes: [
           {
@@ -208,7 +208,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         title: "Store Dashboard",
         badge: "Production",
         surface: "internal-dossier",
-        role: "Frontend Engineer · Advance Auto Parts · Store Dashboard",
+        role: "Frontend Engineer · Advance Auto Parts",
         lede: "Store-level performance and sales-forecast dashboard — actual vs predicted net sales for planning reviews.",
         outcomes: [
           {
@@ -232,7 +232,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
   {
     slug: "prototypes",
     title: "Prototypes",
-    framing: "Prototypes · Solo · public demos",
+    framing: "Solo · live demos",
     cases: [
       {
         slug: "supplychain-plus",
@@ -240,7 +240,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Prototype",
         surface: "public-storefront",
         live: "https://sc-plus.vercel.app",
-        role: "SupplyChain+ · solo build",
+        role: "solo build",
         lede: "A tool that scores supplier risk, groups complaints, and pulls evidence together for audits.",
         outcomes: [
           {
@@ -265,7 +265,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Prototype",
         surface: "public-storefront",
         live: "https://qgenai.vercel.app",
-        role: "PromptSurvey · solo build",
+        role: "solo build",
         lede: "A survey builder that turns a prompt into multi-type questions, with per-question regeneration and multi-language translation.",
         outcomes: [
           {
@@ -289,7 +289,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
   {
     slug: "tools",
     title: "Tools",
-    framing: "Tools · Solo · browser-local utilities",
+    framing: "Solo · local-first utilities",
     cases: [
       {
         slug: "snap2paper",
@@ -297,7 +297,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Production",
         surface: "public-storefront",
         live: "https://mcq.vishalk.com/",
-        role: "Snap2Paper · solo build",
+        role: "solo build",
         lede: "A study-sheet digitizer that scans paper questions into editable MCQ study sets with local-only storage.",
         outcomes: [
           {
@@ -322,7 +322,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Production",
         surface: "public-storefront",
         live: "https://printgrid.vishalk.com/",
-        role: "PhotoGrid · solo build",
+        role: "solo build",
         lede: "A passport and wallet photo layout tool — arrange uploaded photos onto standard paper sizes with cutting guides.",
         outcomes: [
           {
@@ -347,7 +347,7 @@ export const WORK_FOLDERS: WorkFolder[] = [
         badge: "Production",
         surface: "public-storefront",
         live: "https://pdfgrid.vishalk.com/",
-        role: "PDFGrid · solo build",
+        role: "solo build",
         lede: "A browser tool that arranges uploaded PDFs into printable grid layouts.",
         outcomes: [
           {

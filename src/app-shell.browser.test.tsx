@@ -387,15 +387,23 @@ describe("Work dense outcome index (App Shell seam)", () => {
       .toBeVisible();
     await expect.element(main.getByText(/^Labor Solutions$/i)).toBeVisible();
     await expect
-      .element(main.getByText(/Labor Solutions · Senior Frontend · reporting & survey product UI/i))
+      .element(main.getByText("Senior Frontend · reporting & surveys", { exact: true }))
       .toBeVisible();
     await expect
-      .element(main.getByText(/Advance Auto Parts · Frontend Engineer · store KPI & ML ops/i))
+      .element(main.getByText("Frontend Engineer · store KPI & ML ops", { exact: true }))
       .toBeVisible();
-    await expect.element(main.getByText(/Prototypes · Solo · public demos/i)).toBeVisible();
-    await expect.element(main.getByText(/Tools · Solo · browser-local utilities/i)).toBeVisible();
+    await expect.element(main.getByText("Solo · live demos", { exact: true })).toBeVisible();
+    await expect
+      .element(main.getByText("Solo · local-first utilities", { exact: true }))
+      .toBeVisible();
     await expect.element(main.getByText(/^Prototypes$/i)).toBeVisible();
     await expect.element(main.getByText(/^Tools$/i)).toBeVisible();
+    await expect
+      .element(main.getByText(/Labor Solutions · Senior Frontend/i))
+      .not.toBeInTheDocument();
+    await expect
+      .element(main.getByText(/Advance Auto Parts · Frontend Engineer/i))
+      .not.toBeInTheDocument();
     await expect.element(main.getByRole("link", { name: /SupplyChain\+/i })).toBeVisible();
     await expect.element(main.getByRole("link", { name: /Snap2Paper/i })).toBeVisible();
     await expect.element(main.getByText(/store KPI measurement UI/i)).toBeVisible();
@@ -478,24 +486,56 @@ describe("Work Context Rail (App Shell seam)", () => {
     const { history, screen } = renderAt("/work/labor-solutions/engage-reporting");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail).toBeVisible();
-    await expect.element(rail).toHaveTextContent(/Engage reporting/i);
+    await expect
+      .element(rail.getByText("Senior Frontend · Labor Solutions", { exact: true }))
+      .toBeVisible();
     await expect.element(rail.getByText(/^Live$/i)).not.toBeInTheDocument();
-    await expect.element(rail).toHaveTextContent(/Labor Solutions/i);
+    await expect.element(rail).not.toHaveTextContent(/Engage reporting/i);
 
     await screen.getByRole("link", { name: /SupplyChain\+/i }).click();
     expect(history.get()).toBe(SUPPLY_CHAIN_PATH);
-    await expect.element(rail).toHaveTextContent(/SupplyChain\+/i);
+    await expect.element(rail.getByText("solo build", { exact: true })).toBeVisible();
     await expect.element(rail).toHaveTextContent(/sc-plus\.vercel\.app/i);
     await expect.element(rail.getByText(/^Live$/i)).toBeVisible();
-    await expect.element(rail).not.toHaveTextContent(/Engage reporting/i);
+    await expect.element(rail).not.toHaveTextContent(/Senior Frontend · Labor Solutions/i);
+  });
+
+  it("locks employer and public-storefront Context Rail Role without Work Case title restatement", async () => {
+    const engage = renderAt("/work/labor-solutions/engage-reporting");
+    const engageRail = engage.screen.getByRole("complementary", { name: /^details$/i });
+    await expect
+      .element(engageRail.getByText("Senior Frontend · Labor Solutions", { exact: true }))
+      .toBeVisible();
+    await expect.element(engageRail).not.toHaveTextContent(/Engage reporting/i);
+    cleanup();
+
+    const aap = renderAt("/work/advance-auto-parts/measurement-framework");
+    const aapRail = aap.screen.getByRole("complementary", { name: /^details$/i });
+    await expect
+      .element(aapRail.getByText("Frontend Engineer · Advance Auto Parts", { exact: true }))
+      .toBeVisible();
+    await expect.element(aapRail).not.toHaveTextContent(/Measurement Framework/i);
+    await expect
+      .element(aapRail.getByText(/Senior Frontend · Advance Auto Parts/i))
+      .not.toBeInTheDocument();
+    cleanup();
+
+    const promptSurvey = renderAt("/work/prototypes/promptsurvey");
+    const promptRail = promptSurvey.screen.getByRole("complementary", { name: /^details$/i });
+    await expect.element(promptRail.getByText("solo build", { exact: true })).toBeVisible();
+    await expect.element(promptRail).not.toHaveTextContent(/PromptSurvey ·/i);
   });
 
   it("keeps Context Rail in the Triptych Dock collapse model", async () => {
     const { screen } = renderAt("/work/tools/snap2paper");
     await expect.element(screen.getByRole("complementary", { name: /^details$/i })).toBeVisible();
     await expect
-      .element(screen.getByRole("complementary", { name: /^details$/i }))
-      .toHaveTextContent(/Snap2Paper/i);
+      .element(
+        screen
+          .getByRole("complementary", { name: /^details$/i })
+          .getByText("solo build", { exact: true }),
+      )
+      .toBeVisible();
 
     await screen.getByRole("button", { name: /collapse details/i }).click();
     await expect
@@ -505,8 +545,12 @@ describe("Work Context Rail (App Shell seam)", () => {
     await screen.getByRole("button", { name: /expand details/i }).click();
     await expect.element(screen.getByRole("complementary", { name: /^details$/i })).toBeVisible();
     await expect
-      .element(screen.getByRole("complementary", { name: /^details$/i }))
-      .toHaveTextContent(/Snap2Paper/i);
+      .element(
+        screen
+          .getByRole("complementary", { name: /^details$/i })
+          .getByText("solo build", { exact: true }),
+      )
+      .toBeVisible();
   });
 
   it("omits Outputs and Sources product labels from the Context Rail", async () => {
@@ -884,7 +928,8 @@ describe("Public Storefront SupplyChain+ (App Shell seam)", () => {
     await expect.element(rail.getByText(/^Role$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Outcomes$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Stack$/i)).toBeVisible();
-    await expect.element(rail).toHaveTextContent(/SupplyChain\+/i);
+    await expect.element(rail.getByText("solo build", { exact: true })).toBeVisible();
+    await expect.element(rail).not.toHaveTextContent(/SupplyChain\+ ·/i);
     await expect.element(rail).toHaveTextContent(/Next\.js/i);
     await expect.element(rail).not.toHaveTextContent(/Context follows the active Mode/i);
   });
