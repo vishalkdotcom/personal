@@ -1,6 +1,5 @@
 import { useLocation } from "@solidjs/router";
 import { Show, createEffect, createSignal, type ParentComponent } from "solid-js";
-import { getWorkCaseFromPath } from "../work/inventory";
 import { ContextRail } from "./context-rail";
 import { HireSignalChip } from "./hire-signal-chip";
 import { LeftChrome } from "./left-chrome";
@@ -19,9 +18,6 @@ export const MobileShell: ParentComponent = (props) => {
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = createSignal(false);
   const [sheetOpen, setSheetOpen] = createSignal(false);
-
-  /** Work Case context is dense — full-screen sheet. Mode rails stay bottom sheets. */
-  const sheetDense = () => getWorkCaseFromPath(location.pathname) !== undefined;
 
   const closeOverlays = () => {
     setDrawerOpen(false);
@@ -60,6 +56,10 @@ export const MobileShell: ParentComponent = (props) => {
           aria-expanded={sheetOpen() ? "true" : "false"}
           title="Details"
           onClick={() => {
+            if (sheetOpen()) {
+              closeOverlays();
+              return;
+            }
             closeOverlays();
             setSheetOpen(true);
           }}
@@ -100,19 +100,12 @@ export const MobileShell: ParentComponent = (props) => {
 
       <Show when={sheetOpen()}>
         <aside
-          class={
-            sheetDense()
-              ? `${SCROLL_PANE_CLASS} absolute inset-0 z-40 overflow-auto border-t border-border bg-bg-deep p-[12px_10px]`
-              : `${SCROLL_PANE_CLASS} absolute right-0 bottom-0 left-0 z-40 max-h-[62%] overflow-auto rounded-t-2xl border-t border-border bg-bg-deep p-[12px_10px_20px]`
-          }
+          class={`${SCROLL_PANE_CLASS} absolute right-0 bottom-0 left-0 z-40 max-h-[62%] overflow-auto rounded-t-2xl border-t border-border bg-bg-deep p-[12px_10px_20px]`}
           role="dialog"
           aria-modal="true"
           aria-label="Context"
-          data-dense={sheetDense() ? "" : undefined}
         >
-          <Show when={!sheetDense()}>
-            <div class="mx-auto mb-3 h-1 w-9 rounded-full bg-border" aria-hidden="true" />
-          </Show>
+          <div class="mx-auto mb-3 h-1 w-9 rounded-full bg-border" aria-hidden="true" />
           <ContextRail />
         </aside>
       </Show>

@@ -1703,14 +1703,14 @@ describe("Mobile App Shell (App Shell seam)", () => {
     expect(sheet.element().classList.contains(SCROLL_PANE_CLASS)).toBe(true);
   });
 
-  it("opens Context Rail content as a sheet from ···, full-screen when dense", async () => {
+  it("opens Context Rail content as a bottom sheet from ··· on Work Case and About", async () => {
     await setMobileViewport();
     const { screen } = renderAt(SUPPLY_CHAIN_PATH);
 
     await screen.getByRole("button", { name: /open context/i }).click();
     const sheet = screen.getByRole("dialog", { name: /context/i });
     await expect.element(sheet).toBeVisible();
-    expect(sheet.element().getAttribute("data-dense")).toBe("");
+    expect(sheet.element().classList.contains("max-h-[62%]")).toBe(true);
     await expect.element(sheet.getByText(/^Live$/i)).toBeVisible();
     await expect.element(sheet.getByRole("link", { name: /open live/i })).toBeVisible();
     await expect.element(sheet.getByText(/^Role$/i)).toBeVisible();
@@ -1718,12 +1718,15 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect.element(sheet.getByText(/^Stack$/i)).toBeVisible();
     await expect.element(sheet).toHaveTextContent(/sc-plus\.vercel\.app/i);
 
+    await screen.getByRole("button", { name: /dismiss overlay/i }).click();
+    await expect.element(sheet).not.toBeInTheDocument();
+
     cleanup();
     const about = renderAt("/");
     await about.screen.getByRole("button", { name: /open context/i }).click();
     const aboutSheet = about.screen.getByRole("dialog", { name: /context/i });
     await expect.element(aboutSheet).toBeVisible();
-    expect(aboutSheet.element().hasAttribute("data-dense")).toBe(false);
+    expect(aboutSheet.element().classList.contains("max-h-[62%]")).toBe(true);
     await expect
       .element(aboutSheet.getByRole("heading", { name: /^Open to roles$/i }))
       .toBeVisible();
