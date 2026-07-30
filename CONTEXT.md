@@ -41,7 +41,7 @@ The Resume Mode whose source of truth is an embedded PDF viewer, not an HTML reb
 _Avoid_: CV page, HTML resume
 
 **Context Rail**:
-The right column of the Triptych Dock; content follows the active Mode or Work Case (availability, Live, Role, Stack, facts, links). Work Case Outcomes belong on the stage, not the rail.
+The right column of the Triptych Dock; content follows the active Mode or Work Case (availability, Live, Role, Outcomes, Stack, facts, links).
 _Avoid_: Outputs, Sources, sidebar widgets
 
 **Hire Signal**:
