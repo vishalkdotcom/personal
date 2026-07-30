@@ -65,11 +65,14 @@ describe("Densified About Selected work (App Shell seam)", () => {
     const peeks = selected.getByRole("list", { name: /^Selected work$/i }).getByRole("listitem");
     await expect.poll(() => peeks.elements().length).toBe(3);
 
-    for (const title of ["SupplyChain+", "Engage reporting", "Measurement Framework"]) {
+    for (const title of ["SupplyChain+", "Engage reporting", "Store Dashboard"]) {
       await expect
         .element(selected.getByRole("link", { name: new RegExp(title, "i") }))
         .toBeVisible();
     }
+    await expect
+      .element(selected.getByRole("link", { name: /^Measurement Framework$/i }))
+      .not.toBeInTheDocument();
     await expect
       .element(selected.getByRole("link", { name: /^Indicator Bank$/i }))
       .not.toBeInTheDocument();
@@ -104,6 +107,21 @@ describe("Densified About Selected work (App Shell seam)", () => {
 
     expect(supply.element().querySelector('[data-selected-work-media="glyph"]')).toBeNull();
     expect(getComputedStyle(plate!).backgroundImage).toBe("none");
+  });
+
+  it("equalizes Selected work peek panel heights on desktop", async () => {
+    await page.viewport(DESKTOP_VIEWPORT.width, DESKTOP_VIEWPORT.height);
+    const { screen } = renderAt("/");
+    const selected = selectedWorkList(screen);
+    await expect.element(selected).toBeVisible();
+
+    const list = selected.getByRole("list", { name: /^Selected work$/i }).element();
+    const panels = [...list.querySelectorAll(":scope > li > a")];
+    expect(panels).toHaveLength(3);
+
+    const heights = panels.map((panel) => panel.getBoundingClientRect().height);
+    expect(Math.abs(heights[1]! - heights[0]!)).toBeLessThan(2);
+    expect(Math.abs(heights[2]! - heights[0]!)).toBeLessThan(2);
   });
 
   it("stacks Selected work 1-column on mobile with taller densify media", async () => {

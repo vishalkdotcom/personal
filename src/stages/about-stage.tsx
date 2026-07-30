@@ -91,7 +91,7 @@ const SelectedWorkPeek: Component<{ view: SelectedWorkView }> = (props) => (
   <li class="m-0 min-w-0 p-0">
     <A
       href={props.view.href}
-      class="flex min-h-[132px] flex-col gap-2 rounded-[10px] border border-transparent bg-bg-deep p-3 no-underline hover:bg-bg-hover"
+      class="flex h-full min-h-[132px] flex-col gap-2 rounded-[10px] border border-transparent bg-bg-deep p-3 no-underline hover:bg-bg-hover"
       activeClass=""
       inactiveClass=""
       aria-label={`${props.view.title}. ${props.view.blurb} ${props.view.meta}`}

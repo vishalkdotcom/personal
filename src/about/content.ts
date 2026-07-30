@@ -55,8 +55,8 @@ export const ABOUT_SELECTED_WORK: readonly AboutSelectedWorkPeek[] = [
   },
   {
     folderSlug: "advance-auto-parts",
-    caseSlug: "measurement-framework",
-    blurb: "Store KPI trends and drill-downs.",
+    caseSlug: "store-dashboard",
+    blurb: "Actual vs predicted net sales.",
   },
 ];
 
