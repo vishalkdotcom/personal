@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { For, type Component } from "solid-js";
+import { For, Show, type Component } from "solid-js";
 import {
   ABOUT_META,
   ABOUT_NAME,
@@ -8,29 +8,38 @@ import {
   ABOUT_SKILLS,
 } from "../about/content";
 import { StageTitle } from "../shell/stage-title";
-import { getWorkCase, getWorkFolder, workCaseHref, workRootHref } from "../work/inventory";
+import {
+  getWorkCase,
+  getWorkFolder,
+  workCaseHref,
+  workRootHref,
+  type WorkCase,
+} from "../work/inventory";
+import { tryResolveWorkMediaSrc } from "../work/work-case-media";
 
-/** Soft-panel thumb plates from about-densify-locked (decorative, not case masters). */
-const PEEK_THUMB_TONES = [
-  "bg-[linear-gradient(135deg,rgba(108,182,255,0.22),transparent_55%),linear-gradient(180deg,var(--color-bg-hover),var(--color-bg-deep))]",
-  "bg-[linear-gradient(135deg,rgba(93,186,122,0.18),transparent_55%),linear-gradient(180deg,var(--color-bg-hover),var(--color-bg-deep))]",
-  "bg-[linear-gradient(135deg,rgba(232,180,120,0.18),transparent_55%),linear-gradient(180deg,var(--color-bg-hover),var(--color-bg-deep))]",
-] as const;
+/** Quiet densify strip frame — ~56px desktop / ~88px mobile (locked prototype). */
+const mediaFrameClass =
+  "h-[88px] w-full overflow-hidden rounded-md border border-border bg-bg md:h-14";
 
-type SelectedWorkView = {
+export type SelectedWorkView = {
   href: string;
   title: string;
   blurb: string;
   meta: string;
-  thumbTone: string;
+  mediaSrc?: string;
 };
 
 function quietMeta(folderTitle: string, badge: "Production" | "Prototype"): string {
   return badge === "Prototype" ? badge : folderTitle;
 }
 
+function peekMediaSrc(workCase: WorkCase): string | undefined {
+  const inventorySrc = workCase.media?.find((slide) => slide.src)?.src;
+  return inventorySrc ? tryResolveWorkMediaSrc(inventorySrc) : undefined;
+}
+
 /** Join locked curation to inventory once — fail at module load if slugs drift. */
-const SELECTED_WORK_VIEWS: SelectedWorkView[] = ABOUT_SELECTED_WORK.map((peek, index) => {
+const SELECTED_WORK_VIEWS: SelectedWorkView[] = ABOUT_SELECTED_WORK.map((peek) => {
   const folder = getWorkFolder(peek.folderSlug);
   const workCase = getWorkCase(peek.folderSlug, peek.caseSlug);
   if (!folder || !workCase) {
@@ -43,9 +52,40 @@ const SELECTED_WORK_VIEWS: SelectedWorkView[] = ABOUT_SELECTED_WORK.map((peek, i
     title: workCase.title,
     blurb: peek.blurb,
     meta: quietMeta(folder.title, workCase.badge),
-    thumbTone: PEEK_THUMB_TONES[index % PEEK_THUMB_TONES.length]!,
+    mediaSrc: peekMediaSrc(workCase),
   };
 });
+
+const SelectedWorkMediaPlate: Component<{ src?: string }> = (props) => (
+  <Show
+    when={props.src}
+    fallback={
+      <div
+        class={`${mediaFrameClass} grid place-items-center border-dashed bg-bg-deep text-faint`}
+        data-selected-work-media="glyph"
+        aria-hidden="true"
+      >
+        <svg class="size-[22px] opacity-55" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <rect x="3" y="5" width="18" height="14" rx="2" stroke-width="1.5" />
+          <circle cx="9" cy="10" r="1.5" stroke-width="1.5" />
+          <path d="M3 16l5-4 4 3 4-5 5 6" stroke-width="1.5" />
+        </svg>
+      </div>
+    }
+  >
+    {(src) => (
+      <div class={mediaFrameClass} data-selected-work-media="media" aria-hidden="true">
+        <img
+          src={src()}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          class="size-full object-cover object-left-top"
+        />
+      </div>
+    )}
+  </Show>
+);
 
 const SelectedWorkPeek: Component<{ view: SelectedWorkView }> = (props) => (
   <li class="m-0 min-w-0 p-0">
@@ -56,7 +96,7 @@ const SelectedWorkPeek: Component<{ view: SelectedWorkView }> = (props) => (
       inactiveClass=""
       aria-label={`${props.view.title}. ${props.view.blurb} ${props.view.meta}`}
     >
-      <div class={`h-14 w-full rounded-md ${props.view.thumbTone}`} aria-hidden="true" />
+      <SelectedWorkMediaPlate src={props.view.mediaSrc} />
       <strong class="text-[13px] font-semibold">{props.view.title}</strong>
       <span class="flex-1 text-xs leading-[1.4] text-muted">{props.view.blurb}</span>
       <em class="text-[11px] text-faint not-italic">{props.view.meta}</em>
@@ -65,8 +105,21 @@ const SelectedWorkPeek: Component<{ view: SelectedWorkView }> = (props) => (
 );
 
 /**
+ * Soft-panel Selected work peeks. Exported so App Shell seam tests can fixture a
+ * media-less peek without reopening the locked densify trio.
+ */
+export const SelectedWorkPeekList: Component<{ views: readonly SelectedWorkView[] }> = (props) => (
+  <ul
+    class="m-0 grid list-none grid-cols-1 gap-2.5 p-0 md:grid-cols-3 md:gap-3.5"
+    aria-label="Selected work"
+  >
+    <For each={[...props.views]}>{(view) => <SelectedWorkPeek view={view} />}</For>
+  </ul>
+);
+
+/**
  * About Mode center: locked D pitch + unboxed skills + Selected work strip.
- * Composition SoT: about-densify-locked (extends shell-round-9 D).
+ * Composition SoT: about-selected-work-media-locked (extends about-densify-locked).
  */
 export const AboutStage: Component = () => (
   <article aria-label="About">
@@ -102,9 +155,7 @@ export const AboutStage: Component = () => (
           All work →
         </A>
       </div>
-      <ul class="m-0 grid list-none grid-cols-3 gap-3.5 p-0" aria-label="Selected work">
-        <For each={SELECTED_WORK_VIEWS}>{(view) => <SelectedWorkPeek view={view} />}</For>
-      </ul>
+      <SelectedWorkPeekList views={SELECTED_WORK_VIEWS} />
     </section>
   </article>
 );
