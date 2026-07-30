@@ -210,7 +210,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(screen.getByRole("button", { name: /collapse details/i })).toBeVisible();
   });
 
-  it("pins a left-chrome foot with avatar and Punjab · Remote", async () => {
+  it("pins a left-chrome foot with avatar and Punjab, India · Remote", async () => {
     const { screen } = renderAt("/");
     const left = screen.getByRole("complementary", { name: /^left chrome$/i });
     const foot = left.getByRole("group", { name: /^identity$/i });
@@ -218,7 +218,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(foot).toBeVisible();
     await expect.element(foot.getByRole("img", { name: /^Vishal Kumar$/i })).toBeVisible();
     await expect.element(foot.getByText(/^VK$/i)).toBeVisible();
-    await expect.element(foot.getByText("Punjab · Remote", { exact: true })).toBeVisible();
+    await expect.element(foot.getByText("Punjab, India · Remote", { exact: true })).toBeVisible();
     expect(foot.element().querySelector("a")).toBeNull();
   });
 
@@ -232,7 +232,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
 
     await expect.element(foot.getByRole("img", { name: /^Vishal Kumar$/i })).toBeVisible();
     await expect
-      .element(foot.getByText("Punjab · Remote", { exact: true }))
+      .element(foot.getByText("Punjab, India · Remote", { exact: true }))
       .not.toBeInTheDocument();
     await expect.element(screen.getByRole("link", { name: /^About$/i })).toBeVisible();
   });
@@ -1421,7 +1421,7 @@ describe("About Mode (App Shell seam)", () => {
     await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
     await expect.element(rail.getByText(/^Facts$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Elsewhere$/i)).toBeVisible();
-    await expect.element(rail.getByText("Punjab · Remote", { exact: true })).toBeVisible();
+    await expect.element(rail.getByText("Punjab, India · Remote", { exact: true })).toBeVisible();
     await expect.element(rail.getByText(/13\+ yrs/i)).toBeVisible();
     await expect.element(rail.getByText("Product UI", { exact: true })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /Resume \(PDF\)/i })).toBeVisible();

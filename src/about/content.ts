@@ -65,7 +65,7 @@ export const HIRE_SIGNAL_DETAIL = "Senior Frontend · Product UI · Remote";
 export const ABOUT_AVAILABILITY = `Open to roles · ${HIRE_SIGNAL_DETAIL}`;
 
 /** Left-chrome foot + Facts “Based” — one shared location string. */
-export const BASED_LOCATION = "Punjab · Remote";
+export const BASED_LOCATION = "Punjab, India · Remote";
 
 export const ABOUT_FACTS: AboutFact[] = [
   { label: "Based", value: BASED_LOCATION },
