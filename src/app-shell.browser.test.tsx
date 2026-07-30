@@ -10,9 +10,14 @@ import {
   setHireSignalEnabledForTests,
 } from "./shell/hire-signal";
 import { SCROLL_PANE_CLASS } from "./shell/scroll-pane";
-import { THEME_STORAGE_KEY } from "./theme/theme";
+import { applyResolvedTheme, THEME_STORAGE_KEY } from "./theme/theme";
 import { getWorkCase, WORK_FOLDERS, workCaseHref } from "./work/inventory";
 import { WORK_MEDIA_CAROUSEL_SIZES } from "./work/work-case-media";
+
+/** Light-theme token SoT from styles.css — used for Hire Signal chip color-role asserts. */
+const LIGHT_ACCENT = "rgb(37, 99, 168)";
+const LIGHT_OK = "rgb(47, 143, 78)";
+const LIGHT_BG_DEEP = "rgb(236, 238, 240)";
 
 const SUPPLY_CHAIN_PATH = workCaseHref("prototypes", "supplychain-plus");
 const SUPPLY_CHAIN_CASE = getWorkCase("prototypes", "supplychain-plus")!;
@@ -1671,7 +1676,58 @@ describe("Hire Signal (App Shell seam)", () => {
     cleanup();
     setHireSignalEnabledForTests(undefined);
     localStorage.removeItem(HIRE_SIGNAL_SNOOZE_KEY);
+    document.documentElement.removeAttribute("data-theme");
     await restoreDesktopViewport();
+  });
+
+  it("themes the mobile Hire Signal chip with desktop accent color roles inside floating chrome", async () => {
+    setHireSignalEnabledForTests(true);
+    applyResolvedTheme("light");
+    await setMobileViewport();
+    const { screen } = renderAt("/");
+
+    const chip = screen.getByRole("button", { name: /^Open to roles$/i });
+    await expect.element(chip).toBeVisible();
+    const chipEl = chip.element();
+    const chipStyles = getComputedStyle(chipEl);
+    expect(chipStyles.color).toBe(LIGHT_ACCENT);
+    expect(chipStyles.backgroundColor).toBe(LIGHT_BG_DEEP);
+    expect(chipStyles.borderTopWidth).not.toBe("0px");
+    expect(chipStyles.boxShadow).not.toBe("none");
+
+    const chipDot = chipEl.querySelector("span[aria-hidden='true']");
+    expect(chipDot, "expected status dot on compact chip").toBeTruthy();
+    expect(getComputedStyle(chipDot!).backgroundColor).toBe(LIGHT_OK);
+
+    await chip.click();
+
+    const title = screen.getByRole("heading", { name: /^Open to roles$/i });
+    await expect.element(title).toBeVisible();
+    const titleEl = title.element();
+    expect(getComputedStyle(titleEl).color).toBe(LIGHT_ACCENT);
+
+    const titleDot = titleEl.querySelector("span[aria-hidden='true']");
+    expect(titleDot, "expected status dot on expanded title").toBeTruthy();
+    expect(getComputedStyle(titleDot!).backgroundColor).toBe(LIGHT_OK);
+
+    const card = titleEl.closest("div");
+    expect(card, "expected expanded Hire Signal card").toBeTruthy();
+    const cardStyles = getComputedStyle(card!);
+    expect(cardStyles.backgroundColor).toBe(LIGHT_BG_DEEP);
+    expect(cardStyles.borderTopWidth).not.toBe("0px");
+    expect(cardStyles.boxShadow).not.toBe("none");
+    // Floating chrome — not the desktop rail soft-panel surface family.
+    expect(cardStyles.backgroundColor).not.toBe("rgba(37, 99, 168, 0.08)");
+
+    const cta = screen.getByRole("link", { name: /^Get in touch$/i });
+    await expect.element(cta).toBeVisible();
+    const ctaStyles = getComputedStyle(cta.element());
+    expect(ctaStyles.color).toBe(LIGHT_ACCENT);
+    // Soft accent CTA — translucent wash, not hard-fill primary.
+    expect(ctaStyles.backgroundColor).not.toBe(LIGHT_ACCENT);
+    expect(ctaStyles.backgroundColor).toMatch(
+      /\/\s*0\.14\s*\)|rgba\(\s*37,\s*99,\s*168,\s*0\.14\s*\)/,
+    );
   });
 
   it("shows desktop soft Hire Signal panel and mobile Open to roles chip when the flag is on", async () => {
