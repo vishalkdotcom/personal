@@ -38,7 +38,7 @@ function renderTag(tag: HeadTag): string {
  * Tags use `data-sm` so `@solidjs/meta` MetaProvider clears them on client boot
  * and owns head updates for in-app navigation (same path as SSR tag handoff).
  *
- * Emits Cloudflare Pages extension shells (`about.html`) so slash-free deep links
+ * Emits Cloudflare Pages extension shells (`resume.html`) so slash-free deep links
  * stay aligned with canonicals (directory index HTML would 308 to a trailing slash).
  */
 export function stampMetaShell(templateHtml: string, meta: PageMeta): string {
@@ -60,7 +60,7 @@ export function stampMetaShell(templateHtml: string, meta: PageMeta): string {
 
 /**
  * Dist-relative shell path for Cloudflare Pages pretty URLs.
- * `/about` → `about.html` (not `about/index.html`).
+ * `/resume` → `resume.html` (not `resume/index.html`).
  */
 export function shellOutputPath(path: string): string {
   if (path === "/" || path === "") return "index.html";

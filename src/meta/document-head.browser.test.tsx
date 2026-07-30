@@ -36,7 +36,7 @@ describe("Document head meta sync (App Shell seam)", () => {
   afterEach(() => cleanup());
 
   it("sets title, description, OG, and canonical when mounting Mode and Work Case URLs", async () => {
-    const { screen: aboutScreen } = renderAt("/about");
+    const { screen: aboutScreen } = renderAt("/");
     await expect
       .element(aboutScreen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
@@ -48,7 +48,7 @@ describe("Document head meta sync (App Shell seam)", () => {
     expect(metaContent('meta[property="og:title"]')).toBe("About · Vishal Kumar");
     expect(metaContent('meta[property="og:image"]')).toBe(`${SITE_ORIGIN}/og.png`);
     expect(metaContent('meta[name="twitter:card"]')).toBe("summary_large_image");
-    expect(canonicalHref()).toBe(`${SITE_ORIGIN}/about`);
+    expect(canonicalHref()).toBe(`${SITE_ORIGIN}/`);
     cleanup();
 
     const { screen: contactScreen } = renderAt("/contact");

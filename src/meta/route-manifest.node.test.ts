@@ -9,7 +9,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     const paths = deepLinkPaths();
 
     expect(paths).toContain("/");
-    expect(paths).toContain("/about");
+    expect(paths).not.toContain("/about");
     expect(paths).toContain("/resume");
     expect(paths).toContain("/contact");
     expect(paths).toContain(workRootHref());
@@ -27,10 +27,10 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
   });
 
   it("stamps About / Contact / Resume / Work Case meta with independent literals", () => {
-    const about = pageMetaForPath("/about");
+    const about = pageMetaForPath("/");
     expect(about.title).toBe(`About · ${SITE_NAME}`);
     expect(about.description).toBe(ABOUT_PITCH);
-    expect(about.canonical).toBe(`${SITE_ORIGIN}/about`);
+    expect(about.canonical).toBe(`${SITE_ORIGIN}/`);
 
     const contact = pageMetaForPath("/contact");
     expect(contact.title).toBe(`Contact · ${SITE_NAME}`);
@@ -90,15 +90,13 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
 
   it("stamps `/` as About meta, distinct from the SupplyChain+ Work Case", () => {
     const home = pageMetaForPath("/");
-    const about = pageMetaForPath("/about");
     const supplyChain = pageMetaForPath("/work/prototypes/supplychain-plus");
 
     expect(home.title).toBe(`About · ${SITE_NAME}`);
     expect(home.description).toBe(ABOUT_PITCH);
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
-    expect(about.title).toBe(home.title);
-    expect(about.description).toBe(home.description);
-    expect(about.canonical).toBe(`${SITE_ORIGIN}/about`);
+    expect(pageMetaForPath("/about").title).toBe(SITE_NAME);
+    expect(deepLinkPaths()).not.toContain("/about");
     expect(supplyChain.title).toBe(`SupplyChain+ · ${SITE_NAME}`);
     expect(supplyChain.canonical).toBe(`${SITE_ORIGIN}/work/prototypes/supplychain-plus`);
     expect(home.description).not.toBe(supplyChain.description);

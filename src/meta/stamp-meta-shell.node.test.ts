@@ -31,7 +31,7 @@ describe("Stamped meta shells (build output seam)", () => {
   });
 
   it("stamps title, description, OG, and canonical into the SPA shell", () => {
-    const meta = pageMetaForPath("/about");
+    const meta = pageMetaForPath("/");
     const html = stampMetaShell(SPA_SHELL, meta);
 
     expect(html).toContain(`<title data-sm="stamp-title">About · ${SITE_NAME}</title>`);
@@ -45,7 +45,7 @@ describe("Stamped meta shells (build output seam)", () => {
       `<meta data-sm="stamp-og-description" property="og:description" content="${escapeHtmlAttr(meta.description)}" />`,
     );
     expect(html).toContain(
-      `<meta data-sm="stamp-og-url" property="og:url" content="${SITE_ORIGIN}/about" />`,
+      `<meta data-sm="stamp-og-url" property="og:url" content="${SITE_ORIGIN}/" />`,
     );
     expect(html).toContain(`<meta data-sm="stamp-og-type" property="og:type" content="website" />`);
     expect(html).toContain(
@@ -61,7 +61,7 @@ describe("Stamped meta shells (build output seam)", () => {
       `<meta data-sm="stamp-twitter-image" name="twitter:image" content="${OG_IMAGE_URL}" />`,
     );
     expect(html).toContain(
-      `<link data-sm="stamp-canonical" rel="canonical" href="${SITE_ORIGIN}/about" />`,
+      `<link data-sm="stamp-canonical" rel="canonical" href="${SITE_ORIGIN}/" />`,
     );
     // Cold-load contract: meta present before any client mount markup changes.
     expect(html.indexOf("<title")).toBeLessThan(html.indexOf('id="app"'));
@@ -100,7 +100,7 @@ describe("Stamped meta shells (build output seam)", () => {
 
   it("maps deep-link paths to Cloudflare pretty-URL shell files", () => {
     expect(shellOutputPath("/")).toBe("index.html");
-    expect(shellOutputPath("/about")).toBe("about.html");
+    expect(shellOutputPath("/resume")).toBe("resume.html");
     expect(shellOutputPath("/work/labor-solutions/engage-reporting")).toBe(
       "work/labor-solutions/engage-reporting.html",
     );

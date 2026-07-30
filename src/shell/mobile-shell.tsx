@@ -89,6 +89,10 @@ export const MobileShell: ParentComponent = (props) => {
           role="dialog"
           aria-modal="true"
           aria-label="Navigation"
+          onClick={(event) => {
+            // Close even when the Mode href matches the current path (About → `/`).
+            if ((event.target as Element | null)?.closest?.("a[href]")) closeOverlays();
+          }}
         >
           <LeftChrome />
         </aside>

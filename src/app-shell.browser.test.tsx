@@ -152,7 +152,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
-    expect(history.get()).toBe("/about");
+    expect(history.get()).toBe("/");
 
     await screen.getByRole("link", { name: /^Resume$/i }).click();
     await expect.element(screen.getByRole("main").getByTitle(/Vishal Kumar resume/i)).toBeVisible();
@@ -172,7 +172,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
   });
 
   it("collapses left and Context Rail via header chips; left stays an icon rail", async () => {
-    const { screen } = renderAt("/about");
+    const { screen } = renderAt("/");
 
     const leftChip = screen.getByRole("button", { name: /collapse left/i });
     const rightChip = screen.getByRole("button", { name: /collapse details/i });
@@ -887,13 +887,6 @@ describe("About home IA (App Shell seam)", () => {
       .not.toBeInTheDocument();
   });
 
-  it("shows the same About surface at /about", async () => {
-    const { screen } = renderAt("/about");
-    const stage = screen.getByRole("main");
-    await expect.element(stage.getByRole("heading", { name: /^Vishal Kumar$/i })).toBeVisible();
-    await expect.element(stage.getByText(/^About$/i)).toBeVisible();
-  });
-
   it("binds About Context Rail on /", async () => {
     const { screen } = renderAt("/");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
@@ -1220,8 +1213,8 @@ describe("Public Storefront PromptSurvey and Tools (App Shell seam)", () => {
 describe("About Mode (App Shell seam)", () => {
   afterEach(() => cleanup());
 
-  it("shows pitch and skills strip in the center on /about", async () => {
-    const { screen } = renderAt("/about");
+  it("shows pitch and skills strip in the center on /", async () => {
+    const { screen } = renderAt("/");
     const stage = screen.getByRole("main");
 
     await expect.element(stage.getByRole("heading", { name: /^Vishal Kumar$/i })).toBeVisible();
@@ -1261,7 +1254,7 @@ describe("About Mode (App Shell seam)", () => {
   });
 
   it("omits a seeking-roles line from the About center", async () => {
-    const { screen } = renderAt("/about");
+    const { screen } = renderAt("/");
     const stage = screen.getByRole("main");
 
     await expect.element(stage).not.toHaveTextContent(/seeking roles/i);
@@ -1269,7 +1262,7 @@ describe("About Mode (App Shell seam)", () => {
   });
 
   it("shows Hire Signal soft panel, Facts, and Elsewhere in Context Rail order", async () => {
-    const { screen } = renderAt("/about");
+    const { screen } = renderAt("/");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail).toBeVisible();
 
@@ -1295,7 +1288,7 @@ describe("About Mode (App Shell seam)", () => {
   });
 
   it("keeps Notes absent from Mode nav while on About", async () => {
-    const { screen } = renderAt("/about");
+    const { screen } = renderAt("/");
     const nav = screen.getByRole("navigation", { name: /modes/i });
     await expect.element(nav).toBeVisible();
     await expect.element(screen.getByRole("link", { name: /^Notes$/i })).not.toBeInTheDocument();
@@ -1528,7 +1521,7 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect.element(drawer.getByRole("button", { name: /theme/i })).toBeVisible();
 
     await drawer.getByRole("link", { name: /^About$/i }).click();
-    expect(history.get()).toBe("/about");
+    expect(history.get()).toBe("/");
     await expect
       .element(screen.getByRole("dialog", { name: /navigation/i }))
       .not.toBeInTheDocument();
@@ -1704,7 +1697,7 @@ describe("Hire Signal (App Shell seam)", () => {
     await expect.element(workRail).toHaveTextContent(/Senior Frontend · Product UI · Remote/);
     cleanup();
 
-    const about = renderAt("/about");
+    const about = renderAt("/");
     const aboutRail = about.screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(aboutRail).toHaveTextContent(/Senior Frontend · Product UI · Remote/);
   });
@@ -1774,7 +1767,7 @@ describe("Hire Signal (App Shell seam)", () => {
     cleanup();
 
     await restoreDesktopViewport();
-    const desktop = renderAt("/about");
+    const desktop = renderAt("/");
     const rail = desktop.screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail.getByRole("link", { name: /get in touch/i })).toBeVisible();
   });

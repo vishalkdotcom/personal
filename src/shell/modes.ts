@@ -19,8 +19,8 @@ export const MODES: ModeDef[] = [
   {
     id: "about",
     label: "About",
-    href: "/about",
-    matches: (pathname) => pathname === "/" || pathname === "" || pathname.startsWith("/about"),
+    href: "/",
+    matches: (pathname) => pathname === "/" || pathname === "",
   },
   {
     id: "work",

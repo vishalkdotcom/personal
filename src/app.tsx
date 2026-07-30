@@ -23,7 +23,6 @@ export const AppShellRoutes = {
   routes: (
     <>
       <Route path="/" component={AboutStage} />
-      <Route path="/about" component={AboutStage} />
       <Route path="/resume" component={ResumeStage} />
       <Route path="/contact" component={ContactStage} />
       <Route path="/work" component={WorkRootStage} />

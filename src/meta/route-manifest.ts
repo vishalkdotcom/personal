@@ -8,7 +8,7 @@ import { WORK_FOLDERS, workCaseHref, workRootHref } from "../work/inventory";
 import { SITE_NAME, SITE_ORIGIN } from "./site";
 
 export type PageMeta = {
-  /** Absolute path, e.g. `/about` or `/`. */
+  /** Absolute path, e.g. `/` or `/work`. */
   path: string;
   title: string;
   description: string;
@@ -35,7 +35,6 @@ function page(path: string, titleSegment: string, description: string): PageMeta
 
 const MODE_META: PageMeta[] = [
   page("/", "About", ABOUT_PITCH),
-  page("/about", "About", ABOUT_PITCH),
   page("/resume", "Resume", `PDF resume for ${ABOUT_NAME} — ${ABOUT_META}.`),
   page(
     "/contact",
