@@ -1,12 +1,23 @@
-import { For, Show, createSignal, type Accessor, type Component } from "solid-js";
+import { For, Show, createSignal, onSettled, type Accessor, type Component } from "solid-js";
 import type { WorkMediaSlide } from "../work/inventory";
 import { resolveWorkMedia, WORK_MEDIA_CAROUSEL_SIZES } from "../work/work-case-media";
+import { handleCarouselNavKey, isTypingTarget } from "./media-keyboard";
 import { MediaViewer } from "./media-viewer";
 import { STAGE_PROOF_MEASURE_CLASS } from "./work-case-stage-chrome";
 
 type MediaCarouselProps = {
   slides: WorkMediaSlide[];
 };
+
+/** Locked prototype inset — carousel counts as in-view past this edge margin. */
+const VIEWPORT_EDGE_INSET_PX = 40;
+
+function carouselInViewport(root: HTMLElement): boolean {
+  const rect = root.getBoundingClientRect();
+  return (
+    rect.bottom > VIEWPORT_EDGE_INSET_PX && rect.top < window.innerHeight - VIEWPORT_EDGE_INSET_PX
+  );
+}
 
 const CaseMediaSlide: Component<{
   slide: WorkMediaSlide;
@@ -18,7 +29,7 @@ const CaseMediaSlide: Component<{
 
   return (
     <div
-      class="relative grid min-w-full place-items-end justify-items-start bg-bg-deep p-2.5"
+      class="relative grid h-full min-w-full place-items-end justify-items-start bg-bg-deep p-2.5"
       data-case-media-slide
       aria-hidden={isActive() ? undefined : "true"}
     >
@@ -62,12 +73,13 @@ const SlideDot: Component<{
 
 /**
  * Work Case stage media — labeled slides with prev/next + dots.
- * Contained shots on a muted deep backdrop; activating the stage poster opens the shared fullscreen viewer.
+ * Viewport ←/→/Home/End (wrap, no focus gate); fullscreen viewer shares the live index.
  * Parent should remount this when the Work Case changes so slide index resets.
  */
 export const MediaCarousel: Component<MediaCarouselProps> = (props) => {
   const [index, setIndex] = createSignal(0);
   const [viewerOpen, setViewerOpen] = createSignal(false);
+  let carouselEl: HTMLElement | undefined;
   let fullscreenTriggerEl: HTMLButtonElement | undefined;
   const count = () => props.slides.length;
   const go = (next: number) => {
@@ -81,37 +93,61 @@ export const MediaCarousel: Component<MediaCarouselProps> = (props) => {
     fullscreenTriggerEl?.focus();
   };
 
+  onSettled(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (viewerOpen() || isTypingTarget(event.target)) return;
+      if (!carouselEl || !carouselInViewport(carouselEl)) return;
+      handleCarouselNavKey(event, {
+        goPrev: () => go(index() - 1),
+        goNext: () => go(index() + 1),
+        goFirst: () => go(0),
+        goLast: () => go(count() - 1),
+      });
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  });
+
   return (
     <>
       <section
-        class={`relative ${STAGE_PROOF_MEASURE_CLASS} overflow-hidden rounded-xl border border-border`}
+        ref={(el) => {
+          carouselEl = el;
+        }}
+        class={`relative ${STAGE_PROOF_MEASURE_CLASS} rounded-xl border border-border outline-none focus-within:shadow-[0_0_0_3px_var(--color-bg),0_0_0_5px_var(--color-accent)]`}
         aria-roledescription="carousel"
         aria-label="Case media"
+        tabindex="0"
       >
         <div
-          class="flex aspect-[16/10] transition-transform duration-[220ms] ease-shell"
-          style={{ transform: `translateX(-${index() * 100}%)` }}
+          data-media-frame
+          class="relative aspect-[16/10] overflow-hidden rounded-[calc(0.75rem-1px)]"
         >
-          <For each={props.slides}>
-            {(slide, slideIndex) => (
-              <CaseMediaSlide slide={slide} slideIndex={slideIndex} activeIndex={index} />
-            )}
-          </For>
-        </div>
+          <div
+            class="flex h-full transition-transform duration-[220ms] ease-shell"
+            style={{ transform: `translateX(-${index() * 100}%)` }}
+          >
+            <For each={props.slides}>
+              {(slide, slideIndex) => (
+                <CaseMediaSlide slide={slide} slideIndex={slideIndex} activeIndex={index} />
+              )}
+            </For>
+          </div>
 
-        <Show when={activeSlide()}>
-          {(slide) => (
-            <button
-              ref={(el) => {
-                fullscreenTriggerEl = el;
-              }}
-              type="button"
-              class="absolute inset-0 z-0 block border-0 bg-transparent p-0"
-              aria-label={`View ${slide().label} fullscreen`}
-              onClick={() => setViewerOpen(true)}
-            />
-          )}
-        </Show>
+          <Show when={activeSlide()}>
+            {(slide) => (
+              <button
+                ref={(el) => {
+                  fullscreenTriggerEl = el;
+                }}
+                type="button"
+                class="absolute inset-0 z-0 block border-0 bg-transparent p-0 outline-none"
+                aria-label={`View ${slide().label} fullscreen`}
+                onClick={() => setViewerOpen(true)}
+              />
+            )}
+          </Show>
+        </div>
 
         <div class="pointer-events-none absolute inset-y-0 left-0 right-0 z-[1] flex items-center justify-between px-2">
           <button
@@ -144,10 +180,8 @@ export const MediaCarousel: Component<MediaCarouselProps> = (props) => {
         </div>
       </section>
 
-      <Show when={viewerOpen() ? activeSlide() : undefined}>
-        {(slide) => (
-          <MediaViewer inventorySrc={slide().src} label={slide().label} onClose={closeViewer} />
-        )}
+      <Show when={viewerOpen()}>
+        <MediaViewer slides={props.slides} index={index} onGo={go} onClose={closeViewer} />
       </Show>
     </>
   );

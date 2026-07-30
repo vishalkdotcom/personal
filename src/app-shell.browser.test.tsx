@@ -1097,6 +1097,127 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
     expect(active.clientWidth).toBeLessThan(800);
     await expect.poll(() => (active as HTMLImageElement).currentSrc).toMatch(/home-\d+w\.webp/);
   });
+
+  it("moves and wraps slides with ←/→/Home/End while the carousel is in view without focus", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    // Deliberately leave focus elsewhere — keys are viewport-bound, not focus-gated.
+    (document.activeElement as HTMLElement | null)?.blur?.();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+    await expect.element(carousel.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
+    await expect.element(carousel.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+    await expect.element(carousel.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
+    await expect.element(carousel.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Home", bubbles: true }));
+    await expect.element(carousel.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+  });
+
+  it("opens the media viewer as a carousel with filmstrip and live-synced stage index", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+
+    await carousel.getByRole("button", { name: /view shot 1 · home fullscreen/i }).click();
+    const viewer = screen.getByRole("dialog", { name: /media viewer/i });
+    await expect.element(viewer).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+    await expect.element(viewer.getByRole("button", { name: /previous slide/i })).toBeVisible();
+    await expect.element(viewer.getByRole("button", { name: /next slide/i })).toBeVisible();
+
+    const filmstrip = viewer.getByRole("group", { name: /^Slides$/i });
+    await expect.element(filmstrip).toBeVisible();
+    await expect.element(filmstrip.getByRole("button", { name: /Shot 1 · Home/i })).toBeVisible();
+    await expect.element(filmstrip.getByRole("button", { name: /Shot 3 · Audit/i })).toBeVisible();
+
+    await viewer.getByRole("button", { name: /next slide/i }).click();
+    await expect.element(viewer.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+    // Shared live index — stage updates immediately while the viewer stays open.
+    await expect.element(carousel.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
+    await expect.element(viewer.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+
+    await filmstrip.getByRole("button", { name: /Shot 1 · Home/i }).click();
+    await expect.element(viewer.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+    await expect.element(carousel.getByRole("img", { name: /Shot 1 · Home/i })).toBeVisible();
+  });
+
+  it("keeps the browsed index on Esc and ✕ close, and leaves Enter unbound", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+
+    await carousel.getByRole("button", { name: /view shot 1 · home fullscreen/i }).click();
+    let viewer = screen.getByRole("dialog", { name: /media viewer/i });
+    await expect.element(viewer).toBeVisible();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+    await expect.element(viewer.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+
+    // Enter has no commit/restore binding — viewer stays open on the browsed shot.
+    document.body.focus();
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    await expect.element(screen.getByRole("dialog", { name: /media viewer/i })).toBeVisible();
+    await expect.element(viewer.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    await expect
+      .element(screen.getByRole("dialog", { name: /media viewer/i }))
+      .not.toBeInTheDocument();
+    await expect.element(carousel.getByRole("img", { name: /Shot 2 · Diagnosis/i })).toBeVisible();
+
+    await carousel.getByRole("button", { name: /view shot 2 · diagnosis fullscreen/i }).click();
+    viewer = screen.getByRole("dialog", { name: /media viewer/i });
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
+    await expect.element(viewer.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+
+    await viewer.getByRole("button", { name: /close media viewer/i }).click();
+    await expect
+      .element(screen.getByRole("dialog", { name: /media viewer/i }))
+      .not.toBeInTheDocument();
+    await expect.element(carousel.getByRole("img", { name: /Shot 3 · Audit/i })).toBeVisible();
+  });
+
+  it("renders an unclipped outer focus halo on carousel media focus-within", async () => {
+    const { screen } = renderAt(SUPPLY_CHAIN_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Home/i);
+    const root = carousel.element();
+    const mediaFrame = root.querySelector("[data-media-frame]");
+    expect(mediaFrame, "expected inner media frame").toBeTruthy();
+
+    // overflow:hidden stays on the inner frame so the outer halo is never clipped.
+    expect(getComputedStyle(root).overflow).not.toBe("hidden");
+    expect(getComputedStyle(mediaFrame!).overflow).toBe("hidden");
+
+    const openHit = carousel.getByRole("button", { name: /view shot 1 · home fullscreen/i });
+    openHit.element().focus();
+    expect(root.contains(document.activeElement)).toBe(true);
+
+    const halo = getComputedStyle(root).boxShadow;
+    expect(halo, "expected outer box-shadow focus halo").not.toBe("none");
+    expect(halo).toMatch(/rgb|rgba|#/i);
+
+    await openHit.click();
+    const viewer = screen.getByRole("dialog", { name: /media viewer/i });
+    const viewerMedia = viewer.element().querySelector("[data-viewer-media]");
+    const viewerFrame = viewer.element().querySelector("[data-media-frame]");
+    expect(viewerMedia, "expected viewer media focus root").toBeTruthy();
+    expect(viewerFrame, "expected viewer inner media frame").toBeTruthy();
+    expect(getComputedStyle(viewerMedia!).overflow).not.toBe("hidden");
+    expect(getComputedStyle(viewerFrame!).overflow).toBe("hidden");
+
+    (viewerMedia as HTMLElement).focus();
+    const viewerHalo = getComputedStyle(viewerMedia!).boxShadow;
+    expect(viewerHalo, "expected viewer outer box-shadow focus halo").not.toBe("none");
+    expect(viewerHalo).toMatch(/rgb|rgba|#/i);
+  });
 });
 
 const promptSurveyAndToolsStorefronts = [
@@ -1668,6 +1789,44 @@ describe("Mobile App Shell (App Shell seam)", () => {
 
     await viewer.getByRole("button", { name: /close media viewer/i }).click();
     await expect.element(viewer).not.toBeInTheDocument();
+  });
+
+  it("keeps end filmstrip thumbs inset when thumbs overflow on mobile", async () => {
+    await setMobileViewport();
+    // Engage has 5 slides — wider than ~390px filmstrip at 72px thumbs.
+    const { screen } = renderAt(ENGAGE_PATH);
+    const carousel = await expectWiredCaseMedia(screen.getByRole("main"), /Shot 1 · Shell/i);
+
+    await carousel.getByRole("button", { name: /view shot 1 · shell fullscreen/i }).click();
+    const viewer = screen.getByRole("dialog", { name: /media viewer/i });
+    const filmstrip = viewer.getByRole("group", { name: /^Slides$/i });
+    await expect.element(filmstrip).toBeVisible();
+
+    const stripEl = filmstrip.element();
+    expect(stripEl.scrollWidth).toBeGreaterThan(stripEl.clientWidth);
+
+    const assertThumbInset = (thumb: Element, edge: "start" | "end") => {
+      const stripRect = stripEl.getBoundingClientRect();
+      const thumbRect = thumb.getBoundingClientRect();
+      if (edge === "start") {
+        expect(thumbRect.left).toBeGreaterThanOrEqual(stripRect.left + 12);
+      } else {
+        expect(thumbRect.right).toBeLessThanOrEqual(stripRect.right - 12);
+      }
+    };
+
+    const firstThumb = filmstrip.getByRole("button", { name: /Shot 1 · Shell/i }).element();
+    await expect.poll(() => firstThumb.getAttribute("aria-current")).toBe("true");
+    assertThumbInset(firstThumb, "start");
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
+    const lastThumb = filmstrip.getByRole("button", { name: /Shot 5 · Overall table/i }).element();
+    await expect.poll(() => lastThumb.getAttribute("aria-current")).toBe("true");
+    assertThumbInset(lastThumb, "end");
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Home", bubbles: true }));
+    await expect.poll(() => firstThumb.getAttribute("aria-current")).toBe("true");
+    assertThumbInset(firstThumb, "start");
   });
 });
 
