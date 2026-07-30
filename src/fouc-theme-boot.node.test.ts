@@ -3,10 +3,11 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 describe("FOUC-safe theme boot", () => {
-  it("ships an inline blocking script in index.html before stylesheet links", () => {
+  it("ships an inline blocking script in index.html before any style source", () => {
     const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
     const scriptIdx = html.indexOf("vk-theme");
-    const cssIdx = html.search(/rel=["']stylesheet["']/i);
+    // First styled-paint trigger: external stylesheet or inline <style> (@font-face).
+    const cssIdx = html.search(/rel=["']stylesheet["']|<style[\s>]/i);
     expect(scriptIdx).toBeGreaterThan(-1);
     expect(cssIdx).toBeGreaterThan(-1);
     expect(scriptIdx).toBeLessThan(cssIdx);

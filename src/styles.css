@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* One-off asset scripts are not templates — keep comment words out of utilities. */
+@source not "../scripts/**";
+
 /* Locked FOUC mechanism: dark: follows document data-theme, not media alone. */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
