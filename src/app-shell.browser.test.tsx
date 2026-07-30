@@ -260,7 +260,8 @@ describe("Work inventory and Work tree (App Shell seam)", () => {
       .toBeVisible();
     await expect.element(tree.getByRole("link", { name: /Store Dashboard/i })).toBeVisible();
     await expect.element(tree.getByRole("link", { name: /SupplyChain\+/i })).toBeVisible();
-    await expect.element(tree.getByRole("link", { name: /QGenAI/i })).toBeVisible();
+    await expect.element(tree.getByRole("link", { name: /PromptSurvey/i })).toBeVisible();
+    await expect.element(tree.getByRole("link", { name: /QGenAI/i })).not.toBeInTheDocument();
     await expect.element(tree.getByRole("link", { name: /Snap2Paper/i })).toBeVisible();
     await expect.element(tree.getByRole("link", { name: /PhotoGrid/i })).toBeVisible();
     await expect.element(tree.getByRole("link", { name: /PDFGrid/i })).toBeVisible();
@@ -509,11 +510,37 @@ describe("Work Context Rail (App Shell seam)", () => {
   });
 
   it("omits Outputs and Sources product labels from the Context Rail", async () => {
-    const { screen } = renderAt("/work/prototypes/qgenai");
+    const { screen } = renderAt("/work/prototypes/promptsurvey");
     const rail = screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail).toBeVisible();
     await expect.element(rail.getByText(/^Outputs$/i)).not.toBeInTheDocument();
     await expect.element(rail.getByText(/^Sources$/i)).not.toBeInTheDocument();
+  });
+});
+
+describe("PromptSurvey identity rename (App Shell seam)", () => {
+  afterEach(() => cleanup());
+
+  it("keeps route, slug, title, and media paths internally consistent", async () => {
+    const workCase = getWorkCase("prototypes", "promptsurvey");
+    expect(workCase).toBeTruthy();
+    expect(workCase!.slug).toBe("promptsurvey");
+    expect(workCase!.title).toBe("PromptSurvey");
+    expect(workCaseHref("prototypes", "promptsurvey")).toBe("/work/prototypes/promptsurvey");
+    expect(getWorkCase("prototypes", "qgenai")).toBeUndefined();
+
+    for (const shot of workCase!.media ?? []) {
+      expect(shot.src).toMatch(/^work\/promptsurvey\//);
+      expect(shot.src).not.toMatch(/qgenai/i);
+    }
+
+    const { screen } = renderAt("/work/prototypes/promptsurvey");
+    const stage = screen.getByRole("main");
+    await expect.element(stage.getByRole("heading", { name: /^PromptSurvey$/i })).toBeVisible();
+    await expect
+      .element(stage.getByRole("article", { name: /PromptSurvey Public Storefront/i }))
+      .toBeVisible();
+    await expect.element(stage.getByRole("heading", { name: /QGenAI/i })).not.toBeInTheDocument();
   });
 });
 
@@ -994,11 +1021,11 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
   });
 });
 
-const qgenaiAndToolsStorefronts = [
+const promptSurveyAndToolsStorefronts = [
   {
-    path: "/work/prototypes/qgenai",
-    title: /^QGenAI$/i,
-    article: /QGenAI Public Storefront/i,
+    path: "/work/prototypes/promptsurvey",
+    title: /^PromptSurvey$/i,
+    article: /PromptSurvey Public Storefront/i,
     badge: /^Prototype$/i,
     liveHref: "https://qgenai.vercel.app",
     liveLabel: /qgenai\.vercel\.app/i,
@@ -1041,10 +1068,10 @@ const qgenaiAndToolsStorefronts = [
   },
 ] as const;
 
-describe("Public Storefront QGenAI and Tools (App Shell seam)", () => {
+describe("Public Storefront PromptSurvey and Tools (App Shell seam)", () => {
   afterEach(() => cleanup());
 
-  for (const storefront of qgenaiAndToolsStorefronts) {
+  for (const storefront of promptSurveyAndToolsStorefronts) {
     it(`deep-links ${storefront.path} as Public Storefront with honest Live URL`, async () => {
       const { screen } = renderAt(storefront.path);
       const stage = screen.getByRole("main");

@@ -73,6 +73,20 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(supplyChain.description).toBe(supplyCase!.lede);
   });
 
+  it("inherits PromptSurvey case meta from the renamed inventory entry", () => {
+    const promptSurvey = getWorkCase("prototypes", "promptsurvey");
+    expect(promptSurvey?.title).toBe("PromptSurvey");
+    expect(promptSurvey?.slug).toBe("promptsurvey");
+    const promptSurveyPath = workCaseHref("prototypes", "promptsurvey");
+    expect(promptSurveyPath).toBe("/work/prototypes/promptsurvey");
+    const promptSurveyMeta = pageMetaForPath(promptSurveyPath);
+    expect(promptSurveyMeta.title).toBe(`PromptSurvey · ${SITE_NAME}`);
+    expect(promptSurveyMeta.description).toBe(promptSurvey!.lede);
+    expect(promptSurveyMeta.canonical).toBe(`${SITE_ORIGIN}/work/prototypes/promptsurvey`);
+    expect(deepLinkPaths()).not.toContain("/work/prototypes/qgenai");
+    expect(pageMetaForPath("/work/prototypes/qgenai").title).toBe(SITE_NAME);
+  });
+
   it("stamps `/` as About meta, distinct from the SupplyChain+ Work Case", () => {
     const home = pageMetaForPath("/");
     const about = pageMetaForPath("/about");

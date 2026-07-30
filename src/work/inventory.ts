@@ -260,12 +260,12 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
       },
       {
-        slug: "qgenai",
-        title: "QGenAI",
+        slug: "promptsurvey",
+        title: "PromptSurvey",
         badge: "Prototype",
         surface: "public-storefront",
         live: "https://qgenai.vercel.app",
-        role: "QGenAI · solo build",
+        role: "PromptSurvey · solo build",
         lede: "A survey builder that turns a prompt into multi-type questions, with per-question regeneration and multi-language translation.",
         outcomes: [
           {
@@ -279,9 +279,9 @@ export const WORK_FOLDERS: WorkFolder[] = [
         ],
         stack: ["Next.js 15", "React 19", "Vercel AI SDK", "Zod", "shadcn/ui", "IndexedDB"],
         media: [
-          { label: "Shot 1 · Builder", src: "work/qgenai/builder.png" },
-          { label: "Shot 2 · Survey", src: "work/qgenai/survey.png" },
-          { label: "Shot 3 · Translate", src: "work/qgenai/translate.png" },
+          { label: "Shot 1 · Builder", src: "work/promptsurvey/builder.png" },
+          { label: "Shot 2 · Survey", src: "work/promptsurvey/survey.png" },
+          { label: "Shot 3 · Translate", src: "work/promptsurvey/translate.png" },
         ],
       },
     ],
