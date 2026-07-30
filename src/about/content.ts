@@ -24,19 +24,19 @@ export type AboutSelectedWorkPeek = {
 export const ABOUT_NAME = "Vishal Kumar";
 
 export const ABOUT_META =
-  "Senior Frontend Engineer · React / Next.js · Complex product UI (reporting, forms, platform)";
+  "Senior Frontend Engineer · React / Next.js · Product UI (reporting, forms, platform)";
 
 export const ABOUT_PITCH =
-  "7+ years building complex React/Next.js product UI for remote teams — 13+ years total. Reporting surfaces, form/admin workflows, and platform cleanup. AI-native delivery; all output reviewed, tested, and owned.";
+  "7+ years building React/Next.js product UI for remote teams — 13+ years total. Reporting surfaces, form/admin workflows, and platform cleanup. AI-native delivery; all output reviewed, tested, and owned.";
 
 export const ABOUT_SKILLS = [
   "Next.js",
   "React",
   "TypeScript",
   "JavaScript",
-  "Figma",
-  "Metabase",
   "Playwright",
+  "Cursor",
+  "Claude Code",
 ] as const;
 
 /**
@@ -60,17 +60,17 @@ export const ABOUT_SELECTED_WORK: readonly AboutSelectedWorkPeek[] = [
   },
 ];
 
-export const HIRE_SIGNAL_DETAIL = "Senior Frontend · Complex product UI · remote";
+export const HIRE_SIGNAL_DETAIL = "Senior Frontend · Product UI · Remote";
 
 export const ABOUT_AVAILABILITY = `Open to roles · ${HIRE_SIGNAL_DETAIL}`;
 
 /** Left-chrome foot + Facts “Based” — one shared location string. */
-export const BASED_LOCATION = "Punjab · remote";
+export const BASED_LOCATION = "Punjab · Remote";
 
 export const ABOUT_FACTS: AboutFact[] = [
   { label: "Based", value: BASED_LOCATION },
   { label: "Experience", value: "13+ yrs" },
-  { label: "Focus", value: "Complex product UI" },
+  { label: "Focus", value: "Product UI" },
 ];
 
 export const ABOUT_ELSEWHERE: AboutElsewhereLink[] = [

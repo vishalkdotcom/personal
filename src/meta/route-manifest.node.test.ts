@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ABOUT_PITCH } from "../about/content";
+import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH } from "../about/content";
 import { getWorkCase, WORK_FOLDERS, workCaseHref, workRootHref } from "../work/inventory";
 import { DEEP_LINK_ROUTES, deepLinkPaths, pageMetaForPath } from "./route-manifest";
 import { SITE_NAME, SITE_ORIGIN } from "./site";
@@ -42,10 +42,11 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
 
     const resume = pageMetaForPath("/resume");
     expect(resume.title).toBe(`Resume · ${SITE_NAME}`);
-    expect(resume.description).toBe(
-      "PDF resume for Vishal Kumar — Senior Frontend Engineer · React / Next.js · Complex product UI (reporting, forms, platform).",
+    expect(resume.description).toBe(`PDF resume for ${ABOUT_NAME} — ${ABOUT_META}.`);
+    expect(ABOUT_META).toBe(
+      "Senior Frontend Engineer · React / Next.js · Product UI (reporting, forms, platform)",
     );
-    expect(resume.description).not.toMatch(/Resume Surface/i);
+    expect(resume.description).not.toMatch(/Resume Surface|Complex product UI|Complex Product UI/i);
     expect(resume.canonical).toBe(`${SITE_ORIGIN}/resume`);
 
     const work = pageMetaForPath(workRootHref());

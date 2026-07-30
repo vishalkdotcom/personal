@@ -111,9 +111,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(screen.getByRole("navigation", { name: /modes/i })).toBeVisible();
     await expect.element(screen.getByRole("main")).toBeVisible();
     await expect.element(screen.getByRole("complementary", { name: /^details$/i })).toBeVisible();
-    await expect
-      .element(screen.getByText("Senior FE · Complex product UI", { exact: true }))
-      .toBeVisible();
+    await expect.element(screen.getByText("Senior FE · Product UI", { exact: true })).toBeVisible();
   });
 
   it("offers Work · About · Resume · Contact Modes without Notes", async () => {
@@ -181,7 +179,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(screen.getByRole("button", { name: /collapse details/i })).toBeVisible();
   });
 
-  it("pins a left-chrome foot with avatar and Punjab · remote", async () => {
+  it("pins a left-chrome foot with avatar and Punjab · Remote", async () => {
     const { screen } = renderAt("/");
     const left = screen.getByRole("complementary", { name: /^left chrome$/i });
     const foot = left.getByRole("group", { name: /^identity$/i });
@@ -189,7 +187,7 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(foot).toBeVisible();
     await expect.element(foot.getByRole("img", { name: /^Vishal Kumar$/i })).toBeVisible();
     await expect.element(foot.getByText(/^VK$/i)).toBeVisible();
-    await expect.element(foot.getByText(/^Punjab · remote$/i)).toBeVisible();
+    await expect.element(foot.getByText("Punjab · Remote", { exact: true })).toBeVisible();
     expect(foot.element().querySelector("a")).toBeNull();
   });
 
@@ -202,7 +200,9 @@ describe("Desktop Triptych Dock (App Shell seam)", () => {
     await expect.element(screen.getByRole("button", { name: /expand left/i })).toBeVisible();
 
     await expect.element(foot.getByRole("img", { name: /^Vishal Kumar$/i })).toBeVisible();
-    await expect.element(foot.getByText(/^Punjab · remote$/i)).not.toBeInTheDocument();
+    await expect
+      .element(foot.getByText("Punjab · Remote", { exact: true }))
+      .not.toBeInTheDocument();
     await expect.element(screen.getByRole("link", { name: /^About$/i })).toBeVisible();
   });
 
@@ -1148,17 +1148,20 @@ describe("About Mode (App Shell seam)", () => {
     await expect
       .element(
         stage.getByText(
-          /Senior Frontend Engineer · React \/ Next\.js · Complex product UI \(reporting, forms, platform\)/i,
+          "Senior Frontend Engineer · React / Next.js · Product UI (reporting, forms, platform)",
+          { exact: true },
         ),
       )
       .toBeVisible();
     await expect
       .element(
         stage.getByText(
-          /7\+ years building complex React\/Next\.js product UI for remote teams — 13\+ years total/i,
+          /7\+ years building React\/Next\.js product UI for remote teams — 13\+ years total/,
         ),
       )
       .toBeVisible();
+    await expect.element(stage).not.toHaveTextContent(/Complex product UI|Complex Product UI/i);
+    await expect.element(stage).not.toHaveTextContent(/Senior FE/);
 
     const skills = stage.getByRole("list", { name: /^Skills$/i });
     await expect.element(skills).toBeVisible();
@@ -1167,12 +1170,14 @@ describe("About Mode (App Shell seam)", () => {
       "React",
       "TypeScript",
       "JavaScript",
-      "Figma",
-      "Metabase",
       "Playwright",
+      "Cursor",
+      "Claude Code",
     ]) {
-      await expect.element(skills.getByText(skill)).toBeVisible();
+      await expect.element(skills.getByText(skill, { exact: true })).toBeVisible();
     }
+    await expect.element(skills.getByText("Figma", { exact: true })).not.toBeInTheDocument();
+    await expect.element(skills.getByText("Metabase", { exact: true })).not.toBeInTheDocument();
   });
 
   it("omits a seeking-roles line from the About center", async () => {
@@ -1192,9 +1197,9 @@ describe("About Mode (App Shell seam)", () => {
     await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
     await expect.element(rail.getByText(/^Facts$/i)).toBeVisible();
     await expect.element(rail.getByText(/^Elsewhere$/i)).toBeVisible();
-    await expect.element(rail.getByText(/Punjab · remote/i)).toBeVisible();
+    await expect.element(rail.getByText("Punjab · Remote", { exact: true })).toBeVisible();
     await expect.element(rail.getByText(/13\+ yrs/i)).toBeVisible();
-    await expect.element(rail.getByText("Complex product UI", { exact: true })).toBeVisible();
+    await expect.element(rail.getByText("Product UI", { exact: true })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /Resume \(PDF\)/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^LinkedIn/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^GitHub/i })).toBeVisible();
@@ -1328,7 +1333,7 @@ describe("Contact Mode (App Shell seam)", () => {
     const rail = screen.getByRole("complementary", { name: /^details$/i });
 
     await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
-    await expect.element(rail).toHaveTextContent(/Senior Frontend · Complex product UI · remote/i);
+    await expect.element(rail).toHaveTextContent(/Senior Frontend · Product UI · Remote/);
     await expect
       .element(rail.getByRole("link", { name: /^Get in touch$/i }))
       .not.toBeInTheDocument();
@@ -1599,7 +1604,7 @@ describe("Hire Signal (App Shell seam)", () => {
     const rail = desktop.screen.getByRole("complementary", { name: /^details$/i });
     await expect.element(rail.getByRole("heading", { name: /^Open to roles$/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^Get in touch$/i })).toBeVisible();
-    await expect.element(rail).toHaveTextContent(/Senior Frontend · Complex product UI · remote/i);
+    await expect.element(rail).toHaveTextContent(/Senior Frontend · Product UI · Remote/);
     cleanup();
 
     await setMobileViewport();
@@ -1613,16 +1618,12 @@ describe("Hire Signal (App Shell seam)", () => {
     setHireSignalEnabledForTests(true);
     const work = renderAt(SUPPLY_CHAIN_PATH);
     const workRail = work.screen.getByRole("complementary", { name: /^details$/i });
-    await expect
-      .element(workRail)
-      .toHaveTextContent(/Senior Frontend · Complex product UI · remote/i);
+    await expect.element(workRail).toHaveTextContent(/Senior Frontend · Product UI · Remote/);
     cleanup();
 
     const about = renderAt("/about");
     const aboutRail = about.screen.getByRole("complementary", { name: /^details$/i });
-    await expect
-      .element(aboutRail)
-      .toHaveTextContent(/Senior Frontend · Complex product UI · remote/i);
+    await expect.element(aboutRail).toHaveTextContent(/Senior Frontend · Product UI · Remote/);
   });
 
   it("hides both Hire Signal surfaces when the flag is off", async () => {
@@ -1656,7 +1657,7 @@ describe("Hire Signal (App Shell seam)", () => {
     const getInTouch = screen.getByRole("link", { name: /^Get in touch$/i });
     await expect.element(getInTouch).toBeVisible();
     await expect
-      .element(screen.getByText("Senior FE · Complex product UI · remote", { exact: true }))
+      .element(screen.getByText("Senior FE · Product UI · Remote", { exact: true }))
       .toBeVisible();
     await expect.element(screen.getByRole("button", { name: /^Snooze$/i })).toBeVisible();
     expect(getInTouch.element().getAttribute("href")).toBe("/contact");

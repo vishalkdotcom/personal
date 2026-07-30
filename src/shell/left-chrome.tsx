@@ -58,9 +58,7 @@ export const LeftChrome: Component<{ collapsed?: boolean }> = (props) => (
     <div class="flex items-start justify-between gap-2 p-[4px_8px_14px] group-data-[left-collapsed]/shell:justify-center group-data-[left-collapsed]/shell:p-[4px_0_10px]">
       <div class="group-data-[left-collapsed]/shell:hidden">
         <div class="whitespace-nowrap text-sm font-[650] tracking-[-0.02em]">Vishal Kumar</div>
-        <div class="mt-[3px] whitespace-nowrap text-[11px] text-faint">
-          Senior FE · Complex product UI
-        </div>
+        <div class="mt-[3px] whitespace-nowrap text-[11px] text-faint">Senior FE · Product UI</div>
       </div>
       <ThemeControl />
     </div>
