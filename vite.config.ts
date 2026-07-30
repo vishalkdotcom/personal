@@ -63,7 +63,12 @@ export default defineConfig({
             api: { host: "127.0.0.1", port: 32123 },
             // Desktop Triptych Dock default; mobile App Shell tests call page.viewport.
             viewport: { width: 1280, height: 800 },
-            instances: [{ browser: "chromium" }],
+            instances: [
+              {
+                browser: "chromium",
+                setupFiles: ["./vitest.browser.setup.ts"],
+              },
+            ],
           },
         },
       },

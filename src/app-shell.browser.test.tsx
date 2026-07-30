@@ -1435,9 +1435,11 @@ describe("Mobile App Shell (App Shell seam)", () => {
     await expect.element(drawer).toBeVisible();
     expect(drawer.element().classList.contains(SCROLL_PANE_CLASS)).toBe(true);
 
-    await screen.getByRole("button", { name: /dismiss overlay/i }).click();
-    await screen.getByRole("button", { name: /open context/i }).click();
-    const sheet = screen.getByRole("dialog", { name: /^Context$/i });
+    // Remount: drawer covers the dismiss overlay's center under real CSS layout.
+    cleanup();
+    const again = renderAt("/");
+    await again.screen.getByRole("button", { name: /open context/i }).click();
+    const sheet = again.screen.getByRole("dialog", { name: /^Context$/i });
     await expect.element(sheet).toBeVisible();
     expect(sheet.element().classList.contains(SCROLL_PANE_CLASS)).toBe(true);
   });

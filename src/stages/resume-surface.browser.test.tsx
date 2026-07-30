@@ -5,7 +5,6 @@ import { page } from "vitest/browser";
 import { AppShellRoutes } from "../app";
 import { RESUME_PDF_FILENAME, RESUME_PDF_HREF } from "../resume/content";
 import { applyResolvedTheme } from "../theme/theme";
-import "../styles.css";
 
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1280, height: 800 } as const;

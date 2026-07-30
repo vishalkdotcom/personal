@@ -26,6 +26,7 @@ Read this when changing dependencies, build config, JSX/TS setup, or deploy wiri
 ## Testing
 
 - Vitest Browser Mode (Playwright **Chromium** only) for App Shell / theme UI seams; Node project for the FOUC `index.html` structural contract.
+- Chromium instance `setupFiles` loads `vitest.browser.setup.ts` (shared global CSS) — do not rely on per-suite `styles.css` imports or on `main.tsx`.
 - Filename suffixes: `*.browser.test.ts(x)` → browser project; `*.node.test.ts` → node project.
 - Solid render: keep `@solidjs/testing-library`, bridge with `page.elementLocator` — do not adopt `vitest-browser-solid`.
 - Dropped: `jsdom`, `@testing-library/jest-dom` (matchers/interactions come from Vitest Browser Mode).
