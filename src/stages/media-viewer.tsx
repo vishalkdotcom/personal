@@ -79,7 +79,7 @@ export const MediaViewer: Component<MediaViewerProps> = (props) => {
       <div class="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-bg-deep px-4 py-2.5">
         <strong class="truncate text-[13px] font-semibold">{activeSlide()!.label}</strong>
         <span class="mr-auto ml-2.5 font-mono text-[10px] text-faint">
-          {props.index() + 1}/{count()} · Esc or ✕ close
+          {props.index() + 1}/{count()}
         </span>
         <button
           ref={(el) => {

@@ -1147,6 +1147,8 @@ describe("Public Storefront carousel and Live (App Shell seam)", () => {
     await expect.element(viewer.getByRole("img", { name: SC_CAPTION_1 })).toBeVisible();
     await expect.element(viewer.getByRole("button", { name: /previous slide/i })).toBeVisible();
     await expect.element(viewer.getByRole("button", { name: /next slide/i })).toBeVisible();
+    await expect.element(viewer).toHaveTextContent(/1\/\d+/);
+    await expect.element(viewer).not.toHaveTextContent(/Esc or ✕ close/i);
 
     const filmstrip = viewer.getByRole("group", { name: /^Slides$/i });
     await expect.element(filmstrip).toBeVisible();
