@@ -19,11 +19,12 @@ Read this when changing dependencies, build config, JSX/TS setup, or deploy wiri
 
 - Cloudflare Pages static output: `dist/` (`wrangler.toml` `pages_build_output_dir`).
 - Git build command: `bun install --frozen-lockfile && bun run build`. Non-secret build env (`SKIP_DEPENDENCY_INSTALL`, `BUN_VERSION`, `VITE_*`) lives in committed `wrangler.toml` `[vars]` — dashboard-only vars are not applied to the pre-build install when this file is present.
-- Build stamps per-path HTML meta shells for the finite Mode + Work Case deep-link set (`src/meta/`); full-body SSR is not required.
+- Build stamps per-path HTML meta shells for the finite Mode + Work Case deep-link set (`src/meta/`), plus crawlable `#app` snapshots, JSON-LD, markdown siblings, `sitemap.xml`, `llms.txt`, and `404.html`. Full-body SSR is not required.
 - Contact form: Pages Function `POST /api/contact` → Resend via `fetch` (`functions/api/contact.ts`).
+- Agent negotiation: Pages Function `functions/_middleware.ts` returns HTTP 404 for unknown document paths and serves `text/markdown` when `Accept` prefers it (`Vary: Accept, Accept-Encoding`).
 - Secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` as Pages **encrypted secrets** only (never in `wrangler.toml`, never `VITE_`-prefixed).
 - Public build env (baked into the client bundle): `VITE_HIRE_SIGNAL`, `VITE_GOOGLE_ANALYTICS_ID` (GA4; blank disables).
-- Functions scope: `dist/_routes.json` include `/api/*` only (copied from `static/_routes.json`).
+- Functions scope: `dist/_routes.json` include `/*`, exclude `/assets/*` and `/fonts/*` (copied from `static/_routes.json`). Zone-level Cloudflare Bot Fight Mode is **not** in this repo — skip AI crawler User-Agents in the dashboard if they 403.
 
 ## Testing
 

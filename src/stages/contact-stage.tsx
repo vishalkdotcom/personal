@@ -1,3 +1,4 @@
+import { A } from "@solidjs/router";
 import { createSignal, Show, type Component } from "solid-js";
 import { CONTACT_EMAIL } from "../contact/content";
 import { validateContactPayload, type ContactFieldErrors } from "../contact/schema";
@@ -187,6 +188,12 @@ export const ContactStage: Component = () => {
           </p>
         </Show>
       </form>
+      <p class="m-0 mt-4 max-w-[36rem] text-[12px] text-faint">
+        Messages go to the site owner only.{" "}
+        <A href="/privacy" class="text-accent underline-offset-2 hover:underline">
+          Privacy
+        </A>
+      </p>
     </article>
   );
 };

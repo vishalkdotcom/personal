@@ -42,10 +42,10 @@ Cloudflare Pages (Git builds):
 - Config: `wrangler.toml` (`pages_build_output_dir = "dist"`)
 - Build env in committed `wrangler.toml` `[vars]`: `SKIP_DEPENDENCY_INSTALL`, `BUN_VERSION`, `VITE_*` (dashboard-only vars do not feed the pre-build install when this file exists)
 - `.npmrc` (`legacy-peer-deps=true`) — safety net if Pages still runs `npm install`
-- Contact: `functions/api/contact.ts` + `static/_routes.json` (`/api/*` only)
+- Contact: `functions/api/contact.ts` + `functions/_middleware.ts` (markdown `Accept` negotiation + real 404s) + `static/_routes.json` (`/*`, excluding `/assets/*` and `/fonts/*`)
 - Runtime secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` as encrypted Pages secrets (never in `wrangler.toml`)
 
-Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical per Mode and Work Case). Unknown paths still use Pages’ SPA fallback (no top-level `404.html`).
+Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical / JSON-LD / crawlable snapshot per Mode and Work Case). Unknown paths return HTTP 404 (`404.html` + Functions middleware), not the App Shell.
 
 ## Agent / product docs
 

@@ -95,7 +95,55 @@ describe("Stamped meta shells (build output seam)", () => {
       expect(html).toContain('data-sm="stamp-canonical"');
       expect(html).toContain(`property="og:image" content="${OG_IMAGE_URL}"`);
       expect(html).toContain(`name="twitter:card" content="summary_large_image"`);
+      expect(html).toContain('type="application/ld+json"');
+      expect(html).toContain('data-agent-snapshot="true"');
+      expect(html).toMatch(/<h1>[^<]+<\/h1>/);
     }
+
+    const home = readFileSync(join(tempRoot, "index.html"), "utf8");
+    const homeVisible = home
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    expect(homeVisible.length).toBeGreaterThanOrEqual(500);
+    expect(home).toContain("<h1>Vishal Kumar</h1>");
+    expect(home).toContain('"@type":"Person"');
+    expect(home).toContain('"@type":"Organization"');
+    expect(home).toContain('"contactPoint"');
+    expect(home).toContain('"PostalAddress"');
+  });
+
+  it("emits sitemap, llms.txt, 404.html, and markdown siblings", () => {
+    tempRoot = mkdtempSync(join(tmpdir(), "meta-shells-"));
+    writeFileSync(join(tempRoot, "index.html"), SPA_SHELL, "utf8");
+
+    emitMetaShells(tempRoot);
+
+    const sitemap = readFileSync(join(tempRoot, "sitemap.xml"), "utf8");
+    expect(sitemap).toContain('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"');
+    expect(sitemap).toContain(`<loc>${SITE_ORIGIN}/</loc>`);
+    expect(sitemap).toContain(`<loc>${SITE_ORIGIN}/about</loc>`);
+    expect(sitemap).toContain(`<loc>${SITE_ORIGIN}/privacy</loc>`);
+    expect(sitemap).toContain(`<loc>${SITE_ORIGIN}/contact</loc>`);
+    expect(sitemap).toMatch(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/);
+
+    const llms = readFileSync(join(tempRoot, "llms.txt"), "utf8");
+    expect(llms.startsWith(`# ${SITE_NAME}\n>`)).toBe(true);
+    expect(llms).toMatch(/When to use this:/);
+    expect(llms).toMatch(/How an agent should call this site:/);
+
+    const notFound = readFileSync(join(tempRoot, "404.html"), "utf8");
+    expect(notFound).toContain("/llms.txt");
+    expect(notFound).toContain("/sitemap.xml");
+
+    const homeMd = readFileSync(join(tempRoot, "index.md"), "utf8");
+    expect(homeMd.startsWith("# ")).toBe(true);
+    expect(homeMd).toContain(SITE_ORIGIN);
+
+    const aboutMd = readFileSync(join(tempRoot, "about.md"), "utf8");
+    expect(aboutMd).toContain("Vishal Kumar");
   });
 
   it("maps deep-link paths to Cloudflare pretty-URL shell files", () => {

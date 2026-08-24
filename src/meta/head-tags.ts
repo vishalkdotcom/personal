@@ -1,5 +1,7 @@
+import { markdownOutputPath } from "./shell-paths";
+import { SAME_AS_URLS } from "../agent/identity";
 import type { PageMeta } from "./route-manifest";
-import { DEFAULT_OG_TYPE, OG_IMAGE_URL, SITE_NAME } from "./site";
+import { DEFAULT_OG_TYPE, OG_IMAGE_URL, SITE_NAME, SITE_ORIGIN } from "./site";
 
 /** Single SoT for head tags shared by stamped shells and `@solidjs/meta`. */
 export type HeadTag =
@@ -11,7 +13,12 @@ export type HeadTag =
       property?: string;
       content: string;
     }
-  | { kind: "link"; dataSm: string; rel: string; href: string };
+  | { kind: "link"; dataSm: string; rel: string; href: string; type?: string };
+
+function markdownHrefFor(path: string): string {
+  const relative = markdownOutputPath(path);
+  return relative.startsWith("/") ? relative : `/${relative}`;
+}
 
 export function headTagsFor(meta: PageMeta): HeadTag[] {
   return [
@@ -88,5 +95,26 @@ export function headTagsFor(meta: PageMeta): HeadTag[] {
       rel: "canonical",
       href: meta.canonical,
     },
+    {
+      kind: "link",
+      dataSm: "stamp-llms",
+      rel: "describedby",
+      href: `${SITE_ORIGIN}/llms.txt`,
+    },
+    {
+      kind: "link",
+      dataSm: "stamp-md-alternate",
+      rel: "alternate",
+      type: "text/markdown",
+      href: `${SITE_ORIGIN}${markdownHrefFor(meta.path)}`,
+    },
+    ...SAME_AS_URLS.map(
+      (href, index): HeadTag => ({
+        kind: "link",
+        dataSm: `stamp-me-${index}`,
+        rel: "me",
+        href,
+      }),
+    ),
   ];
 }

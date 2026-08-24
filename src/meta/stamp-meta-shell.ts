@@ -1,22 +1,16 @@
 import type { PageMeta } from "./route-manifest";
 import { headTagsFor, type HeadTag } from "./head-tags";
+import { escapeHtmlAttr, escapeHtmlText } from "./html-escape";
 
-/** Escape text for use inside an HTML attribute value (double-quoted). */
-export function escapeHtmlAttr(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
+export { escapeHtmlAttr, escapeHtmlText } from "./html-escape";
+export { shellOutputPath } from "./shell-paths";
 
-/** Escape text for use as HTML text content (e.g. `<title>`). */
-export function escapeHtmlText(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-const META_MARKER_START = "<!-- app-shell-meta -->";
-const META_MARKER_END = "<!-- /app-shell-meta -->";
+export const META_MARKER_START = "<!-- app-shell-meta -->";
+export const META_MARKER_END = "<!-- /app-shell-meta -->";
+export const JSONLD_MARKER_START = "<!-- app-shell-jsonld -->";
+export const JSONLD_MARKER_END = "<!-- /app-shell-jsonld -->";
+export const SNAPSHOT_MARKER_START = "<!-- app-shell-snapshot -->";
+export const SNAPSHOT_MARKER_END = "<!-- /app-shell-snapshot -->";
 
 function renderTag(tag: HeadTag): string {
   switch (tag.kind) {
@@ -28,8 +22,10 @@ function renderTag(tag: HeadTag): string {
         : `property="${escapeHtmlAttr(tag.property ?? "")}"`;
       return `<meta data-sm="${tag.dataSm}" ${key} content="${escapeHtmlAttr(tag.content)}" />`;
     }
-    case "link":
-      return `<link data-sm="${tag.dataSm}" rel="${escapeHtmlAttr(tag.rel)}" href="${escapeHtmlAttr(tag.href)}" />`;
+    case "link": {
+      const typeAttr = tag.type ? ` type="${escapeHtmlAttr(tag.type)}"` : "";
+      return `<link data-sm="${tag.dataSm}" rel="${escapeHtmlAttr(tag.rel)}" href="${escapeHtmlAttr(tag.href)}"${typeAttr} />`;
+    }
   }
 }
 
@@ -58,12 +54,43 @@ export function stampMetaShell(templateHtml: string, meta: PageMeta): string {
   return templateHtml.replace(titleRe, block);
 }
 
-/**
- * Dist-relative shell path for Cloudflare Pages pretty URLs.
- * `/resume` → `resume.html` (not `resume/index.html`).
- */
-export function shellOutputPath(path: string): string {
-  if (path === "/" || path === "") return "index.html";
-  const trimmed = path.startsWith("/") ? path.slice(1) : path;
-  return `${trimmed}.html`;
+function replaceOrInsert(
+  html: string,
+  start: string,
+  end: string,
+  block: string,
+  insertBefore: RegExp,
+  missingMessage: string,
+): string {
+  const marked = new RegExp(`${start}[\\s\\S]*?${end}`, "m");
+  if (marked.test(html)) return html.replace(marked, block);
+  if (!insertBefore.test(html)) {
+    throw new Error(missingMessage);
+  }
+  return html.replace(insertBefore, `${block}\n    $&`);
+}
+
+/** Stamp JSON-LD (no `data-sm`) so cold-load crawlers see identity without JS. */
+export function stampJsonLd(html: string, scriptContent: string): string {
+  const block = `${JSONLD_MARKER_START}\n    <script type="application/ld+json">${scriptContent}</script>\n    ${JSONLD_MARKER_END}`;
+  return replaceOrInsert(
+    html,
+    JSONLD_MARKER_START,
+    JSONLD_MARKER_END,
+    block,
+    /<\/head>/i,
+    "stampJsonLd: SPA template must include </head>",
+  );
+}
+
+/** Stamp crawlable article HTML inside `#app` for no-JS / AI crawlers. */
+export function stampSnapshot(html: string, snapshotHtml: string): string {
+  const block = `${SNAPSHOT_MARKER_START}\n    ${snapshotHtml}\n    ${SNAPSHOT_MARKER_END}`;
+  const marked = new RegExp(`${SNAPSHOT_MARKER_START}[\\s\\S]*?${SNAPSHOT_MARKER_END}`, "m");
+  if (marked.test(html)) return html.replace(marked, block);
+  const appRe = /<div id="app">\s*<\/div>/i;
+  if (!appRe.test(html)) {
+    throw new Error('stampSnapshot: SPA template must include <div id="app"></div>');
+  }
+  return html.replace(appRe, `<div id="app">${block}</div>`);
 }

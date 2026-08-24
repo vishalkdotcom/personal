@@ -38,7 +38,7 @@ function DocumentHeadTags(props: { pathname: string }) {
               <Meta property={tag.property} content={tag.content} />
             );
           case "link":
-            return <Link rel={tag.rel} href={tag.href} />;
+            return <Link rel={tag.rel} href={tag.href} type={tag.type} />;
         }
       }}
     </For>

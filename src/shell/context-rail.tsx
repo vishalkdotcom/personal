@@ -253,6 +253,9 @@ export const ContextRail: Component = () => {
       <Match when={modeId() === "contact"}>
         <ContactContext />
       </Match>
+      <Match when={pathname() === "/privacy" || pathname().startsWith("/privacy/")}>
+        <ContactContext />
+      </Match>
       <Match when={activeCase()}>{(workCase) => <WorkCaseContext workCase={workCase()} />}</Match>
       <Match when={modeId() === "work"}>
         <WorkIndexContext />

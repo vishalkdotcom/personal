@@ -12,5 +12,9 @@ describe("FOUC-safe theme boot", () => {
     expect(cssIdx).toBeGreaterThan(-1);
     expect(scriptIdx).toBeLessThan(cssIdx);
     expect(html).toMatch(/dataset\.theme|data-theme/);
+    expect(html).toContain('id="app"');
+    expect(html).toContain("<!-- app-shell-snapshot -->");
+    expect(html.indexOf("<!-- app-shell-snapshot -->")).toBeGreaterThan(html.indexOf('id="app"'));
+    expect(html).toContain("<!-- app-shell-jsonld -->");
   });
 });

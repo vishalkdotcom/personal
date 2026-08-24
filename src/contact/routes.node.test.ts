@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 describe("Pages Functions routes contract", () => {
-  it("limits Functions invocation to /api/*", () => {
+  it("limits Functions invocation to documents + /api, not hashed assets", () => {
     const raw = readFileSync(resolve("static/_routes.json"), "utf8");
     const routes = JSON.parse(raw) as {
       version: number;
@@ -12,8 +12,8 @@ describe("Pages Functions routes contract", () => {
     };
 
     expect(routes.version).toBe(1);
-    expect(routes.include).toEqual(["/api/*"]);
-    expect(routes.exclude).toEqual([]);
+    expect(routes.include).toEqual(["/*"]);
+    expect(routes.exclude).toEqual(["/assets/*", "/fonts/*"]);
   });
 });
 
