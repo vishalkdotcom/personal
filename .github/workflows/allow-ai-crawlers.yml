@@ -15,8 +15,13 @@ permissions:
 jobs:
   allow:
     runs-on: ubuntu-latest
-    # Production env secrets (Cloudflare GitHub app) are not visible on repo-level jobs.
-    environment: Production
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [Production, Preview]
+    # Cloudflare Pages creates these GitHub environments; secrets there
+    # are not visible to jobs without `environment:`.
+    environment: ${{ matrix.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
