@@ -23,7 +23,8 @@ Read this when changing dependencies, build config, JSX/TS setup, or deploy wiri
 - Contact form: Pages Function `POST /api/contact` → Resend via `fetch` (`functions/api/contact.ts`).
 - Secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` as Pages **encrypted secrets** only (never in `wrangler.toml`, never `VITE_`-prefixed).
 - Public build env (baked into the client bundle): `VITE_HIRE_SIGNAL`, `VITE_GOOGLE_ANALYTICS_ID` (GA4; blank disables).
-- Functions scope: `dist/_routes.json` include `/api/*` only (copied from `static/_routes.json`).
+- Functions scope: `dist/_routes.json` include `/*` with `/assets/*` and `/fonts/*` excluded (copied from `static/_routes.json`). Contact stays `POST /api/contact`. Middleware negotiates `Accept: text/markdown` and returns HTTP 404 for unknown paths.
+- Agent files: `dist/llms.txt`, `dist/sitemap.xml`, per-path `.md` siblings, crawler HTML + JSON-LD in stamped shells. `static/robots.txt` explicitly allows major AI crawlers.
 
 ## Testing
 

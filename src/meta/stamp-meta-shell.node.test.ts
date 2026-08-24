@@ -95,7 +95,25 @@ describe("Stamped meta shells (build output seam)", () => {
       expect(html).toContain('data-sm="stamp-canonical"');
       expect(html).toContain(`property="og:image" content="${OG_IMAGE_URL}"`);
       expect(html).toContain(`name="twitter:card" content="summary_large_image"`);
+      expect(html).toContain('type="application/ld+json"');
+      expect(html).toContain("<h1>");
+      expect(html).toContain('rel="alternate" type="text/markdown"');
     }
+
+    const notFound = readFileSync(join(tempRoot, "404.html"), "utf8");
+    expect(notFound).toContain("<h1>");
+    expect(notFound).toContain("sitemap.xml");
+    expect(notFound).toContain("llms.txt");
+
+    const sitemap = readFileSync(join(tempRoot, "sitemap.xml"), "utf8");
+    expect(sitemap).toContain("<lastmod>");
+    expect(sitemap).toContain("https://vishalk.com/about");
+    expect(sitemap).toContain("https://vishalk.com/privacy");
+
+    const llms = readFileSync(join(tempRoot, "llms.txt"), "utf8");
+    expect(llms).toContain("## When to use this");
+    expect(readFileSync(join(tempRoot, "about.md"), "utf8")).toMatch(/^# /);
+    expect(readFileSync(join(tempRoot, "privacy.md"), "utf8").length).toBeGreaterThan(500);
   });
 
   it("maps deep-link paths to Cloudflare pretty-URL shell files", () => {

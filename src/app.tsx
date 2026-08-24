@@ -7,6 +7,7 @@ import { AppShell } from "./shell/app-shell";
 import {
   AboutStage,
   ContactStage,
+  PrivacyStage,
   ResumeStage,
   WorkCaseStage,
   WorkRootStage,
@@ -25,8 +26,10 @@ export const AppShellRoutes = {
   routes: (
     <>
       <Route path="/" component={AboutStage} />
+      <Route path="/about" component={AboutStage} />
       <Route path="/resume" component={ResumeStage} />
       <Route path="/contact" component={ContactStage} />
+      <Route path="/privacy" component={PrivacyStage} />
       <Route path="/work" component={WorkRootStage} />
       <Route path="/work/:folderSlug/:caseSlug" component={WorkCaseStage} />
     </>

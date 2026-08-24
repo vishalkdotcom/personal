@@ -35,11 +35,17 @@ function page(path: string, titleSegment: string, description: string): PageMeta
 
 const MODE_META: PageMeta[] = [
   page("/", "About", ABOUT_PITCH),
+  page("/about", "About", ABOUT_PITCH),
   page("/resume", "Resume", `PDF resume for ${ABOUT_NAME} — ${ABOUT_META}.`),
   page(
     "/contact",
     "Contact",
     `Contact ${ABOUT_NAME} — send a message, or reach out by email or LinkedIn.`,
+  ),
+  page(
+    "/privacy",
+    "Privacy",
+    `Privacy notice for ${ABOUT_NAME} — how the contact form, email, and analytics are handled.`,
   ),
   page(workRootHref(), "Work", "Selected work — what shipped and what it changed."),
 ];
@@ -72,7 +78,7 @@ const FALLBACK_DESCRIPTION = ABOUT_PITCH;
 /**
  * Resolve page meta for a pathname (trailing slash normalized).
  * About `/` and the SupplyChain+ Work Case path keep distinct canonicals.
- * Unknown paths keep path + canonical honest to the request URL (SPA still mounts home).
+ * Unknown paths keep path + canonical honest to the request URL (HTTP 404 at the edge).
  */
 export function pageMetaForPath(pathname: string): PageMeta {
   const normalized =

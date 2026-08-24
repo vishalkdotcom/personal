@@ -1,3 +1,4 @@
+import { A } from "@solidjs/router";
 import { createSignal, Show, type Component } from "solid-js";
 import { CONTACT_EMAIL } from "../contact/content";
 import { validateContactPayload, type ContactFieldErrors } from "../contact/schema";
@@ -89,8 +90,20 @@ export const ContactStage: Component = () => {
     <article aria-label="Contact">
       <p class="mb-2 mt-0 text-[11px] tracking-[0.12em] text-faint uppercase">Contact</p>
       <StageTitle>Get in touch</StageTitle>
+      <p class="m-0 mb-3 max-w-[48ch] text-[13px] leading-[1.45] text-muted">
+        Use this page to hire or brief Vishal Kumar: recruiting for a remote senior frontend role, a
+        product-UI contract, or a collaboration that needs reporting, forms, or platform cleanup in
+        React/Next.js. Send a short note with the company, the problem, the tools, timeline, and
+        whether the work is a role or a contract.
+      </p>
       <p class="m-0 mb-5 max-w-[48ch] text-[13px] leading-[1.45] text-muted">
-        Drop me a note. Email and LinkedIn are also in the side panel.
+        The form emails the same inbox as a direct note to {CONTACT_EMAIL}. I read hiring mail
+        myself and do not sell contact data. Email and LinkedIn are also in the side panel. How
+        messages are stored is on the{" "}
+        <A href="/privacy" class="text-accent underline-offset-2 hover:underline">
+          privacy notice
+        </A>
+        .
       </p>
 
       <form class="flex max-w-[36rem] flex-col gap-3.5" onSubmit={onSubmit} novalidate>

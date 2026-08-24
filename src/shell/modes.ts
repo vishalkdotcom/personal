@@ -20,7 +20,7 @@ export const MODES: ModeDef[] = [
     id: "about",
     label: "About",
     href: "/",
-    matches: (pathname) => pathname === "/" || pathname === "",
+    matches: (pathname) => pathname === "/" || pathname === "" || pathname === "/about",
   },
   {
     id: "work",
@@ -52,5 +52,6 @@ export function modeForPath(pathname: string): ModeDef | undefined {
 }
 
 export function modeTitleForPath(pathname: string): string {
+  if (pathname === "/privacy" || pathname.startsWith("/privacy/")) return "Privacy";
   return modeForPath(pathname)?.label ?? "Work";
 }
