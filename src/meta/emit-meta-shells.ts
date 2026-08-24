@@ -1,10 +1,13 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { llmsTxt, markdownForPath, notFoundHtmlDocument, sitemapXml } from "../agent/copy";
 import { markdownSiblingPath, SITE_SITEMAP_LASTMOD } from "../agent/paths";
 import { stampAgentDocument } from "../agent/stamp-document";
 import { DEEP_LINK_ROUTES } from "./route-manifest";
 import { shellOutputPath, stampMetaShell } from "./stamp-meta-shell";
+
+const HEADERS_SOURCE = fileURLToPath(new URL("../../static/_headers", import.meta.url));
 
 function markdownOutputPath(path: string): string {
   const sibling = markdownSiblingPath(path);
@@ -45,4 +48,7 @@ export function emitMetaShells(outDir: string): void {
     "utf8",
   );
   writeFileSync(join(outDir, "llms.txt"), llmsTxt(), "utf8");
+  if (existsSync(HEADERS_SOURCE)) {
+    copyFileSync(HEADERS_SOURCE, join(outDir, "_headers"));
+  }
 }

@@ -2,3 +2,7 @@
 /*.md
   Content-Type: text/markdown; charset=utf-8
   Vary: Accept
+
+# Content negotiation is live on document routes (Functions also set this).
+/*
+  Vary: Accept

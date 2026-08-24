@@ -21,6 +21,7 @@ describe("Pages Functions routes contract", () => {
     expect(headers).toMatch(/\/\*\.md/);
     expect(headers).toMatch(/Content-Type:\s*text\/markdown; charset=utf-8/);
     expect(headers).toMatch(/Vary:\s*Accept/);
+    expect(headers).toMatch(/^\/\*\s*$/m);
   });
 });
 

@@ -24,7 +24,7 @@ Read this when changing dependencies, build config, JSX/TS setup, or deploy wiri
 - Secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` as Pages **encrypted secrets** only (never in `wrangler.toml`, never `VITE_`-prefixed).
 - Public build env (baked into the client bundle): `VITE_HIRE_SIGNAL`, `VITE_GOOGLE_ANALYTICS_ID` (GA4; blank disables).
 - Functions scope: `dist/_routes.json` include `/*` with `/assets/*` and `/fonts/*` excluded (copied from `static/_routes.json`). Contact stays `POST /api/contact`. Middleware negotiates `Accept: text/markdown` and returns HTTP 404 for unknown paths.
-- Agent files: `dist/llms.txt`, `dist/sitemap.xml`, per-path `.md` siblings, crawler HTML + JSON-LD in stamped shells. `static/robots.txt` explicitly allows major AI crawlers.
+- Agent files: `dist/llms.txt`, `dist/sitemap.xml`, per-path `.md` siblings, crawler HTML + JSON-LD in stamped shells. `static/robots.txt` explicitly allows GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, and DeepSeekBot. Cloudflare Super Bot Fight Mode / AI Crawl Control must allow those same user-agents (WAF 403 otherwise).
 
 ## Testing
 

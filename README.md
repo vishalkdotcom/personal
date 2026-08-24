@@ -45,7 +45,7 @@ Cloudflare Pages (Git builds):
 - Contact: `functions/api/contact.ts`
 - Agent gateway: `functions/_middleware.ts` + `static/_routes.json` (`/*`, assets excluded)
 - Runtime secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` as encrypted Pages secrets (never in `wrangler.toml`)
-- AI crawlers: Cloudflare Super Bot Fight Mode / AI Crawl Control must allow GPTBot, ChatGPT-User, ClaudeBot, and PerplexityBot. `robots.txt` Allow is not enough if the WAF returns 403.
+- AI crawlers: Cloudflare Super Bot Fight Mode / AI Crawl Control must allow GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, and DeepSeekBot. `robots.txt` Allow is not enough if the WAF returns 403.
 
 Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical per Mode and Work Case). Unknown paths serve `404.html` with HTTP 404 (SPA fallback is off). Markdown is available on the same URLs via `Accept: text/markdown`.
 

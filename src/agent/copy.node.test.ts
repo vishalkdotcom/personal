@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
+import { ABOUT_NAME } from "../about/content";
 import {
   aboutMarkdown,
   contactMarkdown,
   crawlerHtmlForPath,
+  GITHUB_HREF,
   identityJsonLd,
+  LINKEDIN_HREF,
   llmsTxt,
   markdownForPath,
   privacyMarkdown,
@@ -39,6 +42,13 @@ describe("Agent documents", () => {
       "@graph": Array<Record<string, unknown>>;
     };
     expect(graphTypes(json)).toEqual(["Person", "Organization"]);
+    const person = json["@graph"].find((node) => node["@type"] === "Person");
+    expect(person).toMatchObject({
+      name: ABOUT_NAME,
+      givenName: "Vishal",
+      familyName: "Kumar",
+      sameAs: [LINKEDIN_HREF, GITHUB_HREF],
+    });
     const org = json["@graph"].find((node) => node["@type"] === "Organization");
     expect(org?.contactPoint).toMatchObject({
       "@type": "ContactPoint",

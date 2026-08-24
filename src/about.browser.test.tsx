@@ -88,6 +88,9 @@ describe("Densified About Selected work (App Shell seam)", () => {
     const { screen } = renderAt("/about");
     await expect.element(selectedWorkList(screen)).toBeVisible();
     await expect.element(screen.getByRole("heading", { name: /Vishal Kumar/i })).toBeVisible();
+    const article = screen.getByRole("article", { name: /about/i });
+    await expect.element(article).toBeVisible();
+    expect(article.element().textContent?.length ?? 0).toBeGreaterThan(500);
   });
 
   it("renders the Privacy trust page inside the App Shell", async () => {

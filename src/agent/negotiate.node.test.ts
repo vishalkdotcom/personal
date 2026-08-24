@@ -42,6 +42,21 @@ describe("Agent request handler", () => {
     expect(await response.text()).toMatch(/<h1>/i);
   });
 
+  it("returns HTTP 404 for unknown paths when Accept is omitted (never SPA 200)", async () => {
+    const response = await dispatch("/some-path-that-does-not-exist");
+    expect(response.status).toBe(404);
+    expect(response.headers.get("Vary") ?? "").toMatch(/Accept/i);
+    expect(await response.text()).toMatch(/sitemap\.xml/);
+  });
+
+  it("returns HTTP 404 HTML when Accept is */*", async () => {
+    const response = await dispatch("/missing-resource", {
+      headers: { Accept: "*/*" },
+    });
+    expect(response.status).toBe(404);
+    expect(response.headers.get("Content-Type")).toMatch(/text\/html/);
+  });
+
   it("serves markdown for Accept: text/markdown on a known path", async () => {
     const response = await dispatch("/about", {
       headers: { Accept: "text/markdown" },
