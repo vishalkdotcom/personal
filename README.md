@@ -54,6 +54,7 @@ Cloudflare Pages (Git builds):
      Action: **Skip**. Tick Super Bot Fight Mode, Bot Fight Mode, and Block AI bots. Put the rule at the top. Or Security → Bots: turn off “Block AI Scrapers and Crawlers” / allow those agents in AI Crawl Control. Confirm with `curl -A 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.2; +https://openai.com/gptbot)' -o /dev/null -w '%{http_code}' https://vishalk.com/` → 200.
 
   Live check: `bun scripts/verify-agent-readiness.mjs https://vishalk.com` (preview: `bun scripts/verify-agent-readiness.mjs https://cursor-agent-readiness-2a91.vishalk.pages.dev`).
+  Zone apply (needs `CLOUDFLARE_API_TOKEN` with Bot Management Write + WAF Write): `bun scripts/allow-ai-crawlers.mjs`.
 
 Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical per Mode and Work Case). Unknown paths serve `404.html` with HTTP 404 (SPA fallback is off). Markdown is available on the same URLs via `Accept: text/markdown`.
 
