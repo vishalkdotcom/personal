@@ -45,7 +45,11 @@ Cloudflare Pages (Git builds):
 - Contact: `functions/api/contact.ts`
 - Agent gateway: `functions/_middleware.ts` + `static/_routes.json` (`/*`, assets excluded)
 - Runtime secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` as encrypted Pages secrets (never in `wrangler.toml`)
-- AI crawlers: Cloudflare Super Bot Fight Mode / AI Crawl Control must allow GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, and DeepSeekBot. `robots.txt` Allow is not enough if the WAF returns 403.
+- AI crawlers: `static/robots.txt` allows GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, and DeepSeekBot. That is not enough if the zone WAF returns Cloudflare’s “Attention Required” 403 (current `vishalk.com` behavior for the first four). In the **vishalk.com** zone: Security → WAF → Custom rules → Create rule. Expression:
+
+  `(http.user_agent contains "GPTBot") or (http.user_agent contains "ChatGPT-User") or (http.user_agent contains "ClaudeBot") or (http.user_agent contains "PerplexityBot") or (http.user_agent contains "Google-Extended") or (http.user_agent contains "DeepSeekBot")`
+
+  Action: **Skip**. Tick Super Bot Fight Mode, Bot Fight Mode, and Block AI bots. Put the rule at the top. Or Security → Bots: turn off “Block AI Scrapers and Crawlers” / allow those agents in AI Crawl Control. Confirm with `curl -A GPTBot -o /dev/null -w '%{http_code}' https://vishalk.com/` → 200.
 
 Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical per Mode and Work Case). Unknown paths serve `404.html` with HTTP 404 (SPA fallback is off). Markdown is available on the same URLs via `Accept: text/markdown`.
 
