@@ -46,7 +46,7 @@ Cloudflare Pages (Git builds):
 - Agent gateway: `functions/_middleware.ts` + `static/_routes.json` (`/*`, assets excluded)
 - Runtime secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` as encrypted Pages secrets (never in `wrangler.toml`)
 - AI crawlers: `static/robots.txt` allows GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, and DeepSeekBot. Two **vishalk.com** zone settings currently override that file on the apex (previews on `*.pages.dev` do not):
-  1. **Managed robots.txt** prepends `# BEGIN Cloudflare Managed content` and `Disallow: /` for GPTBot, ClaudeBot, and Google-Extended. Security → Bots → Manage your robots.txt → **Disable robots.txt configuration** (or AI Crawl Control: do not rewrite robots.txt). Confirm `curl -sS https://vishalk.com/robots.txt` has no managed block and those agents `Allow: /`.
+  1. **Managed robots.txt / Content Signals** prepends a Content Signals policy and `# BEGIN Cloudflare Managed content` with `Disallow: /` for GPTBot, ClaudeBot, and Google-Extended. Security → Bots → Manage your robots.txt → **Disable robots.txt configuration** (and turn off Content Signals / `cf_robots_variant`). Confirm `curl -sS https://vishalk.com/robots.txt` has no `Content-Signal:` / managed block and those agents `Allow: /`.
   2. **WAF / Block AI bots** returns “Attention Required” 403 for GPTBot, ChatGPT-User, ClaudeBot, and PerplexityBot. Security → WAF → Custom rules → Create rule. Expression:
 
      `(http.user_agent contains "GPTBot") or (http.user_agent contains "ChatGPT-User") or (http.user_agent contains "ClaudeBot") or (http.user_agent contains "PerplexityBot") or (http.user_agent contains "Google-Extended") or (http.user_agent contains "DeepSeekBot")`

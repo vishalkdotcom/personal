@@ -13,6 +13,7 @@ describe("robots.txt AI crawler allowlist", () => {
     }
     expect(robots).toContain("Sitemap: https://vishalk.com/sitemap.xml");
     expect(robots).not.toMatch(/^# BEGIN Cloudflare Managed content/im);
+    expect(robots).not.toMatch(/Content-Signal:/i);
     expect(robots).not.toMatch(/User-agent: GPTBot\s+Disallow:/i);
     expect(robots).not.toMatch(/User-agent: ClaudeBot\s+Disallow:/i);
     expect(robots).not.toMatch(/User-agent: Google-Extended\s+Disallow:/i);

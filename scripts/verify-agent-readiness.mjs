@@ -126,7 +126,8 @@ const robots = await get("/robots.txt");
 check("robots.txt HTTP 200", robots.status === 200, `status ${robots.status}`);
 check(
   "robots.txt is not Cloudflare managed overlay",
-  !/^# BEGIN Cloudflare Managed content/im.test(robots.body),
+  !/^# BEGIN Cloudflare Managed content/im.test(robots.body) &&
+    !/Content-Signal:/i.test(robots.body),
 );
 for (const bot of BOTS) {
   const group = robots.body

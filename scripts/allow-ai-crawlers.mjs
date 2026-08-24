@@ -10,6 +10,8 @@
 import {
   AI_CRAWLER_UA_TOKENS,
   WAF_SKIP_DESCRIPTION,
+  botManagementAllowlistPatch,
+  wafSkipActionParameters,
   wafSkipExpression,
 } from "../src/agent/ai-crawler-allowlist.ts";
 
@@ -22,10 +24,7 @@ const SKIP_RULE = {
   description: WAF_SKIP_DESCRIPTION,
   expression: wafSkipExpression(AI_CRAWLER_UA_TOKENS),
   action: "skip",
-  action_parameters: {
-    phases: ["http_request_sbfm"],
-    products: ["uaBlock", "bic", "securityLevel", "waf"],
-  },
+  action_parameters: wafSkipActionParameters(),
   enabled: true,
 };
 
@@ -48,20 +47,20 @@ async function cf(method, path, body) {
   return json.result;
 }
 
-function withoutReadonlyBotFields(config) {
-  const { stale_zone_configuration: _stale, using_latest_model: _model, ...rest } = config;
-  return rest;
-}
-
 async function disableManagedBots(zoneId) {
   const current = await cf("GET", `/zones/${zoneId}/bot_management`);
-  const next = {
-    ...withoutReadonlyBotFields(current),
-    ai_bots_protection: "disabled",
-    is_robots_txt_managed: false,
-  };
-  await cf("PUT", `/zones/${zoneId}/bot_management`, next);
-  console.log("bot_management: ai_bots_protection=disabled, is_robots_txt_managed=false");
+  const path = `/zones/${zoneId}/bot_management`;
+  try {
+    await cf("PUT", path, botManagementAllowlistPatch(current, "full"));
+    console.log(
+      "bot_management: ai_bots_protection=disabled, is_robots_txt_managed=false, cf_robots_variant=off, crawler_protection=disabled",
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`bot_management full patch failed, retrying minimal:\n${message}`);
+    await cf("PUT", path, botManagementAllowlistPatch(current, "minimal"));
+    console.log("bot_management: ai_bots_protection=disabled, is_robots_txt_managed=false");
+  }
 }
 
 async function upsertSkipRule(zoneId) {
