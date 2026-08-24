@@ -15,6 +15,8 @@ permissions:
 jobs:
   allow:
     runs-on: ubuntu-latest
+    # Production env secrets (Cloudflare GitHub app) are not visible on repo-level jobs.
+    environment: Production
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -27,5 +29,6 @@ jobs:
       - name: Apply zone allowlist when a token is present
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           ALLOW_AI_CRAWLERS_OPTIONAL: "1"
         run: bun scripts/allow-ai-crawlers.mjs
