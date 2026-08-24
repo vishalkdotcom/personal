@@ -1,6 +1,11 @@
 # vishalk.com — crawl the public portfolio.
 # Explicit AI allow-groups so managed robots.txt Disallow stanzas are not the
 # only rule for those user-agents (same-length Allow:/ vs Disallow:/ → Allow).
+#
+# Zone check: if https://vishalk.com/robots.txt still starts with
+# "# BEGIN Cloudflare Managed content" and Disallow:/ for GPTBot / ClaudeBot /
+# Google-Extended, origin Allow groups never win. Turn off the zone's managed
+# robots.txt (Security → Bots) so this file is what crawlers see.
 
 User-agent: GPTBot
 Allow: /
