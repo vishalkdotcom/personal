@@ -19,4 +19,12 @@ describe("AI crawler allowlist", () => {
     expect(expression.startsWith("(")).toBe(true);
     expect(WAF_SKIP_DESCRIPTION).toMatch(/AI crawlers/);
   });
+
+  it("keeps the live verifier on the same crawler tokens", () => {
+    const verifier = readFileSync(resolve("scripts/verify-agent-readiness.mjs"), "utf8");
+    expect(verifier).toContain('from "../src/agent/ai-crawler-allowlist.ts"');
+    for (const token of AI_CRAWLER_UA_TOKENS) {
+      expect(verifier, token).toMatch(new RegExp(`["']?${token}["']?\\s*:`));
+    }
+  });
 });
