@@ -1,0 +1,4 @@
+# Markdown siblings: correct type if a request hits the asset instead of Functions.
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+  Vary: Accept

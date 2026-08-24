@@ -15,6 +15,13 @@ describe("Pages Functions routes contract", () => {
     expect(routes.include).toEqual(["/*"]);
     expect(routes.exclude).toEqual(["/assets/*", "/fonts/*"]);
   });
+
+  it("sets markdown Content-Type on .md assets via Pages _headers", () => {
+    const headers = readFileSync(resolve("static/_headers"), "utf8");
+    expect(headers).toMatch(/\/\*\.md/);
+    expect(headers).toMatch(/Content-Type:\s*text\/markdown; charset=utf-8/);
+    expect(headers).toMatch(/Vary:\s*Accept/);
+  });
 });
 
 describe("Contact Hire Signal independence", () => {
