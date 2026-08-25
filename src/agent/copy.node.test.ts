@@ -9,6 +9,7 @@ import {
   LINKEDIN_HREF,
   llmsTxt,
   markdownForPath,
+  privacyMarkdown,
   sitemapXml,
   visibleTextFromHtml,
 } from "./copy";
@@ -19,19 +20,20 @@ function graphTypes(json: unknown): string[] {
 }
 
 describe("Agent documents", () => {
-  it("puts 500+ visible characters and an H1 on home, about, and contact HTML", () => {
-    for (const path of ["/", "/about", "/contact"] as const) {
+  it("puts 500+ visible characters and an H1 on home, about, contact, and privacy HTML", () => {
+    for (const path of ["/", "/about", "/contact", "/privacy"] as const) {
       const html = crawlerHtmlForPath(path);
       expect(html, path).toMatch(/<h1>/i);
       expect(visibleTextFromHtml(html).length, path).toBeGreaterThanOrEqual(500);
     }
   });
 
-  it("keeps markdown bodies in lockstep with HTML for About and Contact", () => {
+  it("keeps markdown bodies in lockstep with HTML for the trust pages", () => {
     expect(markdownForPath("/")).toBe(aboutMarkdown());
     expect(markdownForPath("/about")).toBe(aboutMarkdown());
     expect(markdownForPath("/contact")).toBe(contactMarkdown());
-    expect(markdownForPath("/privacy")).toBeUndefined();
+    expect(markdownForPath("/privacy")).toBe(privacyMarkdown());
+    expect(privacyMarkdown().length).toBeGreaterThanOrEqual(500);
     expect(contactMarkdown().length).toBeGreaterThanOrEqual(500);
   });
 
@@ -104,16 +106,14 @@ describe("Agent documents", () => {
     expect(whenIndex).toBeGreaterThan(0);
     expect(pagesIndex).toBeGreaterThan(whenIndex);
     expect(text.slice(whenIndex, pagesIndex)).toMatch(/- \[/);
-    expect(text).not.toContain("/privacy");
   });
 
   it("emits a sitemap with lastmod for every listed path", () => {
-    const xml = sitemapXml(["/", "/about", "/contact"], "2026-08-24");
+    const xml = sitemapXml(["/", "/about", "/privacy"], "2026-08-24");
     expect(xml).toContain('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"');
     expect(xml).toContain("<lastmod>2026-08-24</lastmod>");
     expect(xml).toContain("<loc>https://vishalk.com/</loc>");
     expect(xml).toContain("<loc>https://vishalk.com/about</loc>");
-    expect(xml).toContain("<loc>https://vishalk.com/contact</loc>");
-    expect(xml).not.toContain("/privacy");
+    expect(xml).toContain("<loc>https://vishalk.com/privacy</loc>");
   });
 });

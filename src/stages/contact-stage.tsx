@@ -1,3 +1,4 @@
+import { A } from "@solidjs/router";
 import { createSignal, Show, type Component } from "solid-js";
 import { CONTACT_EMAIL } from "../contact/content";
 import { validateContactPayload, type ContactFieldErrors } from "../contact/schema";
@@ -97,7 +98,11 @@ export const ContactStage: Component = () => {
       </p>
       <p class="m-0 mb-5 max-w-[48ch] text-[13px] leading-[1.45] text-muted">
         The form emails the same inbox as a direct note to {CONTACT_EMAIL}. I read hiring mail
-        myself and do not sell contact data. Email and LinkedIn are also in the side panel.
+        myself and do not sell contact data. See the{" "}
+        <A href="/privacy" class="text-accent underline-offset-2 hover:underline">
+          privacy notice
+        </A>
+        . Email and LinkedIn are also in the side panel.
       </p>
 
       <form class="flex max-w-[36rem] flex-col gap-3.5" onSubmit={onSubmit} novalidate>

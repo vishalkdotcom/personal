@@ -105,15 +105,9 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
     expect(pageMetaForPath("/about").title).toBe(`About · ${HOME_TITLE}`);
     expect(deepLinkPaths()).toContain("/about");
-<<<<<<< HEAD
-    expect(pageMetaForPath("/privacy").title).toBe(SITE_NAME);
-    expect(deepLinkPaths()).not.toContain("/privacy");
-    expect(supplyChain.title).toBe(`SupplyChain+ · ${SITE_NAME}`);
-=======
     expect(pageMetaForPath("/privacy").title).toBe(`Privacy · ${HOME_TITLE}`);
     expect(deepLinkPaths()).toContain("/privacy");
     expect(supplyChain.title).toBe(`SupplyChain+ · ${HOME_TITLE}`);
->>>>>>> 60b267d (Put vishalk.com in trust-page and Mode document titles.)
     expect(supplyChain.canonical).toBe(`${SITE_ORIGIN}/work/prototypes/supplychain-plus`);
     expect(home.description).not.toBe(supplyChain.description);
     expect(home.description).not.toMatch(/SupplyChain|featured case|Work Case/i);

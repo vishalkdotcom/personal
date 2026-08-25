@@ -52,5 +52,6 @@ export function modeForPath(pathname: string): ModeDef | undefined {
 }
 
 export function modeTitleForPath(pathname: string): string {
+  if (pathname === "/privacy" || pathname.startsWith("/privacy/")) return "Privacy";
   return modeForPath(pathname)?.label ?? "Work";
 }

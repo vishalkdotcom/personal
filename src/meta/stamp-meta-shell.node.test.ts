@@ -114,14 +114,12 @@ describe("Stamped meta shells (build output seam)", () => {
     const sitemap = readFileSync(join(tempRoot, "sitemap.xml"), "utf8");
     expect(sitemap).toContain("<lastmod>");
     expect(sitemap).toContain("https://vishalk.com/about");
-    expect(sitemap).toContain("https://vishalk.com/contact");
-    expect(sitemap).not.toContain("https://vishalk.com/privacy");
+    expect(sitemap).toContain("https://vishalk.com/privacy");
 
     const llms = readFileSync(join(tempRoot, "llms.txt"), "utf8");
     expect(llms).toContain("## When to use this");
-    expect(llms).not.toContain("/privacy");
     expect(readFileSync(join(tempRoot, "about.md"), "utf8")).toMatch(/^# /);
-    expect(readFileSync(join(tempRoot, "contact.md"), "utf8").length).toBeGreaterThan(500);
+    expect(readFileSync(join(tempRoot, "privacy.md"), "utf8").length).toBeGreaterThan(500);
 
     const home = readFileSync(join(tempRoot, "index.html"), "utf8");
     expect(home).toContain('"@type":"Person"');

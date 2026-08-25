@@ -19,6 +19,7 @@ import {
   SITE_ORIGIN,
 } from "../meta/site";
 import { escapeHtmlText } from "../meta/stamp-meta-shell";
+import { PRIVACY_LEAD, PRIVACY_SECTIONS, PRIVACY_TITLE } from "../privacy/content";
 import { RESUME_PDF_HREF } from "../resume/content";
 import {
   WORK_FOLDERS,
@@ -126,6 +127,7 @@ export function aboutMarkdown(): string {
     `- LinkedIn: [${LINKEDIN_HREF}](${LINKEDIN_HREF})`,
     `- GitHub: [${GITHUB_HREF}](${GITHUB_HREF})`,
     `- Resume (PDF): ${SITE_ORIGIN}${RESUME_PDF_HREF}`,
+    `- Privacy: ${SITE_ORIGIN}/privacy`,
     "",
   ].join("\n");
 }
@@ -148,11 +150,21 @@ export function contactMarkdown(): string {
     `- GitHub: [${GITHUB_HREF}](${GITHUB_HREF})`,
     `- Resume (PDF): ${SITE_ORIGIN}${RESUME_PDF_HREF}`,
     "",
-    "I read hiring mail myself. I do not sell contact data.",
+    "I read hiring mail myself. I do not sell contact data. See the privacy notice for what the form collects and how long messages stay in the inbox.",
     "",
+    `- Privacy: ${SITE_ORIGIN}/privacy`,
     `- About: ${SITE_ORIGIN}/about`,
     "",
   ].join("\n");
+}
+
+export function privacyMarkdown(): string {
+  const lines = [`# ${PRIVACY_TITLE} · ${ABOUT_NAME}`, "", PRIVACY_LEAD, ""];
+  for (const section of PRIVACY_SECTIONS) {
+    lines.push(`## ${section.heading}`, "", section.body, "");
+  }
+  lines.push(`Contact: [${CONTACT_EMAIL}](mailto:${CONTACT_EMAIL})`, `Site: ${SITE_ORIGIN}/`, "");
+  return lines.join("\n");
 }
 
 export function resumeMarkdown(): string {
@@ -179,6 +191,8 @@ export function markdownForPath(pathname: string): string | undefined {
       return aboutMarkdown();
     case "/contact":
       return contactMarkdown();
+    case "/privacy":
+      return privacyMarkdown();
     case "/resume":
       return resumeMarkdown();
     case "/work":
@@ -377,6 +391,7 @@ export function llmsTxt(): string {
     `- [Work](${SITE_ORIGIN}/work.md): Selected work index`,
     `- [Contact](${SITE_ORIGIN}/contact.md): Email, form, LinkedIn, GitHub`,
     `- [Resume](${SITE_ORIGIN}/resume.md): PDF resume pointer`,
+    `- [Privacy](${SITE_ORIGIN}/privacy.md): How contact data is handled`,
   ];
   for (const folder of WORK_FOLDERS) {
     for (const workCase of folder.cases) {
