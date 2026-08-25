@@ -1460,8 +1460,9 @@ describe("Contact Mode (App Shell seam)", () => {
 
     await expect.element(stage.getByRole("heading", { name: /^Get in touch$/i })).toBeVisible();
     await expect
-      .element(stage.getByText(/Drop me a note\. Email and LinkedIn are also in the side panel\./i))
+      .element(stage.getByText(/Email and LinkedIn are also in the side panel\./i))
       .toBeVisible();
+    await expect.element(stage.getByText(/hire or brief Vishal Kumar/i)).toBeVisible();
     await expect.element(stage).not.toHaveTextContent(/Context Rail/i);
     await expect.element(stage.getByLabelText(/^Name$/i)).toBeVisible();
     await expect.element(stage.getByLabelText(/^Email$/i)).toBeVisible();

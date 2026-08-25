@@ -4,9 +4,11 @@ name: Quality
 
 on:
   pull_request:
+  workflow_dispatch:
   push:
     branches:
       - main
+      - "cursor/**"
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}

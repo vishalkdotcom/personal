@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 describe("Pages Functions routes contract", () => {
-  it("limits Functions invocation to /api/*", () => {
+  it("runs Functions on document routes so Accept negotiation and 404s work", () => {
     const raw = readFileSync(resolve("static/_routes.json"), "utf8");
     const routes = JSON.parse(raw) as {
       version: number;
@@ -12,8 +12,16 @@ describe("Pages Functions routes contract", () => {
     };
 
     expect(routes.version).toBe(1);
-    expect(routes.include).toEqual(["/api/*"]);
-    expect(routes.exclude).toEqual([]);
+    expect(routes.include).toEqual(["/*"]);
+    expect(routes.exclude).toEqual(["/assets/*", "/fonts/*"]);
+  });
+
+  it("sets markdown Content-Type on .md assets via Pages _headers", () => {
+    const headers = readFileSync(resolve("static/_headers"), "utf8");
+    expect(headers).toMatch(/\/\*\.md/);
+    expect(headers).toMatch(/Content-Type:\s*text\/markdown; charset=utf-8/);
+    expect(headers).toMatch(/Vary:\s*Accept/);
+    expect(headers).toMatch(/^\/\*\s*$/m);
   });
 });
 

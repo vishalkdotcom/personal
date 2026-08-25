@@ -84,6 +84,30 @@ describe("Densified About Selected work (App Shell seam)", () => {
       .toBeVisible();
   });
 
+  it("serves the About stage at /about", async () => {
+    const { screen } = renderAt("/about");
+    await expect.element(selectedWorkList(screen)).toBeVisible();
+    await expect.element(screen.getByRole("heading", { name: /Vishal Kumar/i })).toBeVisible();
+    const article = screen.getByRole("article", { name: /about/i });
+    await expect.element(article).toBeVisible();
+    expect(article.element().textContent?.length ?? 0).toBeGreaterThan(500);
+  });
+
+  it("renders the Privacy trust page inside the App Shell", async () => {
+    const { screen } = renderAt("/privacy");
+    const article = screen.getByRole("article", { name: /privacy/i });
+    await expect.element(article).toBeVisible();
+    await expect.element(article.getByRole("heading", { name: /privacy/i })).toBeVisible();
+    expect(article.element().textContent?.length ?? 0).toBeGreaterThan(500);
+  });
+
+  it("renders Contact with 500+ characters of copy", async () => {
+    const { screen } = renderAt("/contact");
+    const article = screen.getByRole("article", { name: /contact/i });
+    await expect.element(article).toBeVisible();
+    expect(article.element().textContent?.length ?? 0).toBeGreaterThan(500);
+  });
+
   it("renders case-crop media in the densify strip at desktop height with cover/left-top crop", async () => {
     await page.viewport(DESKTOP_VIEWPORT.width, DESKTOP_VIEWPORT.height);
     const { screen } = renderAt("/");

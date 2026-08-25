@@ -42,10 +42,21 @@ Cloudflare Pages (Git builds):
 - Config: `wrangler.toml` (`pages_build_output_dir = "dist"`)
 - Build env in committed `wrangler.toml` `[vars]`: `SKIP_DEPENDENCY_INSTALL`, `BUN_VERSION`, `VITE_*` (dashboard-only vars do not feed the pre-build install when this file exists)
 - `.npmrc` (`legacy-peer-deps=true`) — safety net if Pages still runs `npm install`
-- Contact: `functions/api/contact.ts` + `static/_routes.json` (`/api/*` only)
+- Contact: `functions/api/contact.ts`
+- Agent gateway: `functions/_middleware.ts` + `static/_routes.json` (`/*`, assets excluded)
 - Runtime secrets: `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` as encrypted Pages secrets (never in `wrangler.toml`)
+- AI crawlers: `static/robots.txt` allows GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended, and DeepSeekBot. Two **vishalk.com** zone settings currently override that file on the apex (previews on `*.pages.dev` do not):
+  1. **Managed robots.txt / Content Signals** prepends a Content Signals policy and `# BEGIN Cloudflare Managed content` with `Disallow: /` for GPTBot, ClaudeBot, and Google-Extended. Security → Bots → Manage your robots.txt → **Disable robots.txt configuration** (and turn off Content Signals / `cf_robots_variant`). Confirm `curl -sS https://vishalk.com/robots.txt` has no `Content-Signal:` / managed block and those agents `Allow: /`.
+  2. **WAF / Block AI bots** returns “Attention Required” 403 for GPTBot, ChatGPT-User, ClaudeBot, and PerplexityBot. Security → WAF → Custom rules → Create rule. Expression:
 
-Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical per Mode and Work Case). Unknown paths still use Pages’ SPA fallback (no top-level `404.html`).
+     `(http.user_agent contains "GPTBot") or (http.user_agent contains "ChatGPT-User") or (http.user_agent contains "ClaudeBot") or (http.user_agent contains "PerplexityBot") or (http.user_agent contains "Google-Extended") or (http.user_agent contains "DeepSeekBot")`
+
+     Action: **Skip**. Tick Super Bot Fight Mode, Bot Fight Mode, and Block AI bots. Put the rule at the top. Or Security → Bots: turn off “Block AI Scrapers and Crawlers” / allow those agents in AI Crawl Control. Confirm with `curl -A 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.2; +https://openai.com/gptbot)' -o /dev/null -w '%{http_code}' https://vishalk.com/` → 200.
+
+  Live check: `bun scripts/verify-agent-readiness.mjs https://vishalk.com` (preview: `bun scripts/verify-agent-readiness.mjs https://cursor-agent-readiness-2a91.vishalk.pages.dev`).
+  Zone apply (needs `CLOUDFLARE_API_TOKEN` with Bot Management Write + WAF Write): `bun scripts/allow-ai-crawlers.mjs`. Store that token as a **repository** Actions secret (Settings → Secrets and variables → Actions), not only on the Cloudflare Pages GitHub environments named Production/Preview — empty environment secrets mask a repo secret of the same name. After merge to `main`, the Allow AI crawlers workflow fails closed until the secret exists.
+
+Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical per Mode and Work Case). Unknown paths serve `404.html` with HTTP 404 (SPA fallback is off). Markdown is available on the same URLs via `Accept: text/markdown`.
 
 ## Agent / product docs
 

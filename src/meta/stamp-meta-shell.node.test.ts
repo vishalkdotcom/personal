@@ -2,6 +2,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { visibleTextFromHtml } from "../agent/copy";
 import { emitMetaShells } from "./emit-meta-shells";
 import { DEEP_LINK_ROUTES, pageMetaForPath } from "./route-manifest";
 import { OG_IMAGE_URL, SITE_NAME, SITE_ORIGIN } from "./site";
@@ -95,7 +96,32 @@ describe("Stamped meta shells (build output seam)", () => {
       expect(html).toContain('data-sm="stamp-canonical"');
       expect(html).toContain(`property="og:image" content="${OG_IMAGE_URL}"`);
       expect(html).toContain(`name="twitter:card" content="summary_large_image"`);
+      expect(html).toContain('type="application/ld+json"');
+      expect(html).toContain("<h1>");
+      expect(html).toContain('rel="alternate" type="text/markdown"');
     }
+
+    const notFound = readFileSync(join(tempRoot, "404.html"), "utf8");
+    expect(notFound).toContain("<h1>");
+    expect(notFound).toContain("sitemap.xml");
+    expect(notFound).toContain("llms.txt");
+
+    const sitemap = readFileSync(join(tempRoot, "sitemap.xml"), "utf8");
+    expect(sitemap).toContain("<lastmod>");
+    expect(sitemap).toContain("https://vishalk.com/about");
+    expect(sitemap).toContain("https://vishalk.com/privacy");
+
+    const llms = readFileSync(join(tempRoot, "llms.txt"), "utf8");
+    expect(llms).toContain("## When to use this");
+    expect(readFileSync(join(tempRoot, "about.md"), "utf8")).toMatch(/^# /);
+    expect(readFileSync(join(tempRoot, "privacy.md"), "utf8").length).toBeGreaterThan(500);
+
+    const home = readFileSync(join(tempRoot, "index.html"), "utf8");
+    expect(home).toContain('"@type":"Person"');
+    expect(home).toContain('"@type":"Organization"');
+    expect(home).toContain("Vishal Kumar");
+    expect(visibleTextFromHtml(home).length).toBeGreaterThanOrEqual(500);
+    expect(readFileSync(join(tempRoot, "_headers"), "utf8")).toMatch(/Vary:\s*Accept/);
   });
 
   it("maps deep-link paths to Cloudflare pretty-URL shell files", () => {
