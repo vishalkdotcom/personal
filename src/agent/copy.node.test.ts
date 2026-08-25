@@ -58,7 +58,10 @@ describe("Agent documents", () => {
     expect(org?.address).toMatchObject({
       "@type": "PostalAddress",
       addressCountry: "IN",
+      addressLocality: "Punjab",
     });
+    expect(org).not.toHaveProperty("telephone");
+    expect(person).not.toHaveProperty("telephone");
   });
 
   it("writes llms.txt with a when-to-use section in spec order", () => {
