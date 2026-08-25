@@ -31,6 +31,13 @@ describe("AI crawler allowlist", () => {
     }
   });
 
+  it("gates brand title, rel=me identity links, and WebSite JSON-LD", () => {
+    const verifier = readFileSync(resolve("scripts/verify-agent-readiness.mjs"), "utf8");
+    expect(verifier).toContain("homepage title is Vishal Kumar");
+    expect(verifier).toContain("head rel=me LinkedIn and GitHub");
+    expect(verifier).toContain("homepage WebSite JSON-LD");
+  });
+
   it("turns off Block AI bots, managed robots.txt, Content Signals, and the AI link maze", () => {
     const patched = botManagementAllowlistPatch(
       {

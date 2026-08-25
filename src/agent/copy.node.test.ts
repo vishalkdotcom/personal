@@ -77,7 +77,8 @@ describe("Agent documents", () => {
       name: ABOUT_NAME,
       alternateName: ["vishalk.com", "vishalk"],
       url: "https://vishalk.com/",
-      publisher: { "@id": "https://vishalk.com/#person" },
+      publisher: { "@id": "https://vishalk.com/#org" },
+      about: { "@id": "https://vishalk.com/#person" },
     });
   });
 

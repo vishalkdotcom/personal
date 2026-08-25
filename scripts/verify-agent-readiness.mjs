@@ -66,6 +66,15 @@ const homeText = visibleText(home.body);
 check("homepage HTTP 200", home.status === 200, `status ${home.status}`);
 check("homepage has H1", /<h1[\s>]/i.test(home.body));
 check("homepage 500+ chars without JS", homeText.length >= 500, `${homeText.length} chars`);
+const homeTitle = home.body.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim() ?? "";
+check("homepage title is Vishal Kumar", homeTitle === "Vishal Kumar", homeTitle || "(missing)");
+const homeHead = home.body.split(/<\/head>/i)[0] ?? "";
+check(
+  "head rel=me LinkedIn and GitHub",
+  /rel="me"/i.test(homeHead) &&
+    homeHead.includes("linkedin.com/in/vishalkdotcom") &&
+    homeHead.includes("github.com/vishalkdotcom"),
+);
 check(
   "homepage Person JSON-LD",
   home.body.includes('"@type":"Person"') || home.body.includes('"@type": "Person"'),
