@@ -47,7 +47,17 @@ const RailLinkItem: Component<{ link: RailLink }> = (props) => {
       }
     >
       <Match when={props.link.external}>
-        <a href={href()} class={linkClass} target="_blank" rel="noreferrer">
+        <a
+          href={href()}
+          class={linkClass}
+          target="_blank"
+          rel={
+            href() === "https://www.linkedin.com/in/vishalkdotcom" ||
+            href() === "https://github.com/vishalkdotcom"
+              ? "me noreferrer"
+              : "noreferrer"
+          }
+        >
           {props.link.label}
         </a>
       </Match>

@@ -1575,10 +1575,12 @@ describe("Contact Mode (App Shell seam)", () => {
     expect(linkedIn.element().getAttribute("href")).toBe(
       "https://www.linkedin.com/in/vishalkdotcom",
     );
+    expect(linkedIn.element().getAttribute("rel")).toContain("me");
 
     const github = rail.getByRole("link", { name: /^GitHub/i });
     await expect.element(github).toBeVisible();
     expect(github.element().getAttribute("href")).toBe("https://github.com/vishalkdotcom");
+    expect(github.element().getAttribute("rel")).toContain("me");
 
     const cv = rail.getByRole("link", { name: /^CV/i });
     await expect.element(cv).toBeVisible();

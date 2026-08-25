@@ -113,10 +113,10 @@ export function aboutMarkdown(): string {
     "",
     "Use this site when you need a senior frontend engineer for React/Next.js product UI: reporting surfaces, form/admin workflows, and platform cleanup, with AI-native delivery that is still reviewed, tested, and owned.",
     "",
-    `- Email: ${CONTACT_EMAIL}`,
+    `- Email: [${CONTACT_EMAIL}](mailto:${CONTACT_EMAIL})`,
     `- Contact form: ${SITE_ORIGIN}/contact`,
-    `- LinkedIn: ${LINKEDIN_HREF}`,
-    `- GitHub: ${GITHUB_HREF}`,
+    `- LinkedIn: [${LINKEDIN_HREF}](${LINKEDIN_HREF})`,
+    `- GitHub: [${GITHUB_HREF}](${GITHUB_HREF})`,
     `- Resume (PDF): ${SITE_ORIGIN}${RESUME_PDF_HREF}`,
     "",
   ].join("\n");
@@ -136,8 +136,8 @@ export function contactMarkdown(): string {
     "",
     `- Email: [${CONTACT_EMAIL}](mailto:${CONTACT_EMAIL})`,
     `- Form: ${SITE_ORIGIN}/contact`,
-    `- LinkedIn: ${LINKEDIN_HREF}`,
-    `- GitHub: ${GITHUB_HREF}`,
+    `- LinkedIn: [${LINKEDIN_HREF}](${LINKEDIN_HREF})`,
+    `- GitHub: [${GITHUB_HREF}](${GITHUB_HREF})`,
     `- Resume (PDF): ${SITE_ORIGIN}${RESUME_PDF_HREF}`,
     "",
     "I read hiring mail myself. I do not sell contact data.",
@@ -197,10 +197,16 @@ export function notFoundMarkdown(): string {
   ].join("\n");
 }
 
+function identityRel(href: string): string {
+  return href === LINKEDIN_HREF || href === GITHUB_HREF ? ' rel="me"' : "";
+}
+
 function inlineMarkdown(text: string): string {
   const escaped = escapeHtmlText(text);
   return escaped
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label: string, href: string) => {
+      return `<a href="${href}"${identityRel(href)}>${label}</a>`;
+    })
     .replace(/`([^`]+)`/g, "<code>$1</code>");
 }
 

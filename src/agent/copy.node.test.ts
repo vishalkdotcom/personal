@@ -35,6 +35,12 @@ describe("Agent documents", () => {
     expect(contactMarkdown().length).toBeGreaterThanOrEqual(500);
   });
 
+  it("marks LinkedIn and GitHub as rel=me identity links in crawlable HTML", () => {
+    const html = crawlerHtmlForPath("/");
+    expect(html).toContain(`<a href="${LINKEDIN_HREF}" rel="me">`);
+    expect(html).toContain(`<a href="${GITHUB_HREF}" rel="me">`);
+  });
+
   it("emits Person + Organization JSON-LD with contactPoint and address", () => {
     const json = identityJsonLd() as {
       "@graph": Array<Record<string, unknown>>;
