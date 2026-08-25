@@ -86,6 +86,14 @@ for (const path of ["/about", "/contact", "/privacy"]) {
   check(`${path} 500+ chars`, text.length >= 500, `${text.length} chars`);
 }
 
+const homeMd = await get("/", { headers: { Accept: "text/markdown" } });
+check(
+  "homepage Accept: text/markdown is 200",
+  homeMd.status === 200 &&
+    (homeMd.response.headers.get("content-type") ?? "").includes("text/markdown"),
+  homeMd.response.headers.get("content-type") ?? `status ${homeMd.status}`,
+);
+
 const md = await get("/about", { headers: { Accept: "text/markdown" } });
 const vary = md.response.headers.get("vary") ?? "";
 check("Accept: text/markdown is 200", md.status === 200, `status ${md.status}`);

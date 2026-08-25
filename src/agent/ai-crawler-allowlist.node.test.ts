@@ -64,12 +64,14 @@ describe("AI crawler allowlist", () => {
     expect(parameters.products).toEqual(
       expect.arrayContaining(["uaBlock", "bic", "securityLevel", "waf"]),
     );
+    expect(wafSkipActionParameters("minimal")).not.toHaveProperty("ruleset");
   });
 
   it("keeps the zone apply script on the shared Bot Management and WAF skip helpers", () => {
     const script = readFileSync(resolve("scripts/allow-ai-crawlers.mjs"), "utf8");
     expect(script).toContain("botManagementAllowlistPatch");
-    expect(script).toContain("wafSkipActionParameters");
+    expect(script).toContain("wafSkipRule");
+    expect(script).toContain("tokenFromWranglerConfig");
     expect(script).toContain('from "../src/agent/ai-crawler-allowlist.ts"');
   });
 });

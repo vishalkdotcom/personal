@@ -7,26 +7,44 @@
  * Needs a token with Zone Bot Management Write + Zone WAF Write on vishalk.com.
  * Without a token, exits 0 when ALLOW_AI_CRAWLERS_OPTIONAL=1 (CI skip), else 2.
  */
+import { existsSync, readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import {
-  AI_CRAWLER_UA_TOKENS,
   WAF_SKIP_DESCRIPTION,
   botManagementAllowlistPatch,
-  wafSkipActionParameters,
-  wafSkipExpression,
+  wafSkipRule,
 } from "../src/agent/ai-crawler-allowlist.ts";
 
 const API = "https://api.cloudflare.com/client/v4";
 const ZONE_NAME = process.env.CLOUDFLARE_ZONE_NAME ?? "vishalk.com";
-const TOKEN = process.env.CLOUDFLARE_API_TOKEN ?? process.env.CF_API_TOKEN ?? "";
 const OPTIONAL = process.env.ALLOW_AI_CRAWLERS_OPTIONAL === "1";
 
-const SKIP_RULE = {
-  description: WAF_SKIP_DESCRIPTION,
-  expression: wafSkipExpression(AI_CRAWLER_UA_TOKENS),
-  action: "skip",
-  action_parameters: wafSkipActionParameters(),
-  enabled: true,
-};
+function firstNonEmpty(...values) {
+  for (const value of values) {
+    if (typeof value === "string" && value.trim() !== "") return value.trim();
+  }
+  return "";
+}
+
+function tokenFromWranglerConfig() {
+  const candidates = [
+    join(homedir(), ".config/.wrangler/config/default.toml"),
+    join(homedir(), ".wrangler/config/default.toml"),
+  ];
+  for (const path of candidates) {
+    if (!existsSync(path)) continue;
+    const match = readFileSync(path, "utf8").match(/oauth_token\s*=\s*"([^"]+)"/);
+    if (match?.[1]) return match[1];
+  }
+  return "";
+}
+
+const TOKEN = firstNonEmpty(
+  process.env.CLOUDFLARE_API_TOKEN,
+  process.env.CF_API_TOKEN,
+  tokenFromWranglerConfig(),
+);
 
 function headers() {
   return {
@@ -64,18 +82,44 @@ async function disableManagedBots(zoneId) {
 }
 
 async function upsertSkipRule(zoneId) {
-  const path = `/zones/${zoneId}/rulesets/phases/http_request_firewall_custom/entrypoint`;
+  const entryPath = `/zones/${zoneId}/rulesets/phases/http_request_firewall_custom/entrypoint`;
   let existing = [];
+  let missingEntrypoint = false;
   try {
-    const entry = await cf("GET", path);
+    const entry = await cf("GET", entryPath);
     existing = Array.isArray(entry.rules) ? entry.rules : [];
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     if (!message.includes("404")) throw error;
+    missingEntrypoint = true;
   }
   const kept = existing.filter((rule) => rule.description !== WAF_SKIP_DESCRIPTION);
-  await cf("PUT", path, { rules: [SKIP_RULE, ...kept] });
-  console.log(`custom WAF skip: ${SKIP_RULE.expression}`);
+  const variants = ["full", "minimal"];
+  let lastError;
+  for (const variant of variants) {
+    const rules = [wafSkipRule(variant), ...kept];
+    try {
+      if (missingEntrypoint) {
+        await cf("POST", `/zones/${zoneId}/rulesets`, {
+          name: "default",
+          kind: "zone",
+          phase: "http_request_firewall_custom",
+          rules,
+        });
+        missingEntrypoint = false;
+      } else {
+        await cf("PUT", entryPath, { rules });
+      }
+      console.log(`custom WAF skip (${variant}): ${rules[0].expression}`);
+      return;
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`waf skip ${variant} failed:\n${message}`);
+      missingEntrypoint = false;
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
 
 if (!TOKEN) {

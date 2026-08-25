@@ -48,19 +48,36 @@ export function botManagementAllowlistPatch(
   return { ...rest, ...BOT_MANAGEMENT_ALLOWLIST };
 }
 
+const WAF_SKIP_PRODUCTS = ["uaBlock", "bic", "securityLevel", "waf"] as const;
+const WAF_SKIP_PHASES = ["http_request_sbfm"] as const;
+
+export type WafSkipVariant = "full" | "minimal";
+
 /**
  * Skip remaining custom WAF rules (AI Crawl Control blocks), Super Bot Fight Mode,
- * and the listed products for matching user-agents.
+ * and the listed products for matching user-agents. `minimal` omits `ruleset`
+ * for plans that reject skip-remaining-custom-rules.
  */
-export function wafSkipActionParameters(): {
-  ruleset: "current";
-  phases: ["http_request_sbfm"];
-  products: ["uaBlock", "bic", "securityLevel", "waf"];
+export function wafSkipActionParameters(variant: WafSkipVariant = "full"): {
+  ruleset?: "current";
+  phases: typeof WAF_SKIP_PHASES;
+  products: typeof WAF_SKIP_PRODUCTS;
 } {
+  const parameters = {
+    phases: WAF_SKIP_PHASES,
+    products: WAF_SKIP_PRODUCTS,
+  };
+  if (variant === "minimal") return parameters;
+  return { ruleset: "current", ...parameters };
+}
+
+export function wafSkipRule(variant: WafSkipVariant = "full") {
   return {
-    ruleset: "current",
-    phases: ["http_request_sbfm"],
-    products: ["uaBlock", "bic", "securityLevel", "waf"],
+    description: WAF_SKIP_DESCRIPTION,
+    expression: wafSkipExpression(),
+    action: "skip" as const,
+    action_parameters: wafSkipActionParameters(variant),
+    enabled: true,
   };
 }
 

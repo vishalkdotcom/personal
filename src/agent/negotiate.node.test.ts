@@ -67,6 +67,16 @@ describe("Agent request handler", () => {
     expect(await response.text()).toMatch(/^# /);
   });
 
+  it("serves markdown for Accept: text/markdown on the homepage", async () => {
+    const response = await dispatch("/", {
+      headers: { Accept: "text/markdown" },
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toMatch(/text\/markdown/);
+    expect(response.headers.get("Vary") ?? "").toMatch(/Accept/i);
+    expect(await response.text()).toMatch(/^# Vishal Kumar/);
+  });
+
   it("adds Vary: Accept on HTML passthrough for known paths", async () => {
     const response = await dispatch("/", {
       headers: { Accept: "text/html" },
