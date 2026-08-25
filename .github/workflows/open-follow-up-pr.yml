@@ -1,0 +1,38 @@
+# Open a PR to main for this head when none exists.
+# Cursor cloud PR creation is gated on user approval; Actions can still open the GitHub PR.
+name: Open follow-up PR
+
+on:
+  push:
+    branches:
+      - vishalk/allow-crawlers-ci-7008
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  open:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Create pull request if missing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          HEAD: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          existing="$(gh pr list --head "$HEAD" --base main --json number,url --jq '.[0].url // empty')"
+          if [ -n "$existing" ]; then
+            echo "PR already exists: $existing"
+            exit 0
+          fi
+          gh pr create --base main --head "$HEAD" --title "Skip Allow AI crawlers CI when the Cloudflare token is missing" --body "Follow-up to #30.
+
+          Quality CI skips Allow AI crawlers when \`CLOUDFLARE_API_TOKEN\` is missing, runs Quality on \`vishalk/**\`, and verifies the agent origin after build. Homepage title is \`Vishal Kumar\`; unknown paths return markdown 404s unless Accept prefers HTML; head \`rel=me\` and Person + Organization + WebSite JSON-LD use the unique host \`vishalk.com\`. App Shell visuals are unchanged.
+
+          Preview: https://9259885b.vishalk.pages.dev
+
+          After merge: \`bun scripts/verify-agent-readiness.mjs https://vishalk.com\`"
