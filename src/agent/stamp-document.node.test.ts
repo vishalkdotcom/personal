@@ -22,7 +22,10 @@ describe("stampAgentDocument", () => {
     expect(html).toContain("index.md");
     expect(html).toMatch(/<h1>Vishal Kumar of vishalk\.com<\/h1>/);
     expect(html).toContain("data-crawler-content");
+    expect(html).toContain('aria-hidden="true"');
     expect(html).toContain("clip:rect(0,0,0,0)");
+    expect(html.indexOf("data-crawler-content")).toBeLessThan(html.indexOf('<div id="app">'));
+    expect(html).not.toMatch(/<div id="app">[\s\S]*data-crawler-content/);
   });
 
   it("throws when the SPA mount is missing", () => {

@@ -97,6 +97,12 @@ check(
   "homepage H1 names Vishal Kumar of vishalk.com",
   /<h1[^>]*>\s*Vishal Kumar of vishalk\.com\s*<\/h1>/i.test(home.body),
 );
+const crawlerAt = home.body.indexOf("data-crawler-content");
+const appMountAt = home.body.indexOf('<div id="app">');
+check(
+  "crawler HTML survives outside the SPA mount",
+  crawlerAt !== -1 && appMountAt !== -1 && crawlerAt < appMountAt,
+);
 check("homepage 500+ chars without JS", homeText.length >= 500, `${homeText.length} chars`);
 const homeTitle = home.body.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim() ?? "";
 check(

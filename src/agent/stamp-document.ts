@@ -4,7 +4,7 @@ import { markdownUrlForPath } from "./paths";
 
 const APP_MOUNT_RE = /<div id="app"><\/div>/;
 
-/** Clip crawler HTML out of the visual shell; keep it in the raw document for no-JS extractors. */
+/** Clip crawler HTML out of the visual shell; keep it in the raw document for extractors. */
 const CRAWLER_CLIP_STYLE =
   "position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0";
 
@@ -18,9 +18,11 @@ export function stampAgentDocument(html: string, meta: PageMeta): string {
   if (!APP_MOUNT_RE.test(stamped)) {
     throw new Error('stampAgentDocument: SPA template must include <div id="app"></div>');
   }
+  // Sibling of #app so Solid hydration does not wipe the unique H1 / brand copy.
+  // aria-hidden avoids duplicating the About narrative for screen readers after mount.
   const article = crawlerHtmlForPath(meta.path).replace(
     "<article data-crawler-content>",
-    `<article data-crawler-content style="${CRAWLER_CLIP_STYLE}">`,
+    `<article data-crawler-content aria-hidden="true" style="${CRAWLER_CLIP_STYLE}">`,
   );
-  return stamped.replace(APP_MOUNT_RE, `<div id="app">${article}</div>`);
+  return stamped.replace(APP_MOUNT_RE, `${article}\n    <div id="app"></div>`);
 }
