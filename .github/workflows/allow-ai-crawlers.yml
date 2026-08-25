@@ -2,8 +2,7 @@
 # Uses repository secrets (not GitHub environment secrets). Cloudflare Pages
 # Production/Preview environments can define an empty CLOUDFLARE_API_TOKEN that
 # masks a repo secret of the same name.
-# On main, a missing token fails the job. On other branches it no-ops so Quality
-# stays green until the secret exists.
+# Missing token: skip (does not fail CI). Token present: apply or fail.
 name: Allow AI crawlers
 
 on:
@@ -11,7 +10,6 @@ on:
   push:
     branches:
       - main
-      - cursor/agent-readiness-2a91
 
 permissions:
   contents: read
@@ -19,6 +17,7 @@ permissions:
 jobs:
   allow:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -32,5 +31,5 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          ALLOW_AI_CRAWLERS_OPTIONAL: ${{ github.ref == 'refs/heads/main' && '0' || '1' }}
+          ALLOW_AI_CRAWLERS_OPTIONAL: "1"
         run: bun scripts/allow-ai-crawlers.mjs

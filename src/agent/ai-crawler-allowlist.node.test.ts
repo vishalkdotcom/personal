@@ -74,4 +74,10 @@ describe("AI crawler allowlist", () => {
     expect(script).toContain("tokenFromWranglerConfig");
     expect(script).toContain('from "../src/agent/ai-crawler-allowlist.ts"');
   });
+
+  it("does not fail main CI when CLOUDFLARE_API_TOKEN is missing", () => {
+    const workflow = readFileSync(resolve(".github/workflows/allow-ai-crawlers.yml"), "utf8");
+    expect(workflow).toMatch(/ALLOW_AI_CRAWLERS_OPTIONAL:\s*"1"/);
+    expect(workflow).not.toMatch(/github\.ref == 'refs\/heads\/main' && '0'/);
+  });
 });
