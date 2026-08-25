@@ -87,7 +87,7 @@ check(
   /"@type":\s*"ContactPoint"/.test(home.body) && /"@type":\s*"PostalAddress"/.test(home.body),
 );
 
-for (const path of ["/about", "/contact", "/privacy"]) {
+for (const path of ["/about", "/contact"]) {
   const page = await get(path);
   const text = visibleText(page.body);
   check(`${path} HTTP 200`, page.status === 200, `status ${page.status}`);

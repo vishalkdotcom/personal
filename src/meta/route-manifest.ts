@@ -42,11 +42,6 @@ const MODE_META: PageMeta[] = [
     "Contact",
     `Contact ${ABOUT_NAME} — send a message, or reach out by email or LinkedIn.`,
   ),
-  page(
-    "/privacy",
-    "Privacy",
-    `Privacy notice for ${ABOUT_NAME} — how the contact form, email, and analytics are handled.`,
-  ),
   page(workRootHref(), "Work", "Selected work — what shipped and what it changed."),
 ];
 
