@@ -14,7 +14,6 @@ import { WorkRootIndex } from "./work-outcome-index";
 
 export { AboutStage } from "./about-stage";
 export { ContactStage } from "./contact-stage";
-export { PrivacyStage } from "./privacy-stage";
 export { ResumeStage } from "./resume-stage";
 
 export const WorkRootStage: Component = () => <WorkRootIndex />;

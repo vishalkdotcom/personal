@@ -10,7 +10,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
 
     expect(paths).toContain("/");
     expect(paths).toContain("/about");
-    expect(paths).toContain("/privacy");
+    expect(paths).not.toContain("/privacy");
     expect(paths).toContain("/resume");
     expect(paths).toContain("/contact");
     expect(paths).toContain(workRootHref());
@@ -98,8 +98,8 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
     expect(pageMetaForPath("/about").title).toBe(`About · ${SITE_NAME}`);
     expect(deepLinkPaths()).toContain("/about");
-    expect(pageMetaForPath("/privacy").title).toBe(`Privacy · ${SITE_NAME}`);
-    expect(deepLinkPaths()).toContain("/privacy");
+    expect(pageMetaForPath("/privacy").title).toBe(SITE_NAME);
+    expect(deepLinkPaths()).not.toContain("/privacy");
     expect(supplyChain.title).toBe(`SupplyChain+ · ${SITE_NAME}`);
     expect(supplyChain.canonical).toBe(`${SITE_ORIGIN}/work/prototypes/supplychain-plus`);
     expect(home.description).not.toBe(supplyChain.description);
