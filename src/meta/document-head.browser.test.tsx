@@ -67,7 +67,7 @@ describe("Document head meta sync (App Shell seam)", () => {
     await expect
       .element(contactScreen.getByRole("main").getByRole("heading", { name: /^Get in touch$/i }))
       .toBeVisible();
-    expect(appDocumentTitle()).toBe("Contact · Vishal Kumar");
+    expect(appDocumentTitle()).toBe("Contact · Vishal Kumar · vishalk.com");
     expect(canonicalHref()).toBe(`${SITE_ORIGIN}/contact`);
     cleanup();
 
@@ -75,7 +75,7 @@ describe("Document head meta sync (App Shell seam)", () => {
     await expect
       .element(resumeScreen.getByRole("main").getByTitle(/Vishal Kumar resume/i))
       .toBeVisible();
-    expect(appDocumentTitle()).toBe("Resume · Vishal Kumar");
+    expect(appDocumentTitle()).toBe("Resume · Vishal Kumar · vishalk.com");
     expect(canonicalHref()).toBe(`${SITE_ORIGIN}/resume`);
     cleanup();
 
@@ -83,7 +83,7 @@ describe("Document head meta sync (App Shell seam)", () => {
     await expect
       .element(caseScreen.getByRole("main").getByRole("heading", { name: /^Engage reporting$/i }))
       .toBeVisible();
-    expect(appDocumentTitle()).toBe("Engage reporting · Vishal Kumar");
+    expect(appDocumentTitle()).toBe("Engage reporting · Vishal Kumar · vishalk.com");
     const engageLede = getWorkCase("labor-solutions", "engage-reporting")?.lede;
     expect(engageLede).toBeTruthy();
     expect(metaContent('meta[name="description"]')).toBe(engageLede);
@@ -104,7 +104,7 @@ describe("Document head meta sync (App Shell seam)", () => {
       .element(screen.getByRole("main").getByRole("heading", { name: /^All work$/i }))
       .toBeVisible();
     expect(history.get()).toBe("/work");
-    expect(appDocumentTitle()).toBe("Work · Vishal Kumar");
+    expect(appDocumentTitle()).toBe("Work · Vishal Kumar · vishalk.com");
     expect(canonicalHref()).toBe(`${SITE_ORIGIN}/work`);
 
     await screen.getByRole("link", { name: /^Contact$/i }).click();
@@ -112,7 +112,7 @@ describe("Document head meta sync (App Shell seam)", () => {
       .element(screen.getByRole("main").getByRole("heading", { name: /^Get in touch$/i }))
       .toBeVisible();
     expect(history.get()).toBe("/contact");
-    expect(appDocumentTitle()).toBe("Contact · Vishal Kumar");
+    expect(appDocumentTitle()).toBe("Contact · Vishal Kumar · vishalk.com");
     expect(canonicalHref()).toBe(`${SITE_ORIGIN}/contact`);
   });
 });

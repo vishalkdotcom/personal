@@ -162,6 +162,12 @@ for (const path of ["/about", "/contact"]) {
   const text = visibleText(page.body);
   check(`${path} HTTP 200`, page.status === 200, `status ${page.status}`);
   check(`${path} 500+ chars`, text.length >= 500, `${text.length} chars`);
+  const pageTitle = page.body.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim() ?? "";
+  check(
+    `${path} title names Vishal Kumar and vishalk.com`,
+    /Vishal Kumar/i.test(pageTitle) && /vishalk\.com/i.test(pageTitle),
+    pageTitle || "(missing)",
+  );
 }
 
 const homeMd = await get("/", { headers: { Accept: "text/markdown" } });

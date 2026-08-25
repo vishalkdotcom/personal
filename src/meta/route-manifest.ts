@@ -16,7 +16,7 @@ export type PageMeta = {
 };
 
 function titleWithSite(segment: string): string {
-  return `${segment} · ${SITE_NAME}`;
+  return `${segment} · ${HOME_TITLE}`;
 }
 
 function canonicalFor(path: string): string {
@@ -81,7 +81,7 @@ export const DEEP_LINK_ROUTES: PageMeta[] = [...MODE_META, ...caseMeta()];
 const byPath = new Map(DEEP_LINK_ROUTES.map((entry) => [entry.path, entry]));
 
 /** Home-surface title/description used when pathname is outside the finite set. */
-const FALLBACK_TITLE = SITE_NAME;
+const FALLBACK_TITLE = HOME_TITLE;
 const FALLBACK_DESCRIPTION = ABOUT_PITCH;
 
 /**

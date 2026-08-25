@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH, HOME_DESCRIPTION } from "../about/content";
 import { getWorkCase, WORK_FOLDERS, workCaseHref, workRootHref } from "../work/inventory";
 import { DEEP_LINK_ROUTES, deepLinkPaths, pageMetaForPath } from "./route-manifest";
-import { HOME_TITLE, SITE_NAME, SITE_ORIGIN } from "./site";
+import { HOME_TITLE, SITE_ORIGIN } from "./site";
 
 describe("Deep-link route manifest (build + App Shell meta seam)", () => {
   it("covers Modes + Work root + Work Cases, without Work Folder index paths", () => {
@@ -10,7 +10,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
 
     expect(paths).toContain("/");
     expect(paths).toContain("/about");
-    expect(paths).not.toContain("/privacy");
+    expect(paths).toContain("/privacy");
     expect(paths).toContain("/resume");
     expect(paths).toContain("/contact");
     expect(paths).toContain(workRootHref());
@@ -36,12 +36,12 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
 
     const about = pageMetaForPath("/about");
-    expect(about.title).toBe(`About · ${SITE_NAME}`);
+    expect(about.title).toBe(`About · ${HOME_TITLE}`);
     expect(about.description).toBe(HOME_DESCRIPTION);
     expect(about.canonical).toBe(`${SITE_ORIGIN}/about`);
 
     const contact = pageMetaForPath("/contact");
-    expect(contact.title).toBe(`Contact · ${SITE_NAME}`);
+    expect(contact.title).toBe(`Contact · ${HOME_TITLE}`);
     expect(contact.description).toBe(
       "Contact Vishal Kumar of vishalk.com — send a message, or reach out by email or LinkedIn.",
     );
@@ -49,7 +49,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(contact.canonical).toBe(`${SITE_ORIGIN}/contact`);
 
     const resume = pageMetaForPath("/resume");
-    expect(resume.title).toBe(`Resume · ${SITE_NAME}`);
+    expect(resume.title).toBe(`Resume · ${HOME_TITLE}`);
     expect(resume.description).toBe(`PDF resume for ${ABOUT_NAME} — ${ABOUT_META}.`);
     expect(ABOUT_META).toBe(
       "Senior Frontend Engineer · React / Next.js · Product UI (reporting, forms, platform)",
@@ -58,21 +58,21 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(resume.canonical).toBe(`${SITE_ORIGIN}/resume`);
 
     const work = pageMetaForPath(workRootHref());
-    expect(work.title).toBe(`Work · ${SITE_NAME}`);
+    expect(work.title).toBe(`Work · ${HOME_TITLE}`);
     expect(work.description).toBe("Selected work — what shipped and what it changed.");
     expect(work.description).not.toMatch(/Work Folder|Work Case/i);
 
     const folderOnly = pageMetaForPath("/work/labor-solutions");
     expect(folderOnly.path).toBe("/work/labor-solutions");
     expect(folderOnly.canonical).toBe(`${SITE_ORIGIN}/work/labor-solutions`);
-    expect(folderOnly.title).toBe(SITE_NAME);
+    expect(folderOnly.title).toBe(HOME_TITLE);
     expect(folderOnly.description).toBe(ABOUT_PITCH);
     expect(folderOnly.description).not.toBe("Labor Solutions — selected work and outcomes.");
 
     const engageCase = getWorkCase("labor-solutions", "engage-reporting");
     expect(engageCase?.lede).toBeTruthy();
     const engage = pageMetaForPath("/work/labor-solutions/engage-reporting");
-    expect(engage.title).toBe(`Engage reporting · ${SITE_NAME}`);
+    expect(engage.title).toBe(`Engage reporting · ${HOME_TITLE}`);
     expect(engage.description).toBe(engageCase!.lede);
     expect(engage.canonical).toBe(`${SITE_ORIGIN}/work/labor-solutions/engage-reporting`);
 
@@ -89,11 +89,11 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     const promptSurveyPath = workCaseHref("prototypes", "promptsurvey");
     expect(promptSurveyPath).toBe("/work/prototypes/promptsurvey");
     const promptSurveyMeta = pageMetaForPath(promptSurveyPath);
-    expect(promptSurveyMeta.title).toBe(`PromptSurvey · ${SITE_NAME}`);
+    expect(promptSurveyMeta.title).toBe(`PromptSurvey · ${HOME_TITLE}`);
     expect(promptSurveyMeta.description).toBe(promptSurvey!.lede);
     expect(promptSurveyMeta.canonical).toBe(`${SITE_ORIGIN}/work/prototypes/promptsurvey`);
     expect(deepLinkPaths()).not.toContain("/work/prototypes/qgenai");
-    expect(pageMetaForPath("/work/prototypes/qgenai").title).toBe(SITE_NAME);
+    expect(pageMetaForPath("/work/prototypes/qgenai").title).toBe(HOME_TITLE);
   });
 
   it("stamps `/` as About meta, distinct from the SupplyChain+ Work Case", () => {
@@ -103,11 +103,17 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     expect(home.title).toBe(HOME_TITLE);
     expect(home.description).toBe(HOME_DESCRIPTION);
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
-    expect(pageMetaForPath("/about").title).toBe(`About · ${SITE_NAME}`);
+    expect(pageMetaForPath("/about").title).toBe(`About · ${HOME_TITLE}`);
     expect(deepLinkPaths()).toContain("/about");
+<<<<<<< HEAD
     expect(pageMetaForPath("/privacy").title).toBe(SITE_NAME);
     expect(deepLinkPaths()).not.toContain("/privacy");
     expect(supplyChain.title).toBe(`SupplyChain+ · ${SITE_NAME}`);
+=======
+    expect(pageMetaForPath("/privacy").title).toBe(`Privacy · ${HOME_TITLE}`);
+    expect(deepLinkPaths()).toContain("/privacy");
+    expect(supplyChain.title).toBe(`SupplyChain+ · ${HOME_TITLE}`);
+>>>>>>> 60b267d (Put vishalk.com in trust-page and Mode document titles.)
     expect(supplyChain.canonical).toBe(`${SITE_ORIGIN}/work/prototypes/supplychain-plus`);
     expect(home.description).not.toBe(supplyChain.description);
     expect(home.description).not.toMatch(/SupplyChain|featured case|Work Case/i);
@@ -117,7 +123,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     const unknown = pageMetaForPath("/work/nope");
     expect(unknown.path).toBe("/work/nope");
     expect(unknown.canonical).toBe(`${SITE_ORIGIN}/work/nope`);
-    expect(unknown.title).toBe(SITE_NAME);
+    expect(unknown.title).toBe(HOME_TITLE);
     expect(unknown.description).toBe(ABOUT_PITCH);
   });
 });
