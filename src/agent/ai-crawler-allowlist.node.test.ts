@@ -43,6 +43,7 @@ describe("AI crawler allowlist", () => {
     expect(verifier).toContain("JSON-LD site brand is vishalk.com");
     expect(verifier).toContain("homepage alternateName includes vishalk.com");
     expect(verifier).toContain("404 defaults to markdown for agents");
+    expect(verifier).toContain("www redirects to apex with 301");
   });
 
   it("turns off Block AI bots, managed robots.txt, Content Signals, and the AI link maze", () => {

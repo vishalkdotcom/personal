@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { handleAgentRequest } from "./negotiate";
+import { handleAgentRequest, wwwToApexRedirect } from "./negotiate";
 
 const ORIGIN = "https://vishalk.com";
 
@@ -127,6 +127,32 @@ describe("Agent request handler", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toMatch(/text\/markdown/);
     expect(await response.text()).toMatch(/^# /);
+  });
+
+  it("301s GET www to the apex path and query", async () => {
+    const request = new Request("https://www.vishalk.com/contact?ref=test", { method: "GET" });
+    const response = await handleAgentRequest(request, async () => {
+      throw new Error("www GET must not reach next()");
+    });
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe("https://vishalk.com/contact?ref=test");
+    expect(await response.text()).toBe("");
+  });
+
+  it("308s POST www so the contact form keeps its method", async () => {
+    const request = new Request("https://www.vishalk.com/api/contact", { method: "POST" });
+    const response = await handleAgentRequest(request, async () => {
+      throw new Error("www POST must not reach next()");
+    });
+    expect(response.status).toBe(308);
+    expect(response.headers.get("Location")).toBe("https://vishalk.com/api/contact");
+  });
+
+  it("does not redirect apex or Pages preview hosts", () => {
+    expect(wwwToApexRedirect(new Request("https://vishalk.com/about"))).toBeNull();
+    expect(
+      wwwToApexRedirect(new Request("https://vishalk-allow-crawlers-ci-70.vishalk.pages.dev/")),
+    ).toBeNull();
   });
 
   it("returns an empty body for HEAD 404s while keeping status and Vary", async () => {

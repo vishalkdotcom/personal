@@ -4,6 +4,8 @@
 
 **You need:** Cloudflare zone `vishalk.com`. Do **not** use Page Rules (deprecated) or a Pages `_redirects` file (domain-level redirects are unsupported there; default status is 302).
 
+While `www` is still a Pages custom domain, the agent gateway (`handleAgentRequest`) 301s GET/HEAD `www.vishalk.com` to `https://vishalk.com` and 308s other methods. That hop is enough for crawlers after the next production deploy. Keep the zone Single Redirect below as the durable rule after you detach www from Pages (Step 4).
+
 Official sources:
 
 - [Which redirect product](https://developers.cloudflare.com/fundamentals/reference/redirects/) — Single Redirects are the default

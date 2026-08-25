@@ -1,3 +1,4 @@
+import { SITE_HOST, SITE_ORIGIN } from "../meta/site";
 import { HTML_TYPE, MARKDOWN_TYPE, negotiateAccept } from "./accept";
 import {
   crawlerHtmlForPath,
@@ -11,6 +12,8 @@ import {
   normalizePathname,
   pagePathFromMarkdownSibling,
 } from "./paths";
+
+const WWW_HOST = `www.${SITE_HOST}`;
 
 const MARKDOWN_CONTENT_TYPE = "text/markdown; charset=utf-8";
 const HTML_CONTENT_TYPE = "text/html; charset=utf-8";
@@ -47,6 +50,24 @@ function markdownPagePath(pathname: string): string | undefined {
   return pagePathFromMarkdownSibling(path) ?? (path.endsWith(".md") ? undefined : path);
 }
 
+/** 301/308 www to apex so crawlers do not keep a duplicate origin. */
+export function wwwToApexRedirect(request: Request): Response | null {
+  const url = new URL(request.url);
+  if (url.hostname.toLowerCase() !== WWW_HOST) {
+    return null;
+  }
+  const location = new URL(`${url.pathname}${url.search}`, SITE_ORIGIN).href;
+  const method = request.method.toUpperCase();
+  const status = method === "GET" || method === "HEAD" ? 301 : 308;
+  return new Response(null, {
+    status,
+    headers: {
+      Location: location,
+      "Cache-Control": "public, max-age=3600",
+    },
+  });
+}
+
 /**
  * Pages Function / test seam: negotiate markdown, emit real 404s, pass /api/* through.
  */
@@ -54,6 +75,11 @@ export async function handleAgentRequest(
   request: Request,
   next: () => Promise<Response>,
 ): Promise<Response> {
+  const apex = wwwToApexRedirect(request);
+  if (apex) {
+    return apex;
+  }
+
   const method = request.method.toUpperCase();
   if (method !== "GET" && method !== "HEAD") {
     return next();

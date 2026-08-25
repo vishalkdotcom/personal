@@ -235,6 +235,23 @@ for (const bot of BOTS) {
   check(`${bot} reaches origin`, probe.status === 200 && !blocked, `status ${probe.status}`);
 }
 
+if (new URL(base).hostname === "vishalk.com") {
+  const wwwHome = await fetch("https://www.vishalk.com/", { redirect: "manual" });
+  const wwwHomeLocation = wwwHome.headers.get("location") ?? "";
+  check(
+    "www redirects to apex with 301",
+    wwwHome.status === 301 && wwwHomeLocation.startsWith("https://vishalk.com"),
+    `status ${wwwHome.status} location ${wwwHomeLocation}`,
+  );
+  const wwwContact = await fetch("https://www.vishalk.com/contact", { redirect: "manual" });
+  const wwwContactLocation = wwwContact.headers.get("location") ?? "";
+  check(
+    "www /contact redirects to apex /contact",
+    wwwContact.status === 301 && wwwContactLocation.startsWith("https://vishalk.com/contact"),
+    `status ${wwwContact.status} location ${wwwContactLocation}`,
+  );
+}
+
 if (failures.length > 0) {
   console.log(`\n${failures.length} failed`);
   process.exit(1);
