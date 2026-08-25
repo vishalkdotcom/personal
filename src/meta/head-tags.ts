@@ -4,7 +4,7 @@ import {
   GITHUB_PROFILE_HREF,
   LINKEDIN_PROFILE_HREF,
   OG_IMAGE_URL,
-  SITE_NAME,
+  SITE_HOST,
 } from "./site";
 
 /** Single SoT for head tags shared by stamped shells and `@solidjs/meta`. */
@@ -56,7 +56,7 @@ export function headTagsFor(meta: PageMeta): HeadTag[] {
       kind: "meta",
       dataSm: "stamp-og-site-name",
       property: "og:site_name",
-      content: SITE_NAME,
+      content: SITE_HOST,
     },
     {
       kind: "meta",

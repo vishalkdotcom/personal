@@ -60,11 +60,43 @@ check(
   "404 body points at sitemap and llms.txt",
   unknown.body.includes("sitemap.xml") && unknown.body.includes("llms.txt"),
 );
+check(
+  "404 defaults to markdown for agents",
+  (unknown.response.headers.get("content-type") ?? "").includes("text/markdown") &&
+    unknown.body.startsWith("# Not found"),
+  unknown.response.headers.get("content-type") ?? "",
+);
+
+const unknownHtml = await get("/this-path-does-not-exist-agent-ready", {
+  headers: { Accept: "text/html,application/xhtml+xml,*/*;q=0.8" },
+});
+check(
+  "404 stays HTML for browsers",
+  unknownHtml.status === 404 &&
+    (unknownHtml.response.headers.get("content-type") ?? "").includes("text/html"),
+  unknownHtml.response.headers.get("content-type") ?? `status ${unknownHtml.status}`,
+);
+
+const unknownMd = await get("/this-path-does-not-exist-agent-ready", {
+  headers: { Accept: "text/markdown" },
+});
+check(
+  "404 Accept: text/markdown is markdown",
+  unknownMd.status === 404 &&
+    (unknownMd.response.headers.get("content-type") ?? "").includes("text/markdown") &&
+    unknownMd.body.includes("sitemap.xml") &&
+    unknownMd.body.includes("llms.txt"),
+  unknownMd.response.headers.get("content-type") ?? `status ${unknownMd.status}`,
+);
 
 const home = await get("/");
 const homeText = visibleText(home.body);
 check("homepage HTTP 200", home.status === 200, `status ${home.status}`);
 check("homepage has H1", /<h1[\s>]/i.test(home.body));
+check(
+  "homepage H1 names Vishal Kumar of vishalk.com",
+  /<h1[^>]*>\s*Vishal Kumar of vishalk\.com\s*<\/h1>/i.test(home.body),
+);
 check("homepage 500+ chars without JS", homeText.length >= 500, `${homeText.length} chars`);
 const homeTitle = home.body.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim() ?? "";
 check("homepage title is Vishal Kumar", homeTitle === "Vishal Kumar", homeTitle || "(missing)");
@@ -74,6 +106,11 @@ check(
   /rel="me"/i.test(homeHead) &&
     homeHead.includes("linkedin.com/in/vishalkdotcom") &&
     homeHead.includes("github.com/vishalkdotcom"),
+);
+check(
+  "og:site_name is vishalk.com",
+  /property="og:site_name"[^>]*content="vishalk\.com"/i.test(homeHead) ||
+    /content="vishalk\.com"[^>]*property="og:site_name"/i.test(homeHead),
 );
 check(
   "homepage Person JSON-LD",
@@ -90,6 +127,11 @@ check(
 check(
   "homepage alternateName includes vishalk.com",
   /"alternateName":\s*\[/.test(home.body) && home.body.includes("vishalk.com"),
+);
+check(
+  "JSON-LD site brand is vishalk.com",
+  /"@type":\s*"WebSite"[\s\S]{0,200}"name":\s*"vishalk\.com"/.test(home.body) &&
+    /"@type":\s*"Organization"[\s\S]{0,200}"name":\s*"vishalk\.com"/.test(home.body),
 );
 check(
   "Organization contactPoint + PostalAddress",

@@ -12,7 +12,9 @@ import { CONTACT_EMAIL } from "../contact/content";
 import {
   GITHUB_PROFILE_HREF,
   LINKEDIN_PROFILE_HREF,
+  OG_IMAGE_URL,
   SITE_ALTERNATE_NAMES,
+  SITE_HOST,
   SITE_NAME,
   SITE_ORIGIN,
 } from "../meta/site";
@@ -97,13 +99,13 @@ function workCaseMarkdown(pathname: string): string | undefined {
 
 export function aboutMarkdown(): string {
   return [
-    `# ${ABOUT_NAME}`,
+    `# ${ABOUT_NAME} of ${SITE_HOST}`,
     "",
     `> ${ABOUT_META}`,
     "",
     ABOUT_PITCH,
     "",
-    `${ABOUT_NAME} is a senior frontend engineer for remote product teams. The public site at ${SITE_ORIGIN} is a portfolio App Shell — Work, About, Resume, and Contact — not a SaaS product, chatbot, or API platform.`,
+    `${ABOUT_NAME} of ${SITE_HOST} is a senior frontend engineer for remote product teams. The public site at ${SITE_ORIGIN} is the canonical personal portfolio App Shell — Work, About, Resume, and Contact — not a SaaS product, chatbot, or API platform, and not another person who shares the name.`,
     "",
     `Based ${BASED_LOCATION}. ${ABOUT_AVAILABILITY}. ${FACT_LINE}.`,
     "",
@@ -318,11 +320,12 @@ export function identityJsonLd(): unknown {
         name: ABOUT_NAME,
         givenName: "Vishal",
         familyName: "Kumar",
-        alternateName,
+        alternateName: [...SITE_ALTERNATE_NAMES, "vishalkdotcom"],
         url: `${SITE_ORIGIN}/`,
         email: CONTACT_EMAIL,
         jobTitle: ABOUT_META,
         description: ABOUT_PITCH,
+        disambiguatingDescription: `Senior frontend engineer whose canonical site is ${SITE_ORIGIN}. Based ${BASED_LOCATION}.`,
         address,
         sameAs: [LINKEDIN_HREF, GITHUB_HREF],
         worksFor: { "@id": orgId },
@@ -330,10 +333,12 @@ export function identityJsonLd(): unknown {
       {
         "@type": "Organization",
         "@id": orgId,
-        name: ABOUT_NAME,
+        name: SITE_HOST,
+        legalName: ABOUT_NAME,
         alternateName,
         url: `${SITE_ORIGIN}/`,
         email: CONTACT_EMAIL,
+        logo: OG_IMAGE_URL,
         founder: { "@id": personId },
         address,
         contactPoint: {
@@ -348,8 +353,8 @@ export function identityJsonLd(): unknown {
       {
         "@type": "WebSite",
         "@id": websiteId,
-        name: SITE_NAME,
-        alternateName,
+        name: SITE_HOST,
+        alternateName: [SITE_NAME, "vishalk"],
         url: `${SITE_ORIGIN}/`,
         description: ABOUT_PITCH,
         inLanguage: "en",
@@ -381,7 +386,7 @@ export function llmsTxt(): string {
   }
 
   return [
-    `# ${ABOUT_NAME}`,
+    `# ${ABOUT_NAME} of ${SITE_HOST}`,
     "",
     `> ${ABOUT_META}. Personal portfolio at ${SITE_ORIGIN} — App Shell over Work, About, Resume, and Contact. Not a SaaS product, chatbot, or API.`,
     "",

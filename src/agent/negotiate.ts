@@ -1,4 +1,4 @@
-import { MARKDOWN_TYPE, negotiateAccept } from "./accept";
+import { HTML_TYPE, MARKDOWN_TYPE, negotiateAccept } from "./accept";
 import {
   crawlerHtmlForPath,
   markdownForPath,
@@ -67,9 +67,14 @@ export async function handleAgentRequest(
   }
 
   const accept = request.headers.get("Accept");
-  const negotiation = negotiateAccept(accept);
   const pagePath = markdownPagePath(pathname) ?? pathname;
   const known = isKnownAgentPath(pagePath);
+  // Unknown paths: markdown first so curl/`*/*`/omitted Accept get a recoverable
+  // 404 body. Known pages stay HTML-first so browsers keep the App Shell.
+  const negotiation = negotiateAccept(
+    accept,
+    known ? [HTML_TYPE, MARKDOWN_TYPE] : [MARKDOWN_TYPE, HTML_TYPE],
+  );
   const markdownBody = known ? markdownForPath(pagePath) : undefined;
 
   if (negotiation.kind === "not-acceptable") {

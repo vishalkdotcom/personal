@@ -42,19 +42,35 @@ describe("Agent request handler", () => {
     expect(await response.text()).toMatch(/<h1>/i);
   });
 
-  it("returns HTTP 404 for unknown paths when Accept is omitted (never SPA 200)", async () => {
+  it("returns HTTP 404 markdown when Accept is omitted (never SPA 200)", async () => {
     const response = await dispatch("/some-path-that-does-not-exist");
     expect(response.status).toBe(404);
+    expect(response.headers.get("Content-Type")).toMatch(/text\/markdown/);
     expect(response.headers.get("Vary") ?? "").toMatch(/Accept/i);
-    expect(await response.text()).toMatch(/sitemap\.xml/);
+    const body = await response.text();
+    expect(body).toMatch(/^# Not found/);
+    expect(body).toMatch(/sitemap\.xml/);
+    expect(body).toMatch(/llms\.txt/);
   });
 
-  it("returns HTTP 404 HTML when Accept is */*", async () => {
+  it("returns HTTP 404 markdown when Accept is */*", async () => {
     const response = await dispatch("/missing-resource", {
       headers: { Accept: "*/*" },
     });
     expect(response.status).toBe(404);
+    expect(response.headers.get("Content-Type")).toMatch(/text\/markdown/);
+    expect(await response.text()).toMatch(/^# Not found/);
+  });
+
+  it("returns HTTP 404 HTML when Accept prefers HTML (browsers)", async () => {
+    const response = await dispatch("/missing-resource", {
+      headers: {
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      },
+    });
+    expect(response.status).toBe(404);
     expect(response.headers.get("Content-Type")).toMatch(/text\/html/);
+    expect(await response.text()).toMatch(/<h1>/i);
   });
 
   it("serves markdown for Accept: text/markdown on a known path", async () => {
@@ -74,7 +90,7 @@ describe("Agent request handler", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toMatch(/text\/markdown/);
     expect(response.headers.get("Vary") ?? "").toMatch(/Accept/i);
-    expect(await response.text()).toMatch(/^# Vishal Kumar/);
+    expect(await response.text()).toMatch(/^# Vishal Kumar of vishalk\.com/);
   });
 
   it("adds Vary: Accept on HTML passthrough for known paths", async () => {

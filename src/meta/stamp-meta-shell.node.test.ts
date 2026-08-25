@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { visibleTextFromHtml } from "../agent/copy";
 import { emitMetaShells } from "./emit-meta-shells";
 import { DEEP_LINK_ROUTES, pageMetaForPath } from "./route-manifest";
-import { OG_IMAGE_URL, SITE_NAME, SITE_ORIGIN } from "./site";
+import { OG_IMAGE_URL, SITE_HOST, SITE_NAME, SITE_ORIGIN } from "./site";
 import { escapeHtmlAttr, shellOutputPath, stampMetaShell } from "./stamp-meta-shell";
 
 const SPA_SHELL = `<!doctype html>
@@ -50,7 +50,7 @@ describe("Stamped meta shells (build output seam)", () => {
     );
     expect(html).toContain(`<meta data-sm="stamp-og-type" property="og:type" content="website" />`);
     expect(html).toContain(
-      `<meta data-sm="stamp-og-site-name" property="og:site_name" content="${SITE_NAME}" />`,
+      `<meta data-sm="stamp-og-site-name" property="og:site_name" content="${SITE_HOST}" />`,
     );
     expect(html).toContain(
       `<meta data-sm="stamp-og-image" property="og:image" content="${OG_IMAGE_URL}" />`,

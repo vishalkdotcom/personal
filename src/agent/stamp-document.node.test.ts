@@ -20,7 +20,7 @@ describe("stampAgentDocument", () => {
     expect(html).toContain('"@type":"WebSite"');
     expect(html).toContain('rel="alternate" type="text/markdown"');
     expect(html).toContain("index.md");
-    expect(html).toMatch(/<h1>Vishal Kumar<\/h1>/);
+    expect(html).toMatch(/<h1>Vishal Kumar of vishalk\.com<\/h1>/);
     expect(html).toContain("data-crawler-content");
     expect(html).toContain("clip:rect(0,0,0,0)");
   });

@@ -35,6 +35,12 @@ describe("Agent documents", () => {
     expect(contactMarkdown().length).toBeGreaterThanOrEqual(500);
   });
 
+  it("disambiguates the common name with the canonical host in crawlable copy", () => {
+    const markdown = aboutMarkdown();
+    expect(markdown.startsWith("# Vishal Kumar of vishalk.com")).toBe(true);
+    expect(crawlerHtmlForPath("/")).toContain("<h1>Vishal Kumar of vishalk.com</h1>");
+  });
+
   it("marks LinkedIn and GitHub as rel=me identity links in crawlable HTML", () => {
     const html = crawlerHtmlForPath("/");
     expect(html).toContain(`<a href="${LINKEDIN_HREF}" rel="me">`);
@@ -52,9 +58,25 @@ describe("Agent documents", () => {
       givenName: "Vishal",
       familyName: "Kumar",
       sameAs: [LINKEDIN_HREF, GITHUB_HREF],
-      alternateName: ["vishalk.com", "vishalk"],
+      alternateName: ["vishalk.com", "vishalk", "vishalkdotcom"],
+      disambiguatingDescription: expect.stringContaining("vishalk.com"),
     });
     const org = json["@graph"].find((node) => node["@type"] === "Organization");
+    expect(org).toMatchObject({
+      name: "vishalk.com",
+      legalName: ABOUT_NAME,
+      logo: "https://vishalk.com/og.png",
+      alternateName: ["vishalk.com", "vishalk"],
+    });
+    const website = json["@graph"].find((node) => node["@type"] === "WebSite");
+    expect(website).toMatchObject({
+      "@id": "https://vishalk.com/#website",
+      name: "vishalk.com",
+      alternateName: [ABOUT_NAME, "vishalk"],
+      url: "https://vishalk.com/",
+      publisher: { "@id": "https://vishalk.com/#org" },
+      about: { "@id": "https://vishalk.com/#person" },
+    });
     expect(org?.contactPoint).toMatchObject({
       "@type": "ContactPoint",
       email: expect.stringContaining("@"),
@@ -65,21 +87,8 @@ describe("Agent documents", () => {
       addressCountry: "IN",
       addressLocality: "Punjab",
     });
-    expect(org).toMatchObject({
-      name: ABOUT_NAME,
-      alternateName: ["vishalk.com", "vishalk"],
-    });
     expect(org).not.toHaveProperty("telephone");
     expect(person).not.toHaveProperty("telephone");
-    const site = json["@graph"].find((node) => node["@type"] === "WebSite");
-    expect(site).toMatchObject({
-      "@id": "https://vishalk.com/#website",
-      name: ABOUT_NAME,
-      alternateName: ["vishalk.com", "vishalk"],
-      url: "https://vishalk.com/",
-      publisher: { "@id": "https://vishalk.com/#org" },
-      about: { "@id": "https://vishalk.com/#person" },
-    });
   });
 
   it("writes llms.txt with a when-to-use section in spec order", () => {

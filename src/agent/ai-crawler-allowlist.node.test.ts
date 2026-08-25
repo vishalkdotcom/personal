@@ -31,11 +31,14 @@ describe("AI crawler allowlist", () => {
     }
   });
 
-  it("gates brand title, rel=me identity links, and WebSite JSON-LD", () => {
+  it("gates brand title, rel=me identity links, WebSite JSON-LD, and vishalk.com site brand", () => {
     const verifier = readFileSync(resolve("scripts/verify-agent-readiness.mjs"), "utf8");
     expect(verifier).toContain("homepage title is Vishal Kumar");
     expect(verifier).toContain("head rel=me LinkedIn and GitHub");
     expect(verifier).toContain("homepage WebSite JSON-LD");
+    expect(verifier).toContain("og:site_name is vishalk.com");
+    expect(verifier).toContain("JSON-LD site brand is vishalk.com");
+    expect(verifier).toContain("404 defaults to markdown for agents");
   });
 
   it("turns off Block AI bots, managed robots.txt, Content Signals, and the AI link maze", () => {

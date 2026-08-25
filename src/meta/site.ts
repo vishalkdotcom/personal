@@ -1,6 +1,9 @@
 /** Public site origin for canonical + OG URLs. */
 export const SITE_ORIGIN = "https://vishalk.com";
 
+/** Apex host — unique site brand (the person name collides in search). */
+export const SITE_HOST = new URL(SITE_ORIGIN).host;
+
 export const SITE_NAME = "Vishal Kumar";
 
 /** Google site-name fallbacks: lowercase domain first, then the short handle. */
