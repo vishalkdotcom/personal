@@ -7,6 +7,7 @@ import {
   ABOUT_SELECTED_WORK,
   ABOUT_SKILLS,
 } from "../about/content";
+import { SITE_HOST } from "../meta/site";
 import { StageTitle } from "../shell/stage-title";
 import {
   getWorkCase,
@@ -125,7 +126,9 @@ export const AboutStage: Component = () => (
   <article aria-label="About">
     <p class="mb-2 mt-0 text-[11px] tracking-[0.12em] text-faint uppercase">About</p>
     <StageTitle size="lg">{ABOUT_NAME}</StageTitle>
-    <p class="m-0 mb-5.5 text-[13px] leading-normal text-muted">{ABOUT_META}</p>
+    <p class="m-0 mb-5.5 text-[13px] leading-normal text-muted">
+      {SITE_HOST} · {ABOUT_META}
+    </p>
     <p class="m-0 mb-[18px] max-w-[48ch] text-base leading-[1.55] text-muted">{ABOUT_PITCH}</p>
     <ul
       class="m-0 flex max-w-[520px] list-none flex-wrap gap-x-[18px] gap-y-2.5 p-0"

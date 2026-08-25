@@ -1372,7 +1372,7 @@ describe("About Mode (App Shell seam)", () => {
     await expect
       .element(
         stage.getByText(
-          "Senior Frontend Engineer · React / Next.js · Product UI (reporting, forms, platform)",
+          "vishalk.com · Senior Frontend Engineer · React / Next.js · Product UI (reporting, forms, platform)",
           { exact: true },
         ),
       )
@@ -1424,6 +1424,7 @@ describe("About Mode (App Shell seam)", () => {
     await expect.element(rail.getByText("Punjab, India · Remote", { exact: true })).toBeVisible();
     await expect.element(rail.getByText(/13\+ yrs/i)).toBeVisible();
     await expect.element(rail.getByText("Product UI", { exact: true })).toBeVisible();
+    await expect.element(rail.getByText("vishalk.com", { exact: true })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /Resume \(PDF\)/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^LinkedIn/i })).toBeVisible();
     await expect.element(rail.getByRole("link", { name: /^GitHub/i })).toBeVisible();

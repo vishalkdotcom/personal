@@ -38,6 +38,7 @@ describe("Agent documents", () => {
   it("disambiguates the common name with the canonical host in crawlable copy", () => {
     const markdown = aboutMarkdown();
     expect(markdown.startsWith("# Vishal Kumar of vishalk.com")).toBe(true);
+    expect(markdown).toContain("Site: vishalk.com");
     expect(crawlerHtmlForPath("/")).toContain("<h1>Vishal Kumar of vishalk.com</h1>");
   });
 

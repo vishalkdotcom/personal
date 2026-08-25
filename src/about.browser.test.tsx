@@ -90,6 +90,7 @@ describe("Densified About Selected work (App Shell seam)", () => {
     await expect.element(screen.getByRole("heading", { name: /Vishal Kumar/i })).toBeVisible();
     const article = screen.getByRole("article", { name: /about/i });
     await expect.element(article).toBeVisible();
+    await expect.element(article.getByText(/vishalk\.com/i)).toBeVisible();
     expect(article.element().textContent?.length ?? 0).toBeGreaterThan(500);
   });
 

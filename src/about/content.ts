@@ -76,6 +76,7 @@ export const ABOUT_FACTS: AboutFact[] = [
   { label: "Based", value: BASED_LOCATION },
   { label: "Experience", value: "13+ yrs" },
   { label: "Focus", value: "Product UI" },
+  { label: "Site", value: SITE_HOST },
 ];
 
 export const ABOUT_ELSEWHERE: AboutElsewhereLink[] = [
