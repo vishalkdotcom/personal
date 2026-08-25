@@ -5,16 +5,20 @@
  *   CLOUDFLARE_API_TOKEN=... bun scripts/allow-ai-crawlers.mjs
  *
  * Needs a token with Zone Bot Management Write + Zone WAF Write on vishalk.com.
- * Without a token, exits 0 when ALLOW_AI_CRAWLERS_OPTIONAL=1 (CI skip), else 2.
+ * Without a token: exits 0 when ALLOW_AI_CRAWLERS_OPTIONAL=1 (CI skip);
+ * otherwise runs the live apex verifier (fail if crawlers/origin regress).
  */
+import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   WAF_SKIP_DESCRIPTION,
   botManagementAllowlistPatch,
   wafSkipRule,
 } from "../src/agent/ai-crawler-allowlist.ts";
+import { allowAiCrawlersPlan } from "../src/agent/allow-ai-crawlers-policy.ts";
 
 const API = "https://api.cloudflare.com/client/v4";
 const ZONE_NAME = process.env.CLOUDFLARE_ZONE_NAME ?? "vishalk.com";
@@ -122,15 +126,21 @@ async function upsertSkipRule(zoneId) {
   throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
 
-if (!TOKEN) {
-  const msg =
-    "CLOUDFLARE_API_TOKEN missing — cannot change the vishalk.com zone. Dashboard steps: README Deploy.";
-  if (OPTIONAL) {
-    console.log(msg);
-    process.exit(0);
-  }
-  console.error(msg);
-  process.exit(2);
+const plan = allowAiCrawlersPlan(TOKEN !== "", OPTIONAL);
+if (plan === "skip") {
+  console.log("CLOUDFLARE_API_TOKEN missing — skipping zone apply (ALLOW_AI_CRAWLERS_OPTIONAL=1).");
+  process.exit(0);
+}
+if (plan === "verify-live") {
+  const origin = process.env.AGENT_VERIFY_ORIGIN ?? `https://${ZONE_NAME}`;
+  console.log(
+    "CLOUDFLARE_API_TOKEN missing — cannot change the zone. Verifying live origin instead.",
+  );
+  const verifier = join(dirname(fileURLToPath(import.meta.url)), "verify-agent-readiness.mjs");
+  const result = spawnSync(process.execPath, [verifier, origin], {
+    stdio: "inherit",
+  });
+  process.exit(result.status ?? 1);
 }
 
 const zones = await cf("GET", `/zones?name=${encodeURIComponent(ZONE_NAME)}`);

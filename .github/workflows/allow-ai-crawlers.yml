@@ -1,9 +1,11 @@
-# Apply vishalk.com zone allowlist for AI crawlers.
+# Apply vishalk.com zone allowlist for AI crawlers, or verify live apex
+# when CLOUDFLARE_API_TOKEN is missing.
 # Uses repository secrets (not GitHub environment secrets). Cloudflare Pages
 # Production/Preview environments can define an empty CLOUDFLARE_API_TOKEN that
 # masks a repo secret of the same name.
-# On main, a missing token fails the job. On other branches it no-ops so Quality
-# stays green until the secret exists.
+# On main, a missing token runs `verify-agent-readiness.mjs` against the apex
+# (fails if crawlers/origin regress). On other branches it no-ops so Quality
+# stays green without hitting production.
 name: Allow AI crawlers
 
 on:
@@ -11,7 +13,6 @@ on:
   push:
     branches:
       - main
-      - cursor/agent-readiness-2a91
 
 permissions:
   contents: read
@@ -28,7 +29,7 @@ jobs:
         with:
           bun-version: 1.3.14
 
-      - name: Apply zone allowlist when a token is present
+      - name: Apply zone allowlist or verify live apex
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
