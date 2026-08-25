@@ -3,9 +3,9 @@
  * Shared by build-time meta shells and client `@solidjs/meta` head sync.
  */
 
-import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH } from "../about/content";
+import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH, HOME_DESCRIPTION } from "../about/content";
 import { WORK_FOLDERS, workCaseHref, workRootHref } from "../work/inventory";
-import { HOME_TITLE, SITE_NAME, SITE_ORIGIN } from "./site";
+import { HOME_TITLE, SITE_HOST, SITE_NAME, SITE_ORIGIN } from "./site";
 
 export type PageMeta = {
   /** Absolute path, e.g. `/` or `/work`. */
@@ -43,13 +43,18 @@ function pageTitled(path: string, title: string, description: string): PageMeta 
 }
 
 const MODE_META: PageMeta[] = [
-  pageTitled("/", HOME_TITLE, ABOUT_PITCH),
-  page("/about", "About", ABOUT_PITCH),
+  pageTitled("/", HOME_TITLE, HOME_DESCRIPTION),
+  page("/about", "About", HOME_DESCRIPTION),
   page("/resume", "Resume", `PDF resume for ${ABOUT_NAME} — ${ABOUT_META}.`),
   page(
     "/contact",
     "Contact",
-    `Contact ${ABOUT_NAME} — send a message, or reach out by email or LinkedIn.`,
+    `Contact ${ABOUT_NAME} of ${SITE_HOST} — send a message, or reach out by email or LinkedIn.`,
+  ),
+  page(
+    "/privacy",
+    "Privacy",
+    `Privacy notice for ${ABOUT_NAME} of ${SITE_HOST} — how the contact form, email, and analytics are handled.`,
   ),
   page(workRootHref(), "Work", "Selected work — what shipped and what it changed."),
 ];

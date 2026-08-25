@@ -116,6 +116,15 @@ check(
   /property="og:site_name"[^>]*content="vishalk\.com"/i.test(homeHead) ||
     /content="vishalk\.com"[^>]*property="og:site_name"/i.test(homeHead),
 );
+const homeDescription =
+  homeHead.match(/name="description"[^>]*content="([^"]*)"/i)?.[1] ??
+  homeHead.match(/content="([^"]*)"[^>]*name="description"/i)?.[1] ??
+  "";
+check(
+  "homepage description names Vishal Kumar of vishalk.com",
+  /Vishal Kumar of vishalk\.com/i.test(homeDescription),
+  homeDescription.slice(0, 96) || "(missing)",
+);
 check(
   "homepage Person JSON-LD",
   home.body.includes('"@type":"Person"') || home.body.includes('"@type": "Person"'),

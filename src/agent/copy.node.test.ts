@@ -60,6 +60,7 @@ describe("Agent documents", () => {
       brand: { "@id": "https://vishalk.com/#org" },
       sameAs: [LINKEDIN_HREF, GITHUB_HREF],
       alternateName: ["vishalk.com", "vishalk", "vishalkdotcom"],
+      description: expect.stringContaining("Vishal Kumar of vishalk.com"),
       disambiguatingDescription: expect.stringContaining("vishalk.com"),
     });
     const org = json["@graph"].find((node) => node["@type"] === "Organization");

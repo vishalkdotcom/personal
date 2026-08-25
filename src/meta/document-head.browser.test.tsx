@@ -44,6 +44,7 @@ describe("Document head meta sync (App Shell seam)", () => {
       .element(aboutScreen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
     expect(appDocumentTitle()).toBe("Vishal Kumar · vishalk.com");
+    expect(metaContent('meta[name="description"]')).toMatch(/Vishal Kumar of vishalk\.com/i);
     expect(metaContent('meta[name="description"]')).toContain("React/Next.js product UI");
     expect(metaContent('meta[name="description"]')).not.toMatch(
       /Complex product UI|complex React/i,

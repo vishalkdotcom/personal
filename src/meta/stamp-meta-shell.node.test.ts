@@ -38,6 +38,7 @@ describe("Stamped meta shells (build output seam)", () => {
     expect(html).toContain(`<title data-sm="stamp-title">${meta.title}</title>`);
     expect(meta.title).toContain(SITE_HOST);
     expect(meta.title).toContain(SITE_NAME);
+    expect(meta.description).toMatch(/Vishal Kumar of vishalk\.com/i);
     expect(html).toContain(
       `<meta data-sm="stamp-description" name="description" content="${escapeHtmlAttr(meta.description)}" />`,
     );

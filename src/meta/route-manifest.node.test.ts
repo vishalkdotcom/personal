@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH } from "../about/content";
+import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH, HOME_DESCRIPTION } from "../about/content";
 import { getWorkCase, WORK_FOLDERS, workCaseHref, workRootHref } from "../work/inventory";
 import { DEEP_LINK_ROUTES, deepLinkPaths, pageMetaForPath } from "./route-manifest";
 import { HOME_TITLE, SITE_NAME, SITE_ORIGIN } from "./site";
@@ -30,18 +30,20 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
   it("stamps About / Contact / Resume / Work Case meta with independent literals", () => {
     const home = pageMetaForPath("/");
     expect(home.title).toBe(HOME_TITLE);
-    expect(home.description).toBe(ABOUT_PITCH);
+    expect(home.description).toBe(HOME_DESCRIPTION);
+    expect(home.description).toMatch(/Vishal Kumar of vishalk\.com/i);
+    expect(home.description).toContain(ABOUT_PITCH);
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
 
     const about = pageMetaForPath("/about");
     expect(about.title).toBe(`About · ${SITE_NAME}`);
-    expect(about.description).toBe(ABOUT_PITCH);
+    expect(about.description).toBe(HOME_DESCRIPTION);
     expect(about.canonical).toBe(`${SITE_ORIGIN}/about`);
 
     const contact = pageMetaForPath("/contact");
     expect(contact.title).toBe(`Contact · ${SITE_NAME}`);
     expect(contact.description).toBe(
-      "Contact Vishal Kumar — send a message, or reach out by email or LinkedIn.",
+      "Contact Vishal Kumar of vishalk.com — send a message, or reach out by email or LinkedIn.",
     );
     expect(contact.description).not.toMatch(/Contact Mode|form/i);
     expect(contact.canonical).toBe(`${SITE_ORIGIN}/contact`);
@@ -99,7 +101,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     const supplyChain = pageMetaForPath("/work/prototypes/supplychain-plus");
 
     expect(home.title).toBe(HOME_TITLE);
-    expect(home.description).toBe(ABOUT_PITCH);
+    expect(home.description).toBe(HOME_DESCRIPTION);
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
     expect(pageMetaForPath("/about").title).toBe(`About · ${SITE_NAME}`);
     expect(deepLinkPaths()).toContain("/about");

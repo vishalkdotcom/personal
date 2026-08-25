@@ -37,6 +37,7 @@ describe("AI crawler allowlist", () => {
     expect(verifier).toContain("head rel=me LinkedIn and GitHub");
     expect(verifier).toContain("homepage WebSite JSON-LD");
     expect(verifier).toContain("og:site_name is vishalk.com");
+    expect(verifier).toContain("homepage description names Vishal Kumar of vishalk.com");
     expect(verifier).toContain("JSON-LD site brand is vishalk.com");
     expect(verifier).toContain("404 defaults to markdown for agents");
   });

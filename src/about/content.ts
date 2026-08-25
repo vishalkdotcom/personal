@@ -1,6 +1,6 @@
 /** Locked About Mode copy from shell-round-9 D+A (pitch + skills · Availability + Facts + Elsewhere). */
 
-import { GITHUB_PROFILE_HREF, LINKEDIN_PROFILE_HREF } from "../meta/site";
+import { GITHUB_PROFILE_HREF, LINKEDIN_PROFILE_HREF, SITE_HOST, SITE_ORIGIN } from "../meta/site";
 
 export type AboutFact = {
   label: string;
@@ -30,6 +30,9 @@ export const ABOUT_META =
 
 export const ABOUT_PITCH =
   "7+ years building React/Next.js product UI for remote teams — 13+ years total. Reporting surfaces, form/admin workflows, and platform cleanup. AI-native delivery; all output reviewed, tested, and owned.";
+
+/** Head/OG description for / and /about — unique host so brand search can attach the name to the domain. Visible About pitch stays ABOUT_PITCH. */
+export const HOME_DESCRIPTION = `${ABOUT_NAME} of ${SITE_HOST} — ${ABOUT_PITCH} Canonical portfolio at ${SITE_ORIGIN}, not another person who shares the name.`;
 
 export const ABOUT_SKILLS = [
   "Next.js",
