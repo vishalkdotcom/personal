@@ -54,6 +54,7 @@ Cloudflare Pages (Git builds):
      Or Security → Bots: turn off “Block AI Scrapers and Crawlers” / allow those agents in AI Crawl Control.
 
   Live check: `bun scripts/verify-agent-readiness.mjs https://vishalk.com`.
+  Local (after `bun run build`): `bun scripts/serve-agent-origin.mjs` then `bun scripts/verify-agent-readiness.mjs http://127.0.0.1:8788`. Quality CI runs that pair after the production build.
   Zone apply (needs `CLOUDFLARE_API_TOKEN` with Bot Management Write + WAF Write): `bun scripts/allow-ai-crawlers.mjs`. Store that token as a **repository** Actions secret (Settings → Secrets and variables → Actions), not only on the Cloudflare Pages GitHub environments named Production/Preview — empty environment secrets mask a repo secret of the same name. The Allow AI crawlers workflow on `main` skips when the secret is missing (does not fail CI) and applies the zone when the token is present.
 
 Deep links ship as build-time HTML shells under `dist/` (correct title / description / OG / canonical per Mode and Work Case). Unknown paths serve `404.html` with HTTP 404 (SPA fallback is off). Markdown is available on the same URLs via `Accept: text/markdown`.

@@ -90,4 +90,11 @@ describe("AI crawler allowlist", () => {
     expect(workflow).toMatch(/ALLOW_AI_CRAWLERS_OPTIONAL:\s*"1"/);
     expect(workflow).not.toMatch(/github\.ref == 'refs\/heads\/main' && '0'/);
   });
+
+  it("runs the live verifier against a local Pages-like origin after build", () => {
+    const workflow = readFileSync(resolve(".github/workflows/quality.yml"), "utf8");
+    expect(workflow).toContain("bun run build");
+    expect(workflow).toContain("scripts/serve-agent-origin.mjs");
+    expect(workflow).toContain("scripts/verify-agent-readiness.mjs http://127.0.0.1:8788");
+  });
 });
