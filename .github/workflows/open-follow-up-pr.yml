@@ -1,6 +1,7 @@
-# Tries to open a PR to main for this head. No-ops if one exists or if the
-# repo disallows Actions from creating pull requests (Settings → Actions →
-# Workflow permissions → Allow GitHub Actions to create and approve pull requests).
+# Tries to open a PR to main for this head. Prefers a repo PAT
+# (Settings → Secrets → Actions → PERSONAL_GITHUB_TOKEN with pull requests
+# write) because GITHUB_TOKEN cannot create PRs unless the repo allows
+# "GitHub Actions to create and approve pull requests".
 name: Open follow-up PR
 
 on:
@@ -20,9 +21,10 @@ jobs:
     steps:
       - name: Create pull request if missing
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           HEAD: ${{ github.ref_name }}
+          HAS_PAT: ${{ secrets.PERSONAL_GITHUB_TOKEN != '' }}
         run: |
           set -euo pipefail
           existing="$(gh pr list --head "$HEAD" --base main --json number,url --jq '.[0].url // empty')"
@@ -30,10 +32,11 @@ jobs:
             echo "PR already exists: $existing"
             exit 0
           fi
+          echo "token_source=$( [ "$HAS_PAT" = true ] && echo PERSONAL_GITHUB_TOKEN || echo GITHUB_TOKEN )"
           set +e
           gh pr create --base main --head "$HEAD" --title "Agent origin follow-up: vishalk.com brand, markdown 404s, CI verifier" --body "Follow-up to #30.
 
-          Quality CI skips Allow AI crawlers when the Cloudflare token is missing, runs Quality on vishalk/**, and verifies the agent origin after build. Homepage title is Vishal Kumar · vishalk.com; unknown paths return markdown 404s unless Accept prefers HTML; head rel=me and Person + Organization + WebSite JSON-LD use vishalk.com. App Shell visuals are unchanged.
+          Quality CI skips Allow AI crawlers when the Cloudflare token is missing, runs Quality on vishalk/**, and verifies the agent origin after build. Homepage title is Vishal Kumar · vishalk.com; unknown paths return markdown 404s unless Accept prefers HTML; head rel=me and Person + Organization + WebSite JSON-LD use vishalk.com. App Shell visuals keep the Vishal Kumar heading.
 
           After merge: bun scripts/verify-agent-readiness.mjs https://vishalk.com" 2> /tmp/pr-create.err
           status=$?
@@ -43,7 +46,7 @@ jobs:
           fi
           cat /tmp/pr-create.err
           if grep -q "not permitted to create or approve pull requests" /tmp/pr-create.err; then
-            echo "::warning::Enable Settings → Actions → General → Workflow permissions → Allow GitHub Actions to create and approve pull requests, then re-run this workflow. Or open https://github.com/vishalkdotcom/personal/compare/main...vishalk/allow-crawlers-ci-7008?expand=1"
+            echo "::warning::Add repo secret PERSONAL_GITHUB_TOKEN (pull requests: write), or enable Settings → Actions → General → Workflow permissions → Allow GitHub Actions to create and approve pull requests, then re-run this workflow. Or open https://github.com/vishalkdotcom/personal/compare/main...vishalk/allow-crawlers-ci-7008?expand=1"
             exit 0
           fi
           exit "$status"
