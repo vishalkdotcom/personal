@@ -75,6 +75,14 @@ check(
   home.body.includes('"@type":"Organization"') || home.body.includes('"@type": "Organization"'),
 );
 check(
+  "homepage WebSite JSON-LD",
+  home.body.includes('"@type":"WebSite"') || home.body.includes('"@type": "WebSite"'),
+);
+check(
+  "homepage alternateName includes vishalk.com",
+  /"alternateName":\s*\[/.test(home.body) && home.body.includes("vishalk.com"),
+);
+check(
   "Organization contactPoint + PostalAddress",
   /"@type":\s*"ContactPoint"/.test(home.body) && /"@type":\s*"PostalAddress"/.test(home.body),
 );

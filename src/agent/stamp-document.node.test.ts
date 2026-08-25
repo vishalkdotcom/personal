@@ -17,6 +17,7 @@ describe("stampAgentDocument", () => {
     expect(html).toContain('type="application/ld+json"');
     expect(html).toContain('"@type":"Person"');
     expect(html).toContain('"@type":"Organization"');
+    expect(html).toContain('"@type":"WebSite"');
     expect(html).toContain('rel="alternate" type="text/markdown"');
     expect(html).toContain("index.md");
     expect(html).toMatch(/<h1>Vishal Kumar<\/h1>/);

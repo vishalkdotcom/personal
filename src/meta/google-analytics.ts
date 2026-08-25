@@ -58,13 +58,16 @@ export function resetGoogleAnalyticsBootstrapForTests(): void {
   bootstrappedIds.clear();
 }
 
+/** Sends a GA4 `page_view` for the current SPA route (full `page_location` URL). */
 export function trackPageView(gaId: string, page: { pagePath: string; pageTitle: string }): void {
   const gtag = typeof window !== "undefined" ? window.gtag : undefined;
   if (typeof gtag !== "function") return;
 
-  gtag("config", gaId, {
-    page_path: page.pagePath,
+  const origin = window.location?.origin ?? "";
+  gtag("event", "page_view", {
+    send_to: gaId,
     page_title: page.pageTitle,
+    page_location: `${origin}${page.pagePath}`,
   });
 }
 

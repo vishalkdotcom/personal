@@ -41,13 +41,14 @@ describe("Agent documents", () => {
     const json = identityJsonLd() as {
       "@graph": Array<Record<string, unknown>>;
     };
-    expect(graphTypes(json)).toEqual(["Person", "Organization"]);
+    expect(graphTypes(json)).toEqual(["Person", "Organization", "WebSite"]);
     const person = json["@graph"].find((node) => node["@type"] === "Person");
     expect(person).toMatchObject({
       name: ABOUT_NAME,
       givenName: "Vishal",
       familyName: "Kumar",
       sameAs: [LINKEDIN_HREF, GITHUB_HREF],
+      alternateName: ["vishalk.com", "vishalk"],
     });
     const org = json["@graph"].find((node) => node["@type"] === "Organization");
     expect(org?.contactPoint).toMatchObject({
@@ -60,8 +61,20 @@ describe("Agent documents", () => {
       addressCountry: "IN",
       addressLocality: "Punjab",
     });
+    expect(org).toMatchObject({
+      name: ABOUT_NAME,
+      alternateName: ["vishalk.com", "vishalk"],
+    });
     expect(org).not.toHaveProperty("telephone");
     expect(person).not.toHaveProperty("telephone");
+    const site = json["@graph"].find((node) => node["@type"] === "WebSite");
+    expect(site).toMatchObject({
+      "@id": "https://vishalk.com/#website",
+      name: ABOUT_NAME,
+      alternateName: ["vishalk.com", "vishalk"],
+      url: "https://vishalk.com/",
+      publisher: { "@id": "https://vishalk.com/#person" },
+    });
   });
 
   it("writes llms.txt with a when-to-use section in spec order", () => {

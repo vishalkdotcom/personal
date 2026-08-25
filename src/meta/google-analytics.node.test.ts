@@ -65,19 +65,44 @@ describe("trackPageView", () => {
     vi.unstubAllGlobals();
   });
 
-  it("sends gtag config with page_path and page_title", () => {
+  it("sends a page_view event with page_location and page_title", () => {
     const gtag = vi.fn();
-    vi.stubGlobal("window", { gtag });
+    vi.stubGlobal("window", {
+      gtag,
+      location: { origin: "https://vishalk.com" },
+    });
 
     trackPageView("G-ABCDEF1234", {
       pagePath: "/work?x=1",
       pageTitle: "Work · Vishal Kumar",
     });
 
-    expect(gtag).toHaveBeenCalledWith("config", "G-ABCDEF1234", {
-      page_path: "/work?x=1",
+    expect(gtag).toHaveBeenCalledWith("event", "page_view", {
+      send_to: "G-ABCDEF1234",
       page_title: "Work · Vishal Kumar",
+      page_location: "https://vishalk.com/work?x=1",
     });
+  });
+
+  it("uses the current origin so preview hosts are not attributed to production", () => {
+    const gtag = vi.fn();
+    vi.stubGlobal("window", {
+      gtag,
+      location: { origin: "https://preview.example.pages.dev" },
+    });
+
+    trackPageView("G-ABCDEF1234", {
+      pagePath: "/contact",
+      pageTitle: "Contact · Vishal Kumar",
+    });
+
+    expect(gtag).toHaveBeenCalledWith(
+      "event",
+      "page_view",
+      expect.objectContaining({
+        page_location: "https://preview.example.pages.dev/contact",
+      }),
+    );
   });
 
   it("no-ops when gtag is not a function", () => {

@@ -63,3 +63,4 @@ Deep links ship as build-time HTML shells under `dist/` (correct title / descrip
 - Domain glossary: `CONTEXT.md`
 - Issue tracker: Obsidian vault `pro` — see `docs/agents/issue-tracker.md` and skill `pro-vault`
 - Spec: SolidJS 2 App Shell portfolio rewrite (pro vault)
+- Operator guides (Search Console, Cloudflare www 301, GA4, profile URLs): [`docs/guides/`](./docs/guides/README.md)

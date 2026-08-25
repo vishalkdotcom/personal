@@ -9,7 +9,7 @@ import {
   BASED_LOCATION,
 } from "../about/content";
 import { CONTACT_EMAIL } from "../contact/content";
-import { SITE_NAME, SITE_ORIGIN } from "../meta/site";
+import { SITE_ALTERNATE_NAMES, SITE_NAME, SITE_ORIGIN } from "../meta/site";
 import { escapeHtmlText } from "../meta/stamp-meta-shell";
 import { PRIVACY_LEAD, PRIVACY_SECTIONS, PRIVACY_TITLE } from "../privacy/content";
 import { RESUME_PDF_HREF } from "../resume/content";
@@ -303,6 +303,8 @@ export function visibleTextFromHtml(html: string): string {
 export function identityJsonLd(): unknown {
   const personId = `${SITE_ORIGIN}/#person`;
   const orgId = `${SITE_ORIGIN}/#org`;
+  const websiteId = `${SITE_ORIGIN}/#website`;
+  const alternateName = [...SITE_ALTERNATE_NAMES];
   const address = {
     "@type": "PostalAddress",
     addressLocality: "Punjab",
@@ -318,6 +320,7 @@ export function identityJsonLd(): unknown {
         name: ABOUT_NAME,
         givenName: "Vishal",
         familyName: "Kumar",
+        alternateName,
         url: `${SITE_ORIGIN}/`,
         email: CONTACT_EMAIL,
         jobTitle: ABOUT_META,
@@ -330,6 +333,7 @@ export function identityJsonLd(): unknown {
         "@type": "Organization",
         "@id": orgId,
         name: ABOUT_NAME,
+        alternateName,
         url: `${SITE_ORIGIN}/`,
         email: CONTACT_EMAIL,
         founder: { "@id": personId },
@@ -342,6 +346,14 @@ export function identityJsonLd(): unknown {
           availableLanguage: ["English"],
         },
         sameAs: [LINKEDIN_HREF, GITHUB_HREF],
+      },
+      {
+        "@type": "WebSite",
+        "@id": websiteId,
+        name: ABOUT_NAME,
+        alternateName,
+        url: `${SITE_ORIGIN}/`,
+        publisher: { "@id": personId },
       },
     ],
   };

@@ -119,6 +119,8 @@ describe("Stamped meta shells (build output seam)", () => {
     const home = readFileSync(join(tempRoot, "index.html"), "utf8");
     expect(home).toContain('"@type":"Person"');
     expect(home).toContain('"@type":"Organization"');
+    expect(home).toContain('"@type":"WebSite"');
+    expect(home).toContain('"vishalk.com"');
     expect(home).toContain("Vishal Kumar");
     expect(visibleTextFromHtml(home).length).toBeGreaterThanOrEqual(500);
     expect(readFileSync(join(tempRoot, "_headers"), "utf8")).toMatch(/Vary:\s*Accept/);

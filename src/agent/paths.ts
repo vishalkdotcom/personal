@@ -5,7 +5,7 @@ const STATIC_ASSET_EXT =
   /\.(?:js|mjs|cjs|css|map|png|jpe?g|webp|gif|svg|ico|woff2?|ttf|otf|eot|pdf|webmanifest|xml|txt|json)$/i;
 
 /** Lastmod stamped into sitemap.xml (W3C date). Bump when public URLs/copy change. */
-export const SITE_SITEMAP_LASTMOD = "2026-08-24";
+export const SITE_SITEMAP_LASTMOD = "2026-08-25";
 
 export function normalizePathname(pathname: string): string {
   if (!pathname) return "/";

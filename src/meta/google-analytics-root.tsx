@@ -4,8 +4,8 @@ import { ensureGoogleAnalytics, googleAnalyticsId, trackPageView } from "./googl
 import { pageMetaForPath } from "./route-manifest";
 
 /**
- * Loads gtag when `VITE_GOOGLE_ANALYTICS_ID` is set and sends SPA page views
- * on pathname/search changes (parity with Svelte `afterNavigate` + gtag config).
+ * Loads gtag when `VITE_GOOGLE_ANALYTICS_ID` is set and sends SPA `page_view`
+ * events on pathname/search changes.
  */
 export function GoogleAnalytics() {
   const location = useLocation();
