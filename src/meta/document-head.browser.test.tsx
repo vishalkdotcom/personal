@@ -30,7 +30,7 @@ function appDocumentTitle(): string | null {
   const titles = [...document.head.querySelectorAll("title")];
   const owned = titles.find((el) => {
     const text = el.textContent ?? "";
-    return text === "Vishal Kumar" || text.includes("· Vishal Kumar");
+    return text.includes("Vishal Kumar");
   });
   return owned?.textContent ?? titles.at(-1)?.textContent ?? null;
 }
@@ -43,12 +43,12 @@ describe("Document head meta sync (App Shell seam)", () => {
     await expect
       .element(aboutScreen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
-    expect(appDocumentTitle()).toBe("Vishal Kumar");
+    expect(appDocumentTitle()).toBe("Vishal Kumar · vishalk.com");
     expect(metaContent('meta[name="description"]')).toContain("React/Next.js product UI");
     expect(metaContent('meta[name="description"]')).not.toMatch(
       /Complex product UI|complex React/i,
     );
-    expect(metaContent('meta[property="og:title"]')).toBe("Vishal Kumar");
+    expect(metaContent('meta[property="og:title"]')).toBe("Vishal Kumar · vishalk.com");
     expect(metaContent('meta[property="og:image"]')).toBe(`${SITE_ORIGIN}/og.png`);
     expect(metaContent('meta[name="twitter:card"]')).toBe("summary_large_image");
     expect(canonicalHref()).toBe(`${SITE_ORIGIN}/`);
@@ -95,7 +95,7 @@ describe("Document head meta sync (App Shell seam)", () => {
     await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
-    expect(appDocumentTitle()).toBe("Vishal Kumar");
+    expect(appDocumentTitle()).toBe("Vishal Kumar · vishalk.com");
     expect(canonicalHref()).toBe(`${SITE_ORIGIN}/`);
 
     await screen.getByRole("link", { name: /^Work$/i }).click();

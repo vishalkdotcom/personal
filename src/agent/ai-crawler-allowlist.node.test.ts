@@ -33,7 +33,7 @@ describe("AI crawler allowlist", () => {
 
   it("gates brand title, rel=me identity links, WebSite JSON-LD, and vishalk.com site brand", () => {
     const verifier = readFileSync(resolve("scripts/verify-agent-readiness.mjs"), "utf8");
-    expect(verifier).toContain("homepage title is Vishal Kumar");
+    expect(verifier).toContain("homepage title names Vishal Kumar and vishalk.com");
     expect(verifier).toContain("head rel=me LinkedIn and GitHub");
     expect(verifier).toContain("homepage WebSite JSON-LD");
     expect(verifier).toContain("og:site_name is vishalk.com");

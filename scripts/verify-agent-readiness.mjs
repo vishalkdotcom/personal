@@ -99,7 +99,11 @@ check(
 );
 check("homepage 500+ chars without JS", homeText.length >= 500, `${homeText.length} chars`);
 const homeTitle = home.body.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim() ?? "";
-check("homepage title is Vishal Kumar", homeTitle === "Vishal Kumar", homeTitle || "(missing)");
+check(
+  "homepage title names Vishal Kumar and vishalk.com",
+  /Vishal Kumar/i.test(homeTitle) && /vishalk\.com/i.test(homeTitle),
+  homeTitle || "(missing)",
+);
 const homeHead = home.body.split(/<\/head>/i)[0] ?? "";
 check(
   "head rel=me LinkedIn and GitHub",

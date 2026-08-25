@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH } from "../about/content";
 import { getWorkCase, WORK_FOLDERS, workCaseHref, workRootHref } from "../work/inventory";
 import { DEEP_LINK_ROUTES, deepLinkPaths, pageMetaForPath } from "./route-manifest";
-import { SITE_NAME, SITE_ORIGIN } from "./site";
+import { HOME_TITLE, SITE_NAME, SITE_ORIGIN } from "./site";
 
 describe("Deep-link route manifest (build + App Shell meta seam)", () => {
   it("covers Modes + Work root + Work Cases, without Work Folder index paths", () => {
@@ -29,7 +29,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
 
   it("stamps About / Contact / Resume / Work Case meta with independent literals", () => {
     const home = pageMetaForPath("/");
-    expect(home.title).toBe(SITE_NAME);
+    expect(home.title).toBe(HOME_TITLE);
     expect(home.description).toBe(ABOUT_PITCH);
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
 
@@ -98,7 +98,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     const home = pageMetaForPath("/");
     const supplyChain = pageMetaForPath("/work/prototypes/supplychain-plus");
 
-    expect(home.title).toBe(SITE_NAME);
+    expect(home.title).toBe(HOME_TITLE);
     expect(home.description).toBe(ABOUT_PITCH);
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
     expect(pageMetaForPath("/about").title).toBe(`About · ${SITE_NAME}`);

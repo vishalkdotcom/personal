@@ -35,7 +35,9 @@ describe("Stamped meta shells (build output seam)", () => {
     const meta = pageMetaForPath("/");
     const html = stampMetaShell(SPA_SHELL, meta);
 
-    expect(html).toContain(`<title data-sm="stamp-title">${SITE_NAME}</title>`);
+    expect(html).toContain(`<title data-sm="stamp-title">${meta.title}</title>`);
+    expect(meta.title).toContain(SITE_HOST);
+    expect(meta.title).toContain(SITE_NAME);
     expect(html).toContain(
       `<meta data-sm="stamp-description" name="description" content="${escapeHtmlAttr(meta.description)}" />`,
     );

@@ -327,6 +327,7 @@ export function identityJsonLd(): unknown {
         description: ABOUT_PITCH,
         disambiguatingDescription: `Senior frontend engineer whose canonical site is ${SITE_ORIGIN}. Based ${BASED_LOCATION}.`,
         address,
+        brand: { "@id": orgId },
         sameAs: [LINKEDIN_HREF, GITHUB_HREF],
         worksFor: { "@id": orgId },
       },

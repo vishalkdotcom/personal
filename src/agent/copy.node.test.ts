@@ -57,6 +57,7 @@ describe("Agent documents", () => {
       name: ABOUT_NAME,
       givenName: "Vishal",
       familyName: "Kumar",
+      brand: { "@id": "https://vishalk.com/#org" },
       sameAs: [LINKEDIN_HREF, GITHUB_HREF],
       alternateName: ["vishalk.com", "vishalk", "vishalkdotcom"],
       disambiguatingDescription: expect.stringContaining("vishalk.com"),

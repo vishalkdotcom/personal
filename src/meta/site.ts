@@ -9,6 +9,9 @@ export const SITE_NAME = "Vishal Kumar";
 /** Google site-name fallbacks: lowercase domain first, then the short handle. */
 export const SITE_ALTERNATE_NAMES = ["vishalk.com", "vishalk"] as const;
 
+/** Homepage / OG title: person name plus unique host so brand search can find the domain. */
+export const HOME_TITLE = `${SITE_NAME} · ${SITE_HOST}`;
+
 export const DEFAULT_OG_TYPE = "website";
 
 /** Absolute OG image for link previews (copied from `static/` into `dist/`). */

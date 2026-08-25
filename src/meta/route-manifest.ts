@@ -5,7 +5,7 @@
 
 import { ABOUT_META, ABOUT_NAME, ABOUT_PITCH } from "../about/content";
 import { WORK_FOLDERS, workCaseHref, workRootHref } from "../work/inventory";
-import { SITE_NAME, SITE_ORIGIN } from "./site";
+import { HOME_TITLE, SITE_NAME, SITE_ORIGIN } from "./site";
 
 export type PageMeta = {
   /** Absolute path, e.g. `/` or `/work`. */
@@ -43,7 +43,7 @@ function pageTitled(path: string, title: string, description: string): PageMeta 
 }
 
 const MODE_META: PageMeta[] = [
-  pageTitled("/", SITE_NAME, ABOUT_PITCH),
+  pageTitled("/", HOME_TITLE, ABOUT_PITCH),
   page("/about", "About", ABOUT_PITCH),
   page("/resume", "Resume", `PDF resume for ${ABOUT_NAME} — ${ABOUT_META}.`),
   page(
