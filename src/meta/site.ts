@@ -10,3 +10,8 @@ export const DEFAULT_OG_TYPE = "website";
 
 /** Absolute OG image for link previews (copied from `static/` into `dist/`). */
 export const OG_IMAGE_URL = `${SITE_ORIGIN}/og.png`;
+
+export const LINKEDIN_PROFILE_HREF = "https://www.linkedin.com/in/vishalkdotcom";
+export const GITHUB_PROFILE_HREF = "https://github.com/vishalkdotcom";
+
+export const IDENTITY_PROFILE_HREFS = [LINKEDIN_PROFILE_HREF, GITHUB_PROFILE_HREF] as const;

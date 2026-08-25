@@ -35,7 +35,7 @@ describe("Stamped meta shells (build output seam)", () => {
     const meta = pageMetaForPath("/");
     const html = stampMetaShell(SPA_SHELL, meta);
 
-    expect(html).toContain(`<title data-sm="stamp-title">About · ${SITE_NAME}</title>`);
+    expect(html).toContain(`<title data-sm="stamp-title">${SITE_NAME}</title>`);
     expect(html).toContain(
       `<meta data-sm="stamp-description" name="description" content="${escapeHtmlAttr(meta.description)}" />`,
     );
@@ -64,6 +64,8 @@ describe("Stamped meta shells (build output seam)", () => {
     expect(html).toContain(
       `<link data-sm="stamp-canonical" rel="canonical" href="${SITE_ORIGIN}/" />`,
     );
+    expect(html).toContain('rel="me" href="https://www.linkedin.com/in/vishalkdotcom"');
+    expect(html).toContain('rel="me" href="https://github.com/vishalkdotcom"');
     // Cold-load contract: meta present before any client mount markup changes.
     expect(html.indexOf("<title")).toBeLessThan(html.indexOf('id="app"'));
   });

@@ -33,8 +33,17 @@ function page(path: string, titleSegment: string, description: string): PageMeta
   };
 }
 
+function pageTitled(path: string, title: string, description: string): PageMeta {
+  return {
+    path,
+    title,
+    description,
+    canonical: canonicalFor(path),
+  };
+}
+
 const MODE_META: PageMeta[] = [
-  page("/", "About", ABOUT_PITCH),
+  pageTitled("/", SITE_NAME, ABOUT_PITCH),
   page("/about", "About", ABOUT_PITCH),
   page("/resume", "Resume", `PDF resume for ${ABOUT_NAME} — ${ABOUT_META}.`),
   page(

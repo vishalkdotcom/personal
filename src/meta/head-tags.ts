@@ -1,5 +1,11 @@
 import type { PageMeta } from "./route-manifest";
-import { DEFAULT_OG_TYPE, OG_IMAGE_URL, SITE_NAME } from "./site";
+import {
+  DEFAULT_OG_TYPE,
+  GITHUB_PROFILE_HREF,
+  LINKEDIN_PROFILE_HREF,
+  OG_IMAGE_URL,
+  SITE_NAME,
+} from "./site";
 
 /** Single SoT for head tags shared by stamped shells and `@solidjs/meta`. */
 export type HeadTag =
@@ -87,6 +93,18 @@ export function headTagsFor(meta: PageMeta): HeadTag[] {
       dataSm: "stamp-canonical",
       rel: "canonical",
       href: meta.canonical,
+    },
+    {
+      kind: "link",
+      dataSm: "stamp-rel-me-linkedin",
+      rel: "me",
+      href: LINKEDIN_PROFILE_HREF,
+    },
+    {
+      kind: "link",
+      dataSm: "stamp-rel-me-github",
+      rel: "me",
+      href: GITHUB_PROFILE_HREF,
     },
   ];
 }

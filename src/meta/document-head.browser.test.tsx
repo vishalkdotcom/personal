@@ -28,7 +28,10 @@ function canonicalHref(): string | null {
 /** App-owned title — Vitest Browser Mode keeps its own harness `<title>` first. */
 function appDocumentTitle(): string | null {
   const titles = [...document.head.querySelectorAll("title")];
-  const owned = titles.find((el) => el.textContent?.includes("· Vishal Kumar"));
+  const owned = titles.find((el) => {
+    const text = el.textContent ?? "";
+    return text === "Vishal Kumar" || text.includes("· Vishal Kumar");
+  });
   return owned?.textContent ?? titles.at(-1)?.textContent ?? null;
 }
 
@@ -40,15 +43,23 @@ describe("Document head meta sync (App Shell seam)", () => {
     await expect
       .element(aboutScreen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
-    expect(appDocumentTitle()).toBe("About · Vishal Kumar");
+    expect(appDocumentTitle()).toBe("Vishal Kumar");
     expect(metaContent('meta[name="description"]')).toContain("React/Next.js product UI");
     expect(metaContent('meta[name="description"]')).not.toMatch(
       /Complex product UI|complex React/i,
     );
-    expect(metaContent('meta[property="og:title"]')).toBe("About · Vishal Kumar");
+    expect(metaContent('meta[property="og:title"]')).toBe("Vishal Kumar");
     expect(metaContent('meta[property="og:image"]')).toBe(`${SITE_ORIGIN}/og.png`);
     expect(metaContent('meta[name="twitter:card"]')).toBe("summary_large_image");
     expect(canonicalHref()).toBe(`${SITE_ORIGIN}/`);
+    expect(
+      document.head.querySelector(
+        'link[rel="me"][href="https://www.linkedin.com/in/vishalkdotcom"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      document.head.querySelector('link[rel="me"][href="https://github.com/vishalkdotcom"]'),
+    ).toBeTruthy();
     cleanup();
 
     const { screen: contactScreen } = renderAt("/contact");
@@ -84,7 +95,7 @@ describe("Document head meta sync (App Shell seam)", () => {
     await expect
       .element(screen.getByRole("main").getByRole("heading", { name: /^Vishal Kumar$/i }))
       .toBeVisible();
-    expect(appDocumentTitle()).toBe("About · Vishal Kumar");
+    expect(appDocumentTitle()).toBe("Vishal Kumar");
     expect(canonicalHref()).toBe(`${SITE_ORIGIN}/`);
 
     await screen.getByRole("link", { name: /^Work$/i }).click();

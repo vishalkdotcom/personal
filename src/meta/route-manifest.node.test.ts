@@ -28,10 +28,15 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
   });
 
   it("stamps About / Contact / Resume / Work Case meta with independent literals", () => {
-    const about = pageMetaForPath("/");
+    const home = pageMetaForPath("/");
+    expect(home.title).toBe(SITE_NAME);
+    expect(home.description).toBe(ABOUT_PITCH);
+    expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
+
+    const about = pageMetaForPath("/about");
     expect(about.title).toBe(`About · ${SITE_NAME}`);
     expect(about.description).toBe(ABOUT_PITCH);
-    expect(about.canonical).toBe(`${SITE_ORIGIN}/`);
+    expect(about.canonical).toBe(`${SITE_ORIGIN}/about`);
 
     const contact = pageMetaForPath("/contact");
     expect(contact.title).toBe(`Contact · ${SITE_NAME}`);
@@ -93,7 +98,7 @@ describe("Deep-link route manifest (build + App Shell meta seam)", () => {
     const home = pageMetaForPath("/");
     const supplyChain = pageMetaForPath("/work/prototypes/supplychain-plus");
 
-    expect(home.title).toBe(`About · ${SITE_NAME}`);
+    expect(home.title).toBe(SITE_NAME);
     expect(home.description).toBe(ABOUT_PITCH);
     expect(home.canonical).toBe(`${SITE_ORIGIN}/`);
     expect(pageMetaForPath("/about").title).toBe(`About · ${SITE_NAME}`);

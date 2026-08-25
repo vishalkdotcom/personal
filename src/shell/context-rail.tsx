@@ -2,6 +2,7 @@ import { A, useLocation } from "@solidjs/router";
 import { For, Match, Show, Switch, type Component } from "solid-js";
 import { ABOUT_ELSEWHERE, ABOUT_FACTS, HIRE_SIGNAL_DETAIL } from "../about/content";
 import { CONTACT_QUICK_LINKS } from "../contact/content";
+import { IDENTITY_PROFILE_HREFS } from "../meta/site";
 import { RESUME_LINKS } from "../resume/content";
 import {
   getWorkCaseFromPath,
@@ -52,8 +53,7 @@ const RailLinkItem: Component<{ link: RailLink }> = (props) => {
           class={linkClass}
           target="_blank"
           rel={
-            href() === "https://www.linkedin.com/in/vishalkdotcom" ||
-            href() === "https://github.com/vishalkdotcom"
+            (IDENTITY_PROFILE_HREFS as readonly string[]).includes(href())
               ? "me noreferrer"
               : "noreferrer"
           }

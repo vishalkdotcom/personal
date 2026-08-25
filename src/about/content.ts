@@ -1,5 +1,7 @@
 /** Locked About Mode copy from shell-round-9 D+A (pitch + skills · Availability + Facts + Elsewhere). */
 
+import { GITHUB_PROFILE_HREF, LINKEDIN_PROFILE_HREF } from "../meta/site";
+
 export type AboutFact = {
   label: string;
   value: string;
@@ -77,12 +79,12 @@ export const ABOUT_ELSEWHERE: AboutElsewhereLink[] = [
   { label: "Resume (PDF) →", href: "/resume" },
   {
     label: "LinkedIn →",
-    href: "https://www.linkedin.com/in/vishalkdotcom",
+    href: LINKEDIN_PROFILE_HREF,
     external: true,
   },
   {
     label: "GitHub →",
-    href: "https://github.com/vishalkdotcom",
+    href: GITHUB_PROFILE_HREF,
     external: true,
   },
 ];

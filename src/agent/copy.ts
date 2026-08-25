@@ -9,7 +9,13 @@ import {
   BASED_LOCATION,
 } from "../about/content";
 import { CONTACT_EMAIL } from "../contact/content";
-import { SITE_ALTERNATE_NAMES, SITE_NAME, SITE_ORIGIN } from "../meta/site";
+import {
+  GITHUB_PROFILE_HREF,
+  LINKEDIN_PROFILE_HREF,
+  SITE_ALTERNATE_NAMES,
+  SITE_NAME,
+  SITE_ORIGIN,
+} from "../meta/site";
 import { escapeHtmlText } from "../meta/stamp-meta-shell";
 import { RESUME_PDF_HREF } from "../resume/content";
 import {
@@ -21,8 +27,8 @@ import {
 } from "../work/inventory";
 import { markdownUrlForPath, normalizePathname } from "./paths";
 
-export const LINKEDIN_HREF = "https://www.linkedin.com/in/vishalkdotcom";
-export const GITHUB_HREF = "https://github.com/vishalkdotcom";
+export const LINKEDIN_HREF = LINKEDIN_PROFILE_HREF;
+export const GITHUB_HREF = GITHUB_PROFILE_HREF;
 
 const SKILL_LIST = ABOUT_SKILLS.join(", ");
 const FACT_LINE = ABOUT_FACTS.map((fact) => `${fact.label}: ${fact.value}`).join(" · ");
@@ -342,10 +348,13 @@ export function identityJsonLd(): unknown {
       {
         "@type": "WebSite",
         "@id": websiteId,
-        name: ABOUT_NAME,
+        name: SITE_NAME,
         alternateName,
         url: `${SITE_ORIGIN}/`,
-        publisher: { "@id": personId },
+        description: ABOUT_PITCH,
+        inLanguage: "en",
+        publisher: { "@id": orgId },
+        about: { "@id": personId },
       },
     ],
   };
