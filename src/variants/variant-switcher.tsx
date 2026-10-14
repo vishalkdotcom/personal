@@ -8,8 +8,8 @@ function isTypingTarget(target: EventTarget | null): boolean {
 }
 
 /**
- * Compact header/floating edition switcher (01 Ledger · 02 Monograph · 03 Deck · 04 Signal).
- * Supports Alt+1..4 keyboard shortcuts so visitors can compare all 4 creative variants live.
+ * Compact header/floating edition switcher (01 Synth · 02 Cosmos · 03 Arcade · 04 VK-OS · 05 Poster).
+ * Supports Alt+1..5 keyboard shortcuts so visitors can compare all 5 creative worlds live.
  */
 export const VariantSwitcherBar: Component<{ compact?: boolean }> = (props) => {
   const { variant, setVariant } = useSiteVariant();
@@ -20,10 +20,11 @@ export const VariantSwitcherBar: Component<{ compact?: boolean }> = (props) => {
       if (isTypingTarget(event.target)) return;
       if (!event.altKey || event.ctrlKey || event.metaKey) return;
       const map: Record<string, SiteVariantId> = {
-        "1": "ledger",
-        "2": "monograph",
-        "3": "command",
-        "4": "signal",
+        "1": "synth",
+        "2": "cosmos",
+        "3": "arcade",
+        "4": "spatial",
+        "5": "brutalist",
       };
       const match = map[event.key];
       if (match) {
@@ -48,11 +49,11 @@ export const VariantSwitcherBar: Component<{ compact?: boolean }> = (props) => {
     <div
       class="inline-flex items-center gap-1 rounded-lg border border-border bg-bg-deep p-0.5"
       role="group"
-      aria-label="Creative edition switcher"
+      aria-label="Creative world switcher"
       data-variant-switcher=""
     >
       <span class="hidden px-2 font-mono text-[10px] tracking-[0.08em] text-faint uppercase xl:inline">
-        Edition
+        World
       </span>
       <For each={[...SITE_VARIANTS]}>
         {(item) => {
@@ -80,7 +81,7 @@ export const VariantSwitcherBar: Component<{ compact?: boolean }> = (props) => {
       <button
         type="button"
         onClick={copyShareUrl}
-        title="Copy direct URL to this edition"
+        title="Copy direct URL to this world"
         class="hidden rounded-md px-1.5 py-1 font-mono text-[10px] text-faint hover:bg-bg-hover hover:text-fg lg:inline-flex"
       >
         {copiedLink() ? "Copied" : "?v="}
