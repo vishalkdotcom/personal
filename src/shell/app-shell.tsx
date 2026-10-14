@@ -7,6 +7,7 @@ import { MobileShell } from "./mobile-shell";
 import { modeTitleForPath } from "./modes";
 import { SCROLL_PANE_CLASS } from "./scroll-pane";
 import { StageShell } from "./stage-shell";
+import { FullCanvasVariantHost } from "../variants/full-canvas-variants";
 
 const shellChipClass =
   "rounded-md border border-border bg-bg-deep px-2.5 py-[5px] text-xs leading-none text-muted hover:bg-bg-hover hover:text-fg aria-pressed:bg-bg-active aria-pressed:text-fg";
@@ -91,8 +92,11 @@ export const AppShell: ParentComponent = (props) => {
   const isMobile = createMediaQuery(MOBILE_SHELL_QUERY);
 
   return (
-    <Show when={isMobile()} fallback={<DesktopTriptych>{props.children}</DesktopTriptych>}>
-      <MobileShell>{props.children}</MobileShell>
-    </Show>
+    <>
+      <Show when={isMobile()} fallback={<DesktopTriptych>{props.children}</DesktopTriptych>}>
+        <MobileShell>{props.children}</MobileShell>
+      </Show>
+      <FullCanvasVariantHost />
+    </>
   );
 };

@@ -8,6 +8,7 @@ import {
   ABOUT_SKILLS,
 } from "../about/content";
 import { StageTitle } from "../shell/stage-title";
+import { CreativeEditionDeck } from "../variants/creative-edition-deck";
 import {
   getWorkCase,
   getWorkFolder,
@@ -157,5 +158,7 @@ export const AboutStage: Component = () => (
       </div>
       <SelectedWorkPeekList views={SELECTED_WORK_VIEWS} />
     </section>
+
+    <CreativeEditionDeck />
   </article>
 );
